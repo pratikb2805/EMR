@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'pages/pages.dart';
 
 void main() {
   runApp(MyApp());
@@ -139,46 +140,6 @@ class SignInFOrmState extends State<SignInFOrm> {
         )
       ],
     );
-  }
-}
-
-class HomePage extends StatefulWidget {
-  @override
-  _HomePageState createState() => _HomePageState();
-}
-
-class _HomePageState extends State<HomePage> {
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      child: Text("Welcome to home page"),
-    );
-  }
-}
-
-class PatientsList extends StatefulWidget {
-  @override
-  _PatientsListState createState() => _PatientsListState();
-}
-
-class _PatientsListState extends State<PatientsList> {
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      child: Text(" All Patients"),
-    );
-  }
-}
-
-class AppointmentList extends StatefulWidget {
-  @override
-  _AppointmentListState createState() => _AppointmentListState();
-}
-
-class _AppointmentListState extends State<AppointmentList> {
-  @override
-  Widget build(BuildContext context) {
-    return Text("Appointment");
   }
 }
 
