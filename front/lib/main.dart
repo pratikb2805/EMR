@@ -10,7 +10,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'EMR',
-      home: SignIn(),
+      home: BodyWidget(),
     );
   }
 }
@@ -90,13 +90,13 @@ class SignInFOrmState extends State<SignInFOrm> {
   @override
   Widget build(BuildContext con) {
     return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.center,
       children: <Widget>[
         Padding(
           padding: EdgeInsets.symmetric(horizontal: 8, vertical: 16),
           child: Container(
             constraints: BoxConstraints(maxWidth: 500),
-            width: MediaQuery.of(context).size.width * .50,
+            width: MediaQuery.of(context).size.width * 0.50,
             child: TextFormField(
               controller: _username,
               decoration: InputDecoration(
@@ -130,17 +130,139 @@ class SignInFOrmState extends State<SignInFOrm> {
               width: MediaQuery.of(context).size.width * 0.50,
               child: ElevatedButton(
                 // tooltip: '',
-                onPressed: () => {
-                  showDialog(
-                      context: context,
-                      builder: (context) {
-                        return AlertDialog(content: Text(_username.text));
-                      })
+                onPressed: () {
+                  Navigator.push(context,
+                      MaterialPageRoute(builder: (context) => BodyWidget()));
                 },
                 child: Text('Sign In'),
               )),
         )
       ],
+    );
+  }
+}
+
+class HomePage extends StatefulWidget {
+  @override
+  _HomePageState createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      child: Text("Welcome to home page"),
+    );
+  }
+}
+
+class PatientsList extends StatefulWidget {
+  @override
+  _PatientsListState createState() => _PatientsListState();
+}
+
+class _PatientsListState extends State<PatientsList> {
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      child: Text(" All Patients"),
+    );
+  }
+}
+
+class AppointmentList extends StatefulWidget {
+  @override
+  _AppointmentListState createState() => _AppointmentListState();
+}
+
+class _AppointmentListState extends State<AppointmentList> {
+  @override
+  Widget build(BuildContext context) {
+    return Text("Appointment");
+  }
+}
+
+class BodyWidget extends StatefulWidget {
+  @override
+  _BodyWidgetState createState() => _BodyWidgetState();
+}
+
+class _BodyWidgetState extends State<BodyWidget> {
+  var _selectedIndex = 0;
+
+  Widget getSelected() {
+    switch (_selectedIndex) {
+      case 0:
+        return HomePage();
+      case 1:
+        return AppointmentList();
+      case 2:
+        return PatientsList();
+      default:
+        return HomePage();
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      child: Row(
+        children: [
+          NavigationRail(
+            selectedIndex: _selectedIndex,
+            onDestinationSelected: (index) {
+              setState(() {
+                _selectedIndex = index;
+              });
+            },
+            labelType: NavigationRailLabelType.selected,
+            destinations: [
+              NavigationRailDestination(
+                icon: const Icon(Icons.home_outlined),
+                selectedIcon: const Icon(
+                  Icons.home,
+                ),
+                label: Text(
+                  "Home",
+                ),
+              ),
+              NavigationRailDestination(
+                icon: const Icon(
+                  Icons.calendar_today_outlined,
+                ),
+                selectedIcon: const Icon(Icons.calendar_today_rounded),
+                label: Text(
+                  "Appointments",
+                ),
+              ),
+              NavigationRailDestination(
+                icon: const Icon(Icons.person_outline),
+                selectedIcon: const Icon(Icons.person),
+                label: Text(
+                  "Patients",
+                ),
+              ),
+            ],
+          ),
+          const VerticalDivider(thickness: 1, width: 1),
+          Expanded(
+              child: IntrinsicWidth(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Container(
+                  height: 20.0,
+                  color: Colors.amber,
+                ),
+                Expanded(
+                    child: Container(
+                  color: Colors.blue,
+                ))
+              ],
+            ),
+          ))
+        ],
+      ),
     );
   }
 }
