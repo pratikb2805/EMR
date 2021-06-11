@@ -1,3 +1,4 @@
+import 'package:emr/pages/userProfile.dart';
 import 'package:flutter/material.dart';
 import 'pages/pages.dart';
 
@@ -10,16 +11,15 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      theme: ThemeData(
-          primaryColor: Colors.purple,
-          textTheme: TextTheme(
-              headline1: TextStyle(
-                  fontSize: 50.0,
-                  color: Colors.white,
-                  fontWeight: FontWeight.bold))),
-      title: 'EMR',
-      home: PatientprofileWidget(),
-    );
+        theme: ThemeData(
+            primaryColor: Colors.purple,
+            textTheme: TextTheme(
+                headline1: TextStyle(
+                    fontSize: 50.0,
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold))),
+        title: 'EMR',
+        home: BodyWidget());
   }
 }
 
@@ -28,16 +28,17 @@ class BodyWidget extends StatefulWidget {
   _BodyWidgetState createState() => _BodyWidgetState();
 }
 
-class _BodyWidgetState extends State<BodyWidget> {
-  var _selectedIndex = 0;
+enum WidgetMarker { home, appointments, patients }
 
+class _BodyWidgetState extends State<BodyWidget> {
+  WidgetMarker _selectedWidget = WidgetMarker.home;
   Widget getSelected() {
-    switch (_selectedIndex) {
-      case 0:
+    switch (_selectedWidget) {
+      case WidgetMarker.home:
         return HomePage();
-      case 1:
+      case WidgetMarker.appointments:
         return AppointmentList();
-      case 2:
+      case WidgetMarker.patients:
         return PatientsList();
       default:
         return HomePage();
@@ -46,64 +47,69 @@ class _BodyWidgetState extends State<BodyWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      child: Row(
-        children: [
-          NavigationRail(
-            selectedIndex: _selectedIndex,
-            onDestinationSelected: (index) {
-              setState(() {
-                _selectedIndex = index;
-              });
-            },
-            labelType: NavigationRailLabelType.selected,
-            destinations: [
-              NavigationRailDestination(
-                icon: const Icon(Icons.home_outlined),
-                selectedIcon: const Icon(
-                  Icons.home,
-                ),
-                label: Text(
-                  "Home",
-                ),
-              ),
-              NavigationRailDestination(
-                icon: const Icon(
-                  Icons.calendar_today_outlined,
-                ),
-                selectedIcon: const Icon(Icons.calendar_today_rounded),
-                label: Text(
-                  "Appointments",
-                ),
-              ),
-              NavigationRailDestination(
-                icon: const Icon(Icons.person_outline),
-                selectedIcon: const Icon(Icons.person),
-                label: Text(
-                  "Patients",
-                ),
-              ),
-            ],
-          ),
-          const VerticalDivider(thickness: 1, width: 1),
-          Expanded(
-              child: IntrinsicWidth(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                Container(
-                  height: 20.0,
-                  color: Colors.amber,
-                ),
-                Expanded(
-                    child: Container(
-                  color: Colors.blue,
-                ))
-              ],
-            ),
+    return Scaffold(
+        appBar: AppBar(
+          title: Text("HI"),
+        ),
+        drawer: MediaQuery.of(context).size.width < 600
+            ? Drawer(
+                child: NavBarFull(),
+              )
+            : null,
+        body: MediaQuery.of(context).size.width < 600
+            ? getSelected()
+            : SafeArea(
+                child: Row(
+                children: <Widget>[
+                  Container(
+                    width: 200,
+                    child: NavBarFull(),
+                  ),
+                  Container(
+                    width: MediaQuery.of(context).size.width - 200,
+                    child: getSelected(),
+                  )
+                ],
+              )));
+  }
+}
+
+class NavBarFull extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return ListView(children: [
+      TextButton(
+          onPressed: () {
+            //widget._selectedWidget = WidgetMarker.patients;
+          },
+          child: ListTile(
+            leading: Icon(Icons.home_outlined),
+            title: Text("Home"),
+          )),
+      TextButton(
+          onPressed: () {
+            //widget._selectedWidget = WidgetMarker.appointments;
+          },
+          child: ListTile(
+            leading: Icon(Icons.calendar_today_outlined),
+            title: Text("Appointments"),
+            selectedTileColor: Colors.blue.shade300,
+          )),
+      TextButton(
+          onPressed: () {
+            //widget._selectedWidget = WidgetMarker.patients;
+          },
+          child: ListTile(
+            leading: Icon(Icons.person_outline),
+            title: Text("Patients"),
           ))
-        ],
-      ),
-    );
+    ]);
+  }
+}
+
+class NavBarShort extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Container();
   }
 }
