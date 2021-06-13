@@ -33,31 +33,54 @@ class _PatientprofileWidgetState extends State<PatientprofileWidget> {
               ),
             )),
       ),
-      body: Card(
-        child: Container(
-          // alignment: Alignment.topLeft,
-          // height: MediaQuery.of(context).size.height,
-          child: SingleChildScrollView(child: LayoutBuilder(
-            builder: (BuildContext context, BoxConstraints con) {
-              if (con.maxWidth < 600) {
-                return Column(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      LeftPart(width: MediaQuery.of(context).size.width * .9),
-                      RIghtPart(width: MediaQuery.of(context).size.width * .9)
-                    ]);
-              }
-              return Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    LeftPart(width: MediaQuery.of(context).size.width * 0.3),
-                    RIghtPart(width: MediaQuery.of(context).size.width * 0.7)
-                  ]);
-            },
-          )),
+      body: Container(
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.all(Radius.circular(5)),
         ),
+        child: Container(
+            // alignment: Alignment.topLeft,
+            // height: MediaQuery.of(context).size.height,
+            child: LayoutBuilder(
+          builder: (BuildContext context, BoxConstraints con) {
+            if (con.maxWidth < 600) {
+              return LayoutBuilder(
+                builder: (BuildContext context, BoxConstraints con) {
+                  if (con.maxWidth < 600) {
+                    final width = MediaQuery.of(context).size.width;
+                    return Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: <Widget>[
+                        Expanded(child: LeftPart(width: width)),
+                        Expanded(child: RIghtPart(width: width))
+                      ],
+                    );
+                  }
+                  return Row(children: [
+                    Expanded(
+                        flex: 3,
+                        child:
+                            LeftPart(width: MediaQuery.of(context).size.width)),
+                    Expanded(
+                        flex: 7,
+                        child: RIghtPart(
+                            width: MediaQuery.of(context).size.width * 0.7))
+                  ]);
+                },
+              );
+            }
+            return Row(children: [
+              Expanded(
+                  flex: 3,
+                  child:
+                      LeftPart(width: MediaQuery.of(context).size.width * 0.3)),
+              Expanded(
+                  flex: 7,
+                  child:
+                      RIghtPart(width: MediaQuery.of(context).size.width * 0.7))
+            ]);
+          },
+        )),
       ),
     );
   }
@@ -71,29 +94,22 @@ class LeftPart extends StatelessWidget {
   Widget build(BuildContext context) {
     String url =
         'https://th.bing.com/th/id/R34ac62561e4d2d3f73903371539bfb5b?rik=0oRU4BctwhzLIA&riu=http%3a%2f%2fthispix.com%2fwp-content%2fuploads%2f2015%2f06%2fportrait-profile-008.jpg&ehk=ZPTQOU194fjZ2VzGXGXzymsATv6%2fCUW4EFn3Ya53CZ4%3d&risl=&pid=ImgRaw';
-    return Container(
-        width: width,
-        decoration: BoxDecoration(
-          color: Color.fromRGBO(255, 255, 255, 1),
-        ),
-        child: Column(
-            mainAxisSize: MainAxisSize.min,
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
-              Padding(
-                  padding: EdgeInsets.all(5),
-                  child: Container(
-                    child:
-                        UserprofileWidget(name: 'Pratik Bedre', profile: url),
-                  )),
-              DataField(header: 'Name', value: 'Pratik Bedre'),
-              DataField(header: 'Age', value: '23'),
-              DataField(header: 'Date of first consult', value: '28/05/2001'),
-              DataField(
-                  header: 'Date of most recent consult', value: '28/05/2001'),
-              DataField(header: 'diagnosis', value: '28/05/2001'),
-            ]));
+    return ListView(shrinkWrap: true, children: <Widget>[
+      Padding(
+        padding: const EdgeInsets.all(1.0),
+        child: UserprofileWidget(profile: url),
+      ),
+      Expanded(child: DataField(header: 'Name', value: 'Pratik Bedre')),
+      Expanded(child: DataField(header: 'Age', value: '23')),
+      Expanded(
+          child:
+              DataField(header: 'Date of first consult', value: '28/05/2001')),
+      Expanded(
+        child: DataField(
+            header: 'Date of most recent consult', value: '28/05/2001'),
+      ),
+      Expanded(child: DataField(header: 'diagnosis', value: 'Scelorsis')),
+    ]);
   }
 }
 
@@ -103,20 +119,24 @@ class RIghtPart extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: Container(
-          alignment: Alignment.topRight,
-          width: width,
-          child: Card(
-              child: Wrap(
-            // alignment: Alignment.topCenter,
-            children: [
-              DescriptionWidget(),
-              ReportsWidget(),
-              ChallengesWidger()
-            ],
-          ))),
+    return SingleChildScrollView(
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Container(
+            alignment: Alignment.topRight,
+            width: width,
+            child: Card(
+                child: Column(
+              // alignment: Alignment.topCenter,
+              children: [
+                DescriptionWidget(),
+                SizedBox(height: 10),
+                ReportsWidget(),
+                SizedBox(height: 20),
+                ChallengesWidger()
+              ],
+            ))),
+      ),
     );
   }
 }
@@ -149,10 +169,10 @@ class DescriptionWidget extends StatelessWidget {
                   style: TextStyle(
                       color: Color.fromRGBO(62, 62, 62, 1),
                       fontFamily: 'Work Sans',
-                      fontSize: 24,
+                      fontSize: 30,
                       letterSpacing:
                           0 /*percentages not used in flutter. defaulting to zero*/,
-                      fontWeight: FontWeight.normal,
+                      fontWeight: FontWeight.bold,
                       height: 1),
                 ),
                 SizedBox(height: 16),
@@ -190,6 +210,7 @@ class ChallengesWidger extends StatelessWidget {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: <Widget>[
+          SizedBox(height: 20),
           Text(
             'Challenge',
             textAlign: TextAlign.left,
@@ -199,7 +220,7 @@ class ChallengesWidger extends StatelessWidget {
                 fontSize: 24,
                 letterSpacing:
                     0 /*percentages not used in flutter. defaulting to zero*/,
-                fontWeight: FontWeight.normal,
+                fontWeight: FontWeight.w900,
                 height: 1),
           ),
           SizedBox(height: 8),
@@ -233,17 +254,25 @@ class ReportsWidget extends StatelessWidget {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: <Widget>[
-          Text(
-            'Reports',
-            textAlign: TextAlign.left,
-            style: TextStyle(
-                color: Color.fromRGBO(62, 62, 62, 1),
-                fontFamily: 'Work Sans',
-                fontSize: 24,
-                letterSpacing:
-                    0 /*percentages not used in flutter. defaulting to zero*/,
-                fontWeight: FontWeight.normal,
-                height: 1),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Container(
+              decoration: BoxDecoration(
+                  border: Border(
+                      bottom: BorderSide(color: Colors.black, width: 5.0))),
+              child: Text(
+                'Reports',
+                textAlign: TextAlign.left,
+                style: TextStyle(
+                    color: Color.fromRGBO(62, 62, 62, 1),
+                    fontFamily: 'Work Sans',
+                    fontSize: 24,
+                    letterSpacing:
+                        0 /*percentages not used in flutter. defaulting to zero*/,
+                    fontWeight: FontWeight.bold,
+                    height: 1),
+              ),
+            ),
           ),
           SizedBox(height: 8),
           Container(
@@ -255,14 +284,14 @@ class ReportsWidget extends StatelessWidget {
                 Container(
                   decoration: BoxDecoration(),
                   padding: EdgeInsets.symmetric(horizontal: 0, vertical: 0),
-                  child: Row(mainAxisSize: MainAxisSize.min, children: <Widget>[
-                    FileWidget(fileName: 'REport1.pdf'),
-                    SizedBox(height: 16),
-                    FileWidget(fileName: 'REport1.pdf'),
-                    SizedBox(height: 16),
-                    FileWidget(fileName: 'REport1.pdf'),
-                    SizedBox(height: 16),
-                    FileWidget(fileName: 'REport1.pdf'),
+                  child: Column(children: <Widget>[
+                    FileWidget(fileName: 'Report1.pdf'),
+                    SizedBox(height: 8),
+                    FileWidget(fileName: 'Report1.pdf'),
+                    SizedBox(height: 8),
+                    FileWidget(fileName: 'Report1.pdf'),
+                    SizedBox(height: 8),
+                    FileWidget(fileName: 'Report1.pdf'),
                   ]),
                 ),
                 SizedBox(width: 16)
@@ -283,16 +312,19 @@ class FileWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      decoration: BoxDecoration(),
-      padding: EdgeInsets.symmetric(horizontal: 0, vertical: 0),
+      width: MediaQuery.of(context).size.width * 0.8,
+      // decoration: BoxDecoration(),
+      padding: EdgeInsets.all(2),
       child: Container(
           child: ListTile(
               leading: Icon(
                 Icons.circle,
+                size: 10.0,
               ),
               title: Text(
                 '$fileName',
                 textAlign: TextAlign.left,
+                overflow: TextOverflow.ellipsis,
                 style: TextStyle(
                     color: Color.fromRGBO(62, 62, 62, 1),
                     fontFamily: 'Roboto',
@@ -316,35 +348,37 @@ class DataFieldState extends State<DataField> {
   @override
   Widget build(BuildContext context) {
     return Container(
+      height: MediaQuery.of(context).size.height * 0.2,
       decoration: BoxDecoration(),
       padding: EdgeInsets.all(10.0),
       child: Column(
         mainAxisSize: MainAxisSize.min,
+        mainAxisAlignment: MainAxisAlignment.start,
         children: <Widget>[
           Text(
             widget.header,
             overflow: TextOverflow.ellipsis,
             textAlign: TextAlign.left,
             style: TextStyle(
-                color: Color.fromRGBO(140, 140, 161, 1),
-                fontFamily: 'Work Sans',
-                fontSize: 18,
-                letterSpacing:
-                    0 /*percentages not used in flutter. defaulting to zero*/,
-                fontWeight: FontWeight.normal,
-                height: 1),
+              color: Color.fromRGBO(62, 62, 62, 1),
+              fontFamily: 'Work Sans',
+              fontSize: 18,
+              letterSpacing:
+                  0 /*percentages not used in flutter. defaulting to zero*/,
+              fontWeight: FontWeight.normal,
+            ),
           ),
-          SizedBox(height: 15),
           Text(
             widget.value,
+            overflow: TextOverflow.ellipsis,
             textAlign: TextAlign.left,
             style: TextStyle(
-                color: Color.fromRGBO(62, 62, 62, 1),
-                fontFamily: 'Work Sans',
-                fontSize: 20,
-                letterSpacing: 0,
-                fontWeight: FontWeight.normal,
-                height: 1.2),
+              color: Color.fromRGBO(62, 62, 62, 1),
+              fontFamily: 'Work Sans',
+              fontSize: 20,
+              letterSpacing: 0,
+              fontWeight: FontWeight.normal,
+            ),
           ),
         ],
       ),
