@@ -8,40 +8,29 @@ class Patient {
   final String phone;
 
   const Patient(
-    this.id,
-    this.companyName,
-    this.firstName,
-    this.lastName,
-    this.phone,
-  );
-
-  DataRow getRow() {
-    return DataRow(cells: [
-      DataCell(Text(id.toString())),
-      DataCell(Text(companyName)),
-      DataCell(Text(firstName)),
-      DataCell(Text(lastName)),
-      DataCell(Text(phone)),
-    ]);
-  }
+      {required this.id,
+      required this.companyName,
+      required this.firstName,
+      required this.lastName,
+      required this.phone});
 
   factory Patient.fromJson(Map<String, dynamic> json) {
     return Patient(
-      json['id'] as int,
-      json['companyName'] as String,
-      json['firstName'] as String,
-      json['lastName'] as String,
-      json['phone'] as String,
+      id: json['id'] as int,
+      companyName: json['companyName'] as String,
+      firstName: json['firstName'] as String,
+      lastName: json['lastName'] as String,
+      phone: json['phone'] as String,
     );
   }
 
-  Map<String, dynamic> toJson() {
-    return {
-      'id': id,
-      'companyName': companyName,
-      'firstName': firstName,
-      'lastName': lastName,
-      'phone': phone,
-    };
-  }
+  // Map<String, dynamic> toJson() {
+  //   return {
+  //     'id': id,
+  //     'companyName': companyName,
+  //     'firstName': firstName,
+  //     'lastName': lastName,
+  //     'phone': phone,
+  //   };
+  // }
 }

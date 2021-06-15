@@ -1,11 +1,9 @@
-import 'dart:convert';
 import 'dart:math';
-import 'package:advanced_datatable/datatable.dart';
 import 'package:emr/pages/pages.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:advanced_datatable/advanced_datatable.dart';
-import 'package:advanced_datatable/advancedDataTableSource.dart';
-import 'package:http/http.dart' as http;
+import 'dart:convert';
+import 'package:flutter/services.dart';
 
 class AppointmentList extends StatefulWidget {
   @override
@@ -32,11 +30,7 @@ class _AppointmentListState extends State<AppointmentList> {
             ),
           ),
           Container(
-            child: Card(
-              child: Container(
-                child: DataTable(),
-              ),
-            ),
+            child: DataTable(),
           )
         ],
       ),
@@ -44,89 +38,196 @@ class _AppointmentListState extends State<AppointmentList> {
   }
 }
 
+Future<List<Patient>> fetchData() async {
+  final String response = await rootBundle.loadString('assets/data/data.json');
+  final parsed = json.decode(response).cast<Map<String, dynamic>>();
+  return parsed.map<Patient>((json) => Patient.fromJson(json)).toList();
+}
+
+// List<Patient> parseData(String responseBody) {
+//   final parsed = json.decode(responseBody).cast<Map<String, dynamic>>();
+//   return parsed.map<Patient>((json) => Patient.fromJson(json)).toList();
+// }
+
 class DataTable extends StatefulWidget {
   @override
   _DataTableState createState() => _DataTableState();
 }
 
 class _DataTableState extends State<DataTable> {
-  final _source = DTS();
-  var _sortIndex = 0;
-  var _sortAsc = true;
-  int _rowsPerPage = AdvancedPaginatedDataTable.defaultRowsPerPage;
+  DTS _source = DTS([]);
+  int _sortColumnIndex = 0;
+  bool _sortAscending = true;
+  bool isLoaded = false;
+  int _rowsPerPage = PaginatedDataTable.defaultRowsPerPage;
+
+  void _sort<T>(
+      Comparable<T> getField(Patient d), int columnIndex, bool ascending) {
+    _source._sort<T>(getField, ascending);
+    setState(() {
+      _sortColumnIndex = columnIndex;
+      _sortAscending = ascending;
+    });
+  }
+
+  Future<void> getData() async {
+    final patients = await fetchData();
+    //print(patients);
+    if (!isLoaded) {
+      setState(() {
+        _source = DTS(patients);
+        isLoaded = true;
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
+    getData();
     return SingleChildScrollView(
-      child: AdvancedPaginatedDataTable(
-        addEmptyRows: false,
+      child: PaginatedDataTable(
         source: _source,
-        sortAscending: _sortAsc,
-        sortColumnIndex: _sortIndex,
-        showFirstLastButtons: true,
         rowsPerPage: _rowsPerPage,
+        sortAscending: _sortAscending,
+        sortColumnIndex: _sortColumnIndex,
         availableRowsPerPage: [10, 20, 30, 50],
+        showFirstLastButtons: true,
         onRowsPerPageChanged: (newRowsPerPage) {
-          if (newRowsPerPage != null) {
-            setState(() {
-              _rowsPerPage = newRowsPerPage;
-            });
-          }
+          setState(() {
+            _rowsPerPage = newRowsPerPage!;
+          });
         },
         columns: [
-          DataColumn(label: Text('ID'), numeric: true, onSort: setSort),
-          DataColumn(label: Text('Company'), onSort: setSort),
-          DataColumn(label: Text('First name'), onSort: setSort),
-          DataColumn(label: Text('Last name'), onSort: setSort),
-          DataColumn(label: Text('Phone'), onSort: setSort),
+          DataColumn(
+              label: Text(
+                'ID',
+              ),
+              onSort: (int columnIndex, bool ascending) =>
+                  _sort<num>((Patient d) => d.id, columnIndex, ascending)),
+          DataColumn(
+              label: Text('Company'),
+              onSort: (int columnIndex, bool ascending) => _sort<String>(
+                  (Patient d) => d.companyName, columnIndex, ascending)),
+          DataColumn(
+              label: Text('First name'),
+              onSort: (int columnIndex, bool ascending) => _sort<String>(
+                  (Patient d) => d.firstName, columnIndex, ascending)),
+          DataColumn(
+              label: Text('Last name'),
+              onSort: (int columnIndex, bool ascending) => _sort<String>(
+                  (Patient d) => d.lastName, columnIndex, ascending)),
+          DataColumn(
+              label: Text('Phone'),
+              onSort: (int columnIndex, bool ascending) => _sort<String>(
+                  (Patient d) => d.phone, columnIndex, ascending)),
+          DataColumn(label: Text('Completed/Delete')),
         ],
       ),
     );
   }
 
-  void setSort(int i, bool asc) => setState(() {
-        _sortIndex = i;
-        _sortAsc = asc;
-      });
+  // void setSort(int i, bool asc) => setState(() {
+  //       _sortIndex = i;
+  //       _sortAsc = asc;
+  //     });
 }
 
-class DTS extends AdvancedDataTableSource<Patient> {
+class DTS extends DataTableSource {
+  final List<Patient> _patients;
+  DTS(this._patients);
+
+  void _sort<T>(Comparable<T> getField(Patient d), bool ascending) {
+    _patients.sort((Patient a, Patient b) {
+      if (!ascending) {
+        final Patient c = a;
+        a = b;
+        b = c;
+      }
+      final Comparable<T> aValue = getField(a);
+      final Comparable<T> bValue = getField(b);
+      return Comparable.compare(aValue, bValue);
+    });
+    notifyListeners();
+  }
+
   @override
-  DataRow? getRow(int index) => lastDetails!.rows[index].getRow();
+  DataRow getRow(int index) {
+    final Patient patient = _patients[index];
+    return DataRow(cells: [
+      DataCell(Text(patient.id.toString())),
+      DataCell(Text(patient.companyName)),
+      DataCell(Text(patient.firstName)),
+      DataCell(Text(patient.lastName)),
+      DataCell(Text(patient.phone)),
+      DataCell(Row(
+        mainAxisAlignment: MainAxisAlignment.spaceAround,
+        children: [
+          Container(
+              width: 30,
+              height: 30,
+              child: FloatingActionButton(
+                child: Icon(Icons.check),
+                onPressed: () {
+                  print('Add');
+                },
+              )),
+          Container(
+              width: 30,
+              height: 30,
+              child: FloatingActionButton(
+                child: Icon(Icons.cancel_outlined),
+                onPressed: () {
+                  print('Remove');
+                },
+              ))
+        ],
+      )),
+    ]);
+  }
+
+  @override
+  bool get isRowCountApproximate => false;
+
+  @override
+  int get rowCount => _patients.length;
 
   @override
   int get selectedRowCount => 0;
-
-  @override
-  Future<RemoteDataSourceDetails<Patient>> getNextPage(
-      NextPageRequest pageRequest) async {
-    //the remote data source has to support the pagaing and sorting
-    final queryParameter = <String, dynamic>{
-      'offset': pageRequest.offset.toString(),
-      'pageSize': pageRequest.pageSize.toString(),
-      'sortIndex': ((pageRequest.columnSortIndex ?? 0) + 1).toString(),
-      'sortAsc': ((pageRequest.sortAscending ?? true) ? 1 : 0).toString(),
-    };
-
-    final requestUri = Uri.https(
-      'example.devowl.de',
-      '',
-      queryParameter,
-    );
-
-    final response = await http.get(requestUri);
-    if (response.statusCode == 200) {
-      final data = jsonDecode(response.body);
-      return RemoteDataSourceDetails(
-        data['totalRows'],
-        (data['rows'] as List<dynamic>)
-            .map((json) => Patient.fromJson(json))
-            .toList(),
-      );
-    } else {
-      throw Exception('Unable to query remote server');
-    }
-  }
 }
+//   @override
+//   int get selectedRowCount => 0;
+
+//   @override
+//   Future<RemoteDataSourceDetails<Patient>> getNextPage(
+//       NextPageRequest pageRequest) async {
+//     //the remote data source has to support the pagaing and sorting
+//     final queryParameter = <String, dynamic>{
+//       'offset': pageRequest.offset.toString(),
+//       'pageSize': pageRequest.pageSize.toString(),
+//       'sortIndex': ((pageRequest.columnSortIndex ?? 0) + 1).toString(),
+//       'sortAsc': ((pageRequest.sortAscending ?? true) ? 1 : 0).toString(),
+//     };
+
+//     final requestUri = Uri.https(
+//       'example.devowl.de',
+//       '',
+//       queryParameter,
+//     );
+
+//     final response = await http.get(requestUri);
+//     if (response.statusCode == 200) {
+//       final data = jsonDecode(response.body);
+//       return RemoteDataSourceDetails(
+//         data['totalRows'],
+//         (data['rows'] as List<dynamic>)
+//             .map((json) => Patient.fromJson(json))
+//             .toList(),
+//       );
+//     } else {
+//       throw Exception('Unable to query remote server');
+//     }
+//   }
+// }
 
 // class DataTableDemo extends StatefulWidget {
 //   const DataTableDemo({Key key}) : super(key: key);

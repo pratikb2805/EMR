@@ -33,10 +33,8 @@ class _PatientprofileWidgetState extends State<PatientprofileWidget> {
               ),
             )),
       ),
-      body: Container(
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.all(Radius.circular(5)),
-        ),
+      body: Padding(
+        padding: const EdgeInsets.all(5.0),
         child: Container(
             // alignment: Alignment.topLeft,
             // height: MediaQuery.of(context).size.height,

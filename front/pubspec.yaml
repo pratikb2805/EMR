@@ -21,6 +21,8 @@ environment:
   sdk: ">=2.12.0 <3.0.0"
 
 dependencies:
+  objectbox: ^1.0.0
+  objectbox_flutter_libs: any
   flutter:
     sdk: flutter
 
@@ -29,10 +31,15 @@ dependencies:
   cupertino_icons: ^1.0.2
   flutter_svg: ^0.22.0
   intl: ^0.17.0
-  advanced_datatable: ^0.0.3+1
   http: ^0.13.3
+  desktop_window: ^0.4.0
+  charts_flutter: ^0.10.0
+  syncfusion_flutter_calendar: ^19.1.67
 
 dev_dependencies:
+  build_runner: ^1.0.0
+  objectbox_generator: any
+
   flutter_test:
     sdk: flutter
 
@@ -47,9 +54,9 @@ flutter:
   uses-material-design: true
 
   # To add assets to your application, add an assets section, like this:
-  # assets:
-  #   - images/a_dot_burr.jpeg
-  #   - images/a_dot_ham.jpeg
+  assets:
+    - images/
+    - assets/data/data.json
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.
