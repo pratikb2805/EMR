@@ -43,19 +43,35 @@ class DoctorTopBar extends StatelessWidget {
                 Positioned(
                   top: 210,
                   right: 25,
-                  child: ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                        primary: Colors.white,
-                        shadowColor: null,
-                        side: BorderSide(width: 0, color: Colors.white)),
-                    child: Icon(Icons.edit, color: Colors.grey),
-                    onPressed: () {
-                      showDialog(
-                          context: context,
-                          builder: (BuildContext context) =>
-                              AlertDialog(title: Text('Button pressed')));
-                    },
+                  child: ClipOval(
+                    child: Material(
+                      color: Colors.transparent, // Button color
+                      child: InkWell(
+                        splashColor: Colors.blueAccent, // Splash color
+                        onTap: () {},
+                        child: SizedBox(
+                            width: 48, height: 48, child: Icon(Icons.edit)),
+                      ),
+                    ),
                   ),
+                  // child: Material(
+                  //   child: RawMaterialButton(
+                  //     // style: ElevatedButton.styleFrom(
+                  //     //     primary: Colors.white,
+                  //     //     shadowColor: null,
+                  //     //     side: BorderSide(width: 0, color: Colors.white)),
+                  //     child: Icon(Icons.edit_rounded, size: 20),
+                  //     padding: EdgeInsets.all(5.0),
+                  //     shape: CircleBorder(),
+
+                  //     onPressed: () {
+                  //       showDialog(
+                  //           context: context,
+                  //           builder: (BuildContext context) =>
+                  //               AlertDialog(title: Text('Button pressed')));
+                  //     },
+                  //   ),
+                  // ),
                 )
               ],
             ),
@@ -112,6 +128,7 @@ class _NamepositionWidgetState extends State<NamepositionWidget> {
                 color: Color.fromRGBO(15, 38, 68, 1),
                 fontFamily: 'Open Sans',
                 fontSize: 24,
+                decoration: TextDecoration.none,
                 letterSpacing:
                     0 /*percentages not used in flutter. defaulting to zero*/,
                 fontWeight: FontWeight.normal,
@@ -122,6 +139,7 @@ class _NamepositionWidgetState extends State<NamepositionWidget> {
             widget.qualification,
             textAlign: TextAlign.left,
             style: TextStyle(
+                decoration: TextDecoration.none,
                 color: Color.fromRGBO(114, 128, 148, 1),
                 fontFamily: 'Open Sans',
                 fontSize: 16,

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'doctorTop.dart';
 import 'patientsList.dart';
+import 'package:syncfusion_flutter_calendar/calendar.dart';
+import 'appoitnmentSummary.dart';
 
 class DoctorDashboards extends StatefulWidget {
   DoctorDashboards({Key? key}) : super(key: key);
@@ -10,6 +12,13 @@ class DoctorDashboards extends StatefulWidget {
 }
 
 class _DoctorDashboardsState extends State<DoctorDashboards> {
+  CalendarController _calendarController = CalendarController();
+  @override
+  void initState() {
+    super.initState();
+    _calendarController.displayDate = DateTime.now();
+  }
+
   final urll =
       'https://cdn.fastly.picmonkey.com/contentful/h6goo9gw1hh6/2sNZtFAWOdP1lmQ33VwRN3/24e953b920a9cd0ff2e1d587742a2472/1-intro-photo-final.jpg?w=800&q=70';
   @override
@@ -30,7 +39,7 @@ class _DoctorDashboardsState extends State<DoctorDashboards> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Expanded(
-                    flex: 6,
+                    flex: 10,
                     child: Padding(
                       padding: EdgeInsets.all(5),
                       child: Container(
@@ -71,6 +80,9 @@ class _DoctorDashboardsState extends State<DoctorDashboards> {
                                   ),
                                 ),
                               ),
+                              AppointmentSummary(
+                                controller: _calendarController,
+                              )
                             ],
                           ),
                           decoration: BoxDecoration(
@@ -81,7 +93,39 @@ class _DoctorDashboardsState extends State<DoctorDashboards> {
                             borderRadius: BorderRadius.circular(10),
                           )),
                     )),
-                Expanded(flex: 4, child: PatientsList()),
+                Expanded(
+                  flex: 4,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      ConstrainedBox(
+                          constraints:
+                              BoxConstraints(maxWidth: 300, minWidth: 100),
+                          child: PatientsList()),
+                      ConstrainedBox(
+                          constraints:
+                              BoxConstraints(maxWidth: 300, minWidth: 100),
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: SfCalendar(
+                              view: CalendarView.month,
+                              // allowViewNavigation: true,
+                              showDatePickerButton: true,
+                              todayHighlightColor: Colors.blueAccent,
+                              onTap: (CalendarTapDetails details) {
+                                setState(() {
+                                  if (_calendarController.displayDate !=
+                                      details.date)
+                                    _calendarController.displayDate =
+                                        details.date;
+                                });
+                              },
+                            ),
+                          ))
+                    ],
+                  ),
+                ),
               ],
             ),
           )
