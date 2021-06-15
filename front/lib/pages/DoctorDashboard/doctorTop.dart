@@ -36,8 +36,9 @@ class DoctorTopBar extends StatelessWidget {
                   top: 200,
                   left: 160,
                   child: NamepositionWidget(
-                    name: 'Praik Bedre',
-                    qualification: 'MD Mbbs',
+                    name: 'Piyush Patil',
+                    qualification:
+                        'MD Mbbs(Baburao college of medical Science,UP)',
                   ),
                 ),
                 Positioned(
