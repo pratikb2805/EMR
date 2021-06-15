@@ -33,6 +33,7 @@ dependencies:
   desktop_window: ^0.4.0
   charts_flutter: ^0.10.0
   syncfusion_flutter_calendar: ^19.1.67
+  draw_graph: ^1.0.0
 
 dev_dependencies:
   build_runner: ^1.0.0
