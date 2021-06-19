@@ -1,4 +1,5 @@
 import 'dart:math';
+import 'package:emr/objectbox.g.dart';
 import 'package:emr/pages/pages.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -101,26 +102,43 @@ class _DataTableState extends State<DataTable> {
           DataColumn(
               label: Text(
                 'ID',
+                style: TextStyle(fontWeight: FontWeight.bold),
               ),
               onSort: (int columnIndex, bool ascending) =>
                   _sort<num>((Patient d) => d.id, columnIndex, ascending)),
           DataColumn(
-              label: Text('Company'),
+              label: Text(
+                'Company',
+                style: TextStyle(fontWeight: FontWeight.bold),
+              ),
               onSort: (int columnIndex, bool ascending) => _sort<String>(
                   (Patient d) => d.companyName, columnIndex, ascending)),
           DataColumn(
-              label: Text('First name'),
+              label: Text(
+                'First name',
+                style: TextStyle(fontWeight: FontWeight.bold),
+              ),
               onSort: (int columnIndex, bool ascending) => _sort<String>(
                   (Patient d) => d.firstName, columnIndex, ascending)),
           DataColumn(
-              label: Text('Last name'),
+              label: Text(
+                'Last name',
+                style: TextStyle(fontWeight: FontWeight.bold),
+              ),
               onSort: (int columnIndex, bool ascending) => _sort<String>(
                   (Patient d) => d.lastName, columnIndex, ascending)),
           DataColumn(
-              label: Text('Phone'),
+              label: Text(
+                'Phone',
+                style: TextStyle(fontWeight: FontWeight.bold),
+              ),
               onSort: (int columnIndex, bool ascending) => _sort<String>(
                   (Patient d) => d.phone, columnIndex, ascending)),
-          DataColumn(label: Text('Completed/Delete')),
+          DataColumn(
+              label: Text(
+            'Completed/Delete',
+            style: TextStyle(fontWeight: FontWeight.bold),
+          )),
         ],
       ),
     );
@@ -157,13 +175,21 @@ class DTS extends DataTableSource {
       DataCell(Row(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: [
-          ActionRow(),
+          ActionRow(
+            index: index,
+            patient: patient,
+          ),
           Container(
               width: 25,
               height: 25,
               child: FloatingActionButton(
                 backgroundColor: Colors.red,
-                child: Text("X"),
+                child: Padding(
+                    padding: EdgeInsets.all(1),
+                    child: Icon(
+                      Icons.delete,
+                      size: 20,
+                    )),
                 onPressed: () {
                   print('Remove');
                 },
@@ -184,62 +210,22 @@ class DTS extends DataTableSource {
 }
 
 class ActionRow extends StatefulWidget {
+  ActionRow({Key? key, required this.index, required this.patient})
+      : super(key: key);
+
+  final index;
+  final Patient patient;
   @override
   _ActionRowState createState() => _ActionRowState();
 }
 
 class _ActionRowState extends State<ActionRow> {
-  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-  final TextEditingController _textEditingController = TextEditingController();
-
   Future<void> showInformationDialog(BuildContext context) async {
     return await showDialog(
         context: context,
         builder: (context) {
           return StatefulBuilder(builder: (context, setState) {
-            bool isChecked = false;
-            return AlertDialog(
-              content: Form(
-                  key: _formKey,
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      TextFormField(
-                        controller: _textEditingController,
-                        validator: (value) {
-                          return value!.isNotEmpty ? null : "Enter any text";
-                        },
-                        decoration:
-                            InputDecoration(hintText: "Please Enter Text"),
-                      ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text("Choice Box"),
-                          Checkbox(
-                              value: isChecked,
-                              onChanged: (checked) {
-                                setState(() {
-                                  isChecked = checked!;
-                                });
-                              })
-                        ],
-                      )
-                    ],
-                  )),
-              title: Text('Stateful Dialog'),
-              actions: <Widget>[
-                InkWell(
-                  child: Text('Submit'),
-                  onTap: () {
-                    if (_formKey.currentState!.validate()) {
-                      // Do something like updating SharedPreferences or User Settings etc.
-                      Navigator.of(context).pop();
-                    }
-                  },
-                ),
-              ],
-            );
+            return PatientEditForm(widget.patient);
           });
         });
   }

@@ -1,8 +1,13 @@
+//import 'package:emr/db/patient.dart';
 import 'package:flutter/material.dart';
 // import 'package:flutter_svg/flutter_svg.dart';
 import 'userProfile.dart';
+import 'pages.dart';
 
+//import 'package:objectbox/objectbox.dart';
 class PatientprofileWidget extends StatefulWidget {
+  final Patient patient;
+  PatientprofileWidget({Key? key, required this.patient});
   @override
   _PatientprofileWidgetState createState() => _PatientprofileWidgetState();
 }
@@ -49,19 +54,23 @@ class _PatientprofileWidgetState extends State<PatientprofileWidget> {
                       mainAxisAlignment: MainAxisAlignment.start,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: <Widget>[
-                        Expanded(child: LeftPart(width: width)),
-                        Expanded(child: RIghtPart(width: width))
+                        Expanded(
+                            child: LeftPart(
+                                name: widget.patient.companyName,
+                                width: width)),
+                        Expanded(child: RightPart(width: width))
                       ],
                     );
                   }
                   return Row(children: [
                     Expanded(
                         flex: 3,
-                        child:
-                            LeftPart(width: MediaQuery.of(context).size.width)),
+                        child: LeftPart(
+                            name: widget.patient.companyName,
+                            width: MediaQuery.of(context).size.width)),
                     Expanded(
                         flex: 7,
-                        child: RIghtPart(
+                        child: RightPart(
                             width: MediaQuery.of(context).size.width * 0.7))
                   ]);
                 },
@@ -70,12 +79,13 @@ class _PatientprofileWidgetState extends State<PatientprofileWidget> {
             return Row(children: [
               Expanded(
                   flex: 3,
-                  child:
-                      LeftPart(width: MediaQuery.of(context).size.width * 0.3)),
+                  child: LeftPart(
+                      name: widget.patient.companyName,
+                      width: MediaQuery.of(context).size.width * 0.3)),
               Expanded(
                   flex: 7,
                   child:
-                      RIghtPart(width: MediaQuery.of(context).size.width * 0.7))
+                      RightPart(width: MediaQuery.of(context).size.width * 0.7))
             ]);
           },
         )),
@@ -85,8 +95,11 @@ class _PatientprofileWidgetState extends State<PatientprofileWidget> {
 }
 
 class LeftPart extends StatelessWidget {
+  final String name;
   final double width;
-  const LeftPart({Key? key, required this.width}) : super(key: key);
+
+  const LeftPart({Key? key, required this.width, required this.name})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -97,7 +110,7 @@ class LeftPart extends StatelessWidget {
         padding: const EdgeInsets.all(1.0),
         child: UserprofileWidget(profile: url),
       ),
-      Expanded(child: DataField(header: 'Name', value: 'Pratik Bedre')),
+      Expanded(child: DataField(header: 'Name', value: name)),
       Expanded(child: DataField(header: 'Age', value: '23')),
       Expanded(
           child:
@@ -111,9 +124,9 @@ class LeftPart extends StatelessWidget {
   }
 }
 
-class RIghtPart extends StatelessWidget {
+class RightPart extends StatelessWidget {
   final double width;
-  const RIghtPart({Key? key, required this.width}) : super(key: key);
+  const RightPart({Key? key, required this.width}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

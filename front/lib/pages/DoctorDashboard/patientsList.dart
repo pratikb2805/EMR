@@ -24,46 +24,45 @@ class _PatientsListState extends State<PatientsList> {
                   bottomLeft: Radius.circular(0),
                   bottomRight: Radius.circular(0),
                 ),
-                boxShadow: [
-                  BoxShadow(
-                      color: Color.fromRGBO(20, 21, 22, 0.03999999910593033),
-                      offset: Offset(0, 8),
-                      blurRadius: 24)
-                ],
               ),
-              padding: EdgeInsets.symmetric(horizontal: 16, vertical: 13),
+              padding: EdgeInsets.symmetric(horizontal: 16, vertical: 5),
               child: Row(
                 mainAxisSize: MainAxisSize.min,
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: <Widget>[
-                  Text(
-                    'Patients',
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                        color: Colors.black87,
-                        fontFamily: 'Open Sans',
-                        fontSize: 20,
-                        letterSpacing:
-                            0 /*percentages not used in flutter. defaulting to zero*/,
-                        fontWeight: FontWeight.w700,
-                        height: 1),
+                  Padding(
+                    padding: EdgeInsets.fromLTRB(5, 0, 100, 5),
+                    child: Text(
+                      'Patients',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                          color: Colors.black87,
+                          fontFamily: 'Open Sans',
+                          fontSize: 24,
+                          decoration: TextDecoration.none,
+                          letterSpacing:
+                              0 /*percentages not used in flutter. defaulting to zero*/,
+                          fontWeight: FontWeight.normal,
+                          height: 1),
+                    ),
                   ),
                   Spacer(),
                   Padding(
                     padding: const EdgeInsets.all(5.0),
-                    child: ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                          primary: Colors.white,
-                          shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(0),
-                              side: BorderSide(color: Colors.white)),
+                    child: ClipOval(
+                      child: Material(
+                        color: Colors.transparent, // Button color
+                        child: InkWell(
+                          splashColor: Colors.blueAccent, // Splash color
+                          onTap: () {},
+                          child: SizedBox(
+                              width: 32,
+                              height: 32,
+                              child: Icon(Icons.keyboard_arrow_right)),
                         ),
-                        onPressed: () {},
-                        child: Icon(
-                          Icons.keyboard_arrow_right_rounded,
-                          color: Colors.grey,
-                        )),
+                      ),
+                    ),
                   ),
                 ],
               ),
@@ -171,14 +170,17 @@ class _PatientTileState extends State<PatientTile> {
               ),
               Spacer(),
               Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: ElevatedButton(
+                  padding: const EdgeInsets.all(8.0),
+                  child: IconButton(
+                    iconSize: 18.0,
+                    padding: EdgeInsets.all(5.0),
+                    icon: Icon(Icons.keyboard_arrow_right_rounded,
+                        color: Colors.grey),
                     onPressed: () {},
-                    style: ElevatedButton.styleFrom(
-                        shape: CircleBorder(), primary: Colors.white),
-                    child: Icon(Icons.keyboard_arrow_right_rounded,
-                        color: Colors.grey)),
-              )
+                    // style: ElevatedButton.styleFrom(
+                    //     shape: CircleBorder(), primary: Colors.white),
+                    // child: ),
+                  ))
             ],
           ),
         ),

@@ -1,6 +1,8 @@
 import 'package:emr/pages/userProfile.dart';
 import 'package:flutter/material.dart';
 import 'pages/pages.dart';
+import 'package:desktop_window/desktop_window.dart';
+
 // import 'package:desktop_window/desktop_window.dart';
 
 int main() {
@@ -157,7 +159,7 @@ class _NavBarFullState extends State<NavBarFull> {
                 : Icon(Icons.home_outlined),
             title: Text("Dashboard"),
             selected: _selected == WidgetMarker.dashboard,
-            selectedTileColor: Colors.blue.shade100,
+            selectedTileColor: Colors.blue.shade50,
           )),
       TextButton(
           style: ButtonStyle(
@@ -180,7 +182,7 @@ class _NavBarFullState extends State<NavBarFull> {
               "Appointments",
             ),
             selected: _selected == WidgetMarker.appointments,
-            selectedTileColor: Colors.blue.shade100,
+            selectedTileColor: Colors.blue.shade50,
           )),
       TextButton(
           style: ButtonStyle(
@@ -202,7 +204,7 @@ class _NavBarFullState extends State<NavBarFull> {
                 ? Icon(Icons.person)
                 : Icon(Icons.person_outlined),
             title: Text("Patients"),
-            selectedTileColor: Colors.blue.shade100,
+            selectedTileColor: Colors.blue.shade50,
           ))
     ]);
   }

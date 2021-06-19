@@ -2,6 +2,7 @@ import 'package:objectbox/objectbox.dart';
 
 @Entity()
 class Doctor {
+  int id = 0;
   String? name;
   List<String>? qualifications;
   DateTime? dateJoined;

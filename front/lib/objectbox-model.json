@@ -1,0 +1,273 @@
+{
+  "_note1": "KEEP THIS FILE! Check it into a version control system (VCS) like git.",
+  "_note2": "ObjectBox manages crucial IDs for your object model. See docs for details.",
+  "_note3": "If you have VCS merge conflicts, you must resolve them according to ObjectBox docs.",
+  "entities": [
+    {
+      "id": "1:2105980254126945334",
+      "lastPropertyId": "7:5990175068168941742",
+      "name": "Doctor",
+      "properties": [
+        {
+          "id": "1:8929368112691541792",
+          "name": "id",
+          "type": 6,
+          "flags": 1
+        },
+        {
+          "id": "2:4596754707230663518",
+          "name": "name",
+          "type": 9
+        },
+        {
+          "id": "3:6719057657127873854",
+          "name": "qualifications",
+          "type": 30
+        },
+        {
+          "id": "4:4021103401215910054",
+          "name": "dateJoined",
+          "type": 10
+        },
+        {
+          "id": "5:7408608506485051253",
+          "name": "address",
+          "type": 9
+        },
+        {
+          "id": "6:2849318786694514610",
+          "name": "email",
+          "type": 9
+        },
+        {
+          "id": "7:5990175068168941742",
+          "name": "phone",
+          "type": 9
+        }
+      ],
+      "relations": []
+    },
+    {
+      "id": "2:6691604221011885210",
+      "lastPropertyId": "8:3111731640538589920",
+      "name": "Appointment",
+      "properties": [
+        {
+          "id": "1:292907942194324822",
+          "name": "id",
+          "type": 6,
+          "flags": 1
+        },
+        {
+          "id": "2:5191562190203519717",
+          "name": "patientId",
+          "type": 11,
+          "flags": 520,
+          "indexId": "1:44962279460149256",
+          "relationTarget": "Patient"
+        },
+        {
+          "id": "3:8948749379628251926",
+          "name": "start",
+          "type": 10
+        },
+        {
+          "id": "4:5045673809236275007",
+          "name": "end",
+          "type": 10
+        },
+        {
+          "id": "5:8730320170763372391",
+          "name": "description",
+          "type": 9
+        },
+        {
+          "id": "6:7888142565836185605",
+          "name": "name",
+          "type": 9
+        },
+        {
+          "id": "7:6023420282669789904",
+          "name": "phone",
+          "type": 9
+        },
+        {
+          "id": "8:3111731640538589920",
+          "name": "email",
+          "type": 9
+        }
+      ],
+      "relations": []
+    },
+    {
+      "id": "3:7637440109208649899",
+      "lastPropertyId": "3:7885248437502776920",
+      "name": "Medicine",
+      "properties": [
+        {
+          "id": "1:1716489005987824826",
+          "name": "id",
+          "type": 6,
+          "flags": 1
+        },
+        {
+          "id": "2:166259051092228276",
+          "name": "name",
+          "type": 9
+        },
+        {
+          "id": "3:7885248437502776920",
+          "name": "provider",
+          "type": 9
+        }
+      ],
+      "relations": []
+    },
+    {
+      "id": "4:6991110882746293107",
+      "lastPropertyId": "8:5301855861173418515",
+      "name": "Patient",
+      "properties": [
+        {
+          "id": "1:9086989698835275940",
+          "name": "id",
+          "type": 6,
+          "flags": 1
+        },
+        {
+          "id": "2:1746803873597970452",
+          "name": "name",
+          "type": 9
+        },
+        {
+          "id": "3:697740239254086272",
+          "name": "address",
+          "type": 9
+        },
+        {
+          "id": "4:8809090685679999331",
+          "name": "email",
+          "type": 9
+        },
+        {
+          "id": "5:6517951734660032801",
+          "name": "phone",
+          "type": 9
+        },
+        {
+          "id": "6:5802263522225801350",
+          "name": "dateFirstConsult",
+          "type": 10
+        },
+        {
+          "id": "7:4320220128300809681",
+          "name": "dateMostRecentConsult",
+          "type": 10
+        },
+        {
+          "id": "8:5301855861173418515",
+          "name": "diagnosis",
+          "type": 9
+        }
+      ],
+      "relations": []
+    },
+    {
+      "id": "5:8382130931646875938",
+      "lastPropertyId": "5:6629062973510755626",
+      "name": "PatientFile",
+      "properties": [
+        {
+          "id": "1:8308085898207919742",
+          "name": "name",
+          "type": 9
+        },
+        {
+          "id": "2:155789837572033901",
+          "name": "id",
+          "type": 6,
+          "flags": 1
+        },
+        {
+          "id": "3:4428493456762569294",
+          "name": "path",
+          "type": 9
+        },
+        {
+          "id": "4:5328610899855170486",
+          "name": "description",
+          "type": 9
+        },
+        {
+          "id": "5:6629062973510755626",
+          "name": "patientId",
+          "type": 11,
+          "flags": 520,
+          "indexId": "2:1833309954416717029",
+          "relationTarget": "Patient"
+        }
+      ],
+      "relations": []
+    },
+    {
+      "id": "6:5116948202094352500",
+      "lastPropertyId": "2:2094098990380128904",
+      "name": "Prescription",
+      "properties": [
+        {
+          "id": "1:8074907889743567510",
+          "name": "id",
+          "type": 6,
+          "flags": 1
+        },
+        {
+          "id": "2:2094098990380128904",
+          "name": "patientId",
+          "type": 11,
+          "flags": 520,
+          "indexId": "3:3753409390561328516",
+          "relationTarget": "Patient"
+        }
+      ],
+      "relations": []
+    },
+    {
+      "id": "7:4172082692439354849",
+      "lastPropertyId": "3:3030284482373249019",
+      "name": "PrescriptionEntity",
+      "properties": [
+        {
+          "id": "1:6674324771577555357",
+          "name": "id",
+          "type": 6,
+          "flags": 1
+        },
+        {
+          "id": "2:5295819376461879061",
+          "name": "medicineId",
+          "type": 11,
+          "flags": 520,
+          "indexId": "4:6183435405128252369",
+          "relationTarget": "Medicine"
+        },
+        {
+          "id": "3:3030284482373249019",
+          "name": "quantity",
+          "type": 6
+        }
+      ],
+      "relations": []
+    }
+  ],
+  "lastEntityId": "7:4172082692439354849",
+  "lastIndexId": "4:6183435405128252369",
+  "lastRelationId": "0:0",
+  "lastSequenceId": "0:0",
+  "modelVersion": 5,
+  "modelVersionParserMinimum": 5,
+  "retiredEntityUids": [],
+  "retiredIndexUids": [],
+  "retiredPropertyUids": [],
+  "retiredRelationUids": [],
+  "version": 1
+}
