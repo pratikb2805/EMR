@@ -56,7 +56,7 @@ class MyApp extends StatelessWidget {
       theme: themeData,
       color: Colors.white,
       title: 'EMR',
-      home: DoctorDashboards(),
+      home: SignUpForm(),
     );
   }
 }

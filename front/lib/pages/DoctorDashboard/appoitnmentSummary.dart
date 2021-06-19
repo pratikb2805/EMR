@@ -96,30 +96,43 @@ class _AppointmentSummaryState extends State<AppointmentSummary> {
                     // constraints: BoxConstraints.expand(),
                     width: MediaQuery.of(context).size.width * 0.9,
                     height: 500,
-                    child: SfCalendar(
-                      onTap: (CalendarTapDetails details) {
-                        if (details.targetElement ==
-                                CalendarElement.appointment ||
-                            details.targetElement == CalendarElement.agenda) {
-                          final Appointment appointmentDetails =
-                              details.appointments![0];
-                          showAppointmentAlert(appointmentDetails, context);
-                        }
-                      },
-                      controller: widget.controller,
-                      view: CalendarView.week,
-                      appointmentTextStyle: TextStyle(
-                        fontSize: 10.0,
-                        color: Colors.white,
-                        decoration: TextDecoration.none,
-                        fontStyle: FontStyle.normal,
-                        fontWeight: FontWeight.bold,
+                    child: SafeArea(
+                      child: SfCalendar(
+                        showCurrentTimeIndicator: true,
+                        showNavigationArrow: true,
+                        showDatePickerButton: true,
+                        timeSlotViewSettings: TimeSlotViewSettings(
+                            timeInterval: Duration(hours: 2),
+                            timeIntervalHeight: 80,
+                            timeIntervalWidth: 1000),
+                        onTap: (CalendarTapDetails details) {
+                          if (details.targetElement ==
+                                  CalendarElement.appointment ||
+                              details.targetElement ==
+                                  CalendarElement.viewHeader) {
+                            final Appointment appointmentDetails =
+                                details.appointments![0];
+                            showAppointmentAlert(appointmentDetails, context);
+                          } else if (details.targetElement ==
+                              CalendarElement.allDayPanel) {
+                            print('tapped on date');
+                          }
+                        },
+                        controller: widget.controller,
+                        view: CalendarView.schedule,
+                        appointmentTextStyle: TextStyle(
+                          fontSize: 10.0,
+                          color: Colors.white,
+                          decoration: TextDecoration.none,
+                          fontStyle: FontStyle.normal,
+                          fontWeight: FontWeight.bold,
+                        ),
+                        dataSource: AppointmentDataSource(meetings),
+                        monthViewSettings: MonthViewSettings(
+                            showAgenda: true,
+                            appointmentDisplayMode:
+                                MonthAppointmentDisplayMode.appointment),
                       ),
-                      dataSource: AppointmentDataSource(meetings),
-                      monthViewSettings: MonthViewSettings(
-                          showAgenda: true,
-                          appointmentDisplayMode:
-                              MonthAppointmentDisplayMode.appointment),
                     )),
               ),
             ],
