@@ -1,12 +1,30 @@
+import 'package:emr/pages/tmp.dart';
 import 'package:emr/pages/userProfile.dart';
 import 'package:flutter/material.dart';
 import 'pages/pages.dart';
+import 'package:emr/pages/temp2.dart';
 import 'package:desktop_window/desktop_window.dart';
+import 'package:path/path.dart' as p;
+import 'package:path_provider/path_provider.dart';
+import 'dart:io';
 
-// import 'package:desktop_window/desktop_window.dart';
+void createReportDir() async {
+  String loc = (await getApplicationSupportDirectory()).path;
+  String finalDir = p.join(loc, 'reports');
+  var dir = Directory(finalDir);
+  bool dirExists = await dir.exists();
+  if (dirExists) {
+    print(finalDir);
+    print("Exist");
+  } else {
+    dir.create(recursive: true);
+    print("Created the Directory");
+  }
+}
 
 int main() {
   // await DesktopWindow.setMinWindowSize(Size(600, 600));
+  createReportDir();
   runApp(MyApp());
   return 0;
 }
@@ -55,7 +73,8 @@ class MyApp extends StatelessWidget {
               letterSpacing: -0.05,
               fontWeight: FontWeight.w600),
         ));
-    return MaterialApp(theme: themeData, title: 'EMR', home: BodyWidget());
+    return MaterialApp(
+        theme: themeData, title: 'EMR', home: PatientprofileWidget());
   }
 }
 

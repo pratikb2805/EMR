@@ -1,3 +1,10 @@
 {
-    "dart.flutterSdkPath": "C:\\flutter"
+  "dart.flutterRunAdditionalArgs": ["--no-sound-null-safety"],
+  "dart.vmAdditionalArgs": ["--no-sound-null-safety"],
+  "C_Cpp.default.includePath": null,
+  "dart.flutterSdkPath": "C:\\flutter",
+  "files.associations": {
+    "*.js": "javascript",
+    "vector": "cpp"
+  }
 }

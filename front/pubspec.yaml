@@ -36,6 +36,17 @@ dependencies:
   charts_flutter: ^0.10.0
   syncfusion_flutter_calendar: ^19.1.67
   draw_graph: ^1.0.0
+  crypto: ^3.0.1
+  shared_preferences: ^2.0.6
+  provider: ^5.0.0
+  filesystem_picker: ^1.0.4
+  path_provider: ^2.0.2
+  form_validator: ^0.1.7
+  time_range_picker: ^2.0.1
+  open_document: ^1.0.2
+  dio: ^4.0.0
+  syncfusion_flutter_pdfviewer: ^19.1.69-beta
+  open_file: ^3.2.1
   filepicker_windows: ^2.0.0
 
 dev_dependencies:

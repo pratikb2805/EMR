@@ -1,13 +1,16 @@
 //import 'package:emr/db/patient.dart';
+import 'dart:io';
+import 'package:path/path.dart' as p;
 import 'package:flutter/material.dart';
+import 'package:open_file/open_file.dart';
+import 'package:path_provider/path_provider.dart';
 // import 'package:flutter_svg/flutter_svg.dart';
 import 'userProfile.dart';
 import 'pages.dart';
 
 //import 'package:objectbox/objectbox.dart';
 class PatientprofileWidget extends StatefulWidget {
-  final Patient patient;
-  PatientprofileWidget({Key? key, required this.patient});
+  PatientprofileWidget({Key? key});
   @override
   _PatientprofileWidgetState createState() => _PatientprofileWidgetState();
 }
@@ -56,8 +59,7 @@ class _PatientprofileWidgetState extends State<PatientprofileWidget> {
                       children: <Widget>[
                         Expanded(
                             child: LeftPart(
-                                name: widget.patient.companyName,
-                                width: width)),
+                                name: "Prathamesh  Wagh", width: width)),
                         Expanded(child: RightPart(width: width))
                       ],
                     );
@@ -66,7 +68,7 @@ class _PatientprofileWidgetState extends State<PatientprofileWidget> {
                     Expanded(
                         flex: 3,
                         child: LeftPart(
-                            name: widget.patient.companyName,
+                            name: "Prathamesh Wagh",
                             width: MediaQuery.of(context).size.width)),
                     Expanded(
                         flex: 7,
@@ -80,7 +82,7 @@ class _PatientprofileWidgetState extends State<PatientprofileWidget> {
               Expanded(
                   flex: 3,
                   child: LeftPart(
-                      name: widget.patient.companyName,
+                      name: "Prathamesh Wagh",
                       width: MediaQuery.of(context).size.width * 0.3)),
               Expanded(
                   flex: 7,
@@ -110,16 +112,16 @@ class LeftPart extends StatelessWidget {
         padding: const EdgeInsets.all(1.0),
         child: UserprofileWidget(profile: url),
       ),
-      Expanded(child: DataField(header: 'Name', value: name)),
-      Expanded(child: DataField(header: 'Age', value: '23')),
-      Expanded(
+      Container(child: DataField(header: 'Name', value: name)),
+      Container(child: DataField(header: 'Age', value: '23')),
+      Container(
           child:
               DataField(header: 'Date of first consult', value: '28/05/2001')),
-      Expanded(
+      Container(
         child: DataField(
             header: 'Date of most recent consult', value: '28/05/2001'),
       ),
-      Expanded(child: DataField(header: 'diagnosis', value: 'Scelorsis')),
+      Container(child: DataField(header: 'Diagnosis', value: 'Scelorsis')),
     ]);
   }
 }
@@ -142,7 +144,9 @@ class RightPart extends StatelessWidget {
               children: [
                 DescriptionWidget(),
                 SizedBox(height: 10),
-                ReportsWidget(),
+                ReportsWidget(
+                  id: "1",
+                ),
                 SizedBox(height: 20),
                 ChallengesWidger()
               ],
@@ -252,13 +256,59 @@ class ChallengesWidger extends StatelessWidget {
   }
 }
 
-class ReportsWidget extends StatelessWidget {
-  const ReportsWidget({
-    Key? key,
-  }) : super(key: key);
+class ReportsWidget extends StatefulWidget {
+  final String id;
+  ReportsWidget({Key? key, required this.id});
+  @override
+  _ReportsWidgetState createState() => _ReportsWidgetState();
+}
+
+class _ReportsWidgetState extends State<ReportsWidget> {
+  void initstate() {
+    super.initState();
+    _listFile();
+  }
+
+  List _files = [];
+
+  void _listFile() async {
+    String directory =
+        p.join((await getApplicationSupportDirectory()).path, "reports");
+    setState(() {
+      _files = Directory(directory).listSync();
+    });
+  }
+
+  List<Widget> _getReportList() {
+    List<Widget> reports = [];
+    if (_files.isEmpty) {
+      reports.add(Text(
+        "There are no reports yet",
+        style: TextStyle(
+            color: Color.fromRGBO(62, 62, 62, 1),
+            fontFamily: 'Roboto',
+            fontSize: 24,
+            letterSpacing: 0,
+            fontWeight: FontWeight.normal,
+            height: 1.5),
+      ));
+    } else {
+      for (int i = 0; i < _files.length; i++) {
+        reports.add(FileWidget(
+          fileLink: _files[i].path,
+          fileName: p.basename(_files[i].path),
+        ));
+        reports.add(SizedBox(
+          height: 8,
+        ));
+      }
+    }
+    return reports;
+  }
 
   @override
   Widget build(BuildContext context) {
+    _listFile();
     return Container(
       decoration: BoxDecoration(),
       padding: EdgeInsets.symmetric(horizontal: 30, vertical: 0),
@@ -296,13 +346,7 @@ class ReportsWidget extends StatelessWidget {
                   decoration: BoxDecoration(),
                   padding: EdgeInsets.symmetric(horizontal: 0, vertical: 0),
                   child: Column(children: <Widget>[
-                    FileWidget(fileName: 'Report1.pdf'),
-                    SizedBox(height: 8),
-                    FileWidget(fileName: 'Report1.pdf'),
-                    SizedBox(height: 8),
-                    FileWidget(fileName: 'Report1.pdf'),
-                    SizedBox(height: 8),
-                    FileWidget(fileName: 'Report1.pdf'),
+                    ..._getReportList(),
                   ]),
                 ),
                 SizedBox(width: 16)
@@ -320,6 +364,11 @@ class FileWidget extends StatelessWidget {
   const FileWidget({Key? key, this.fileLink = '', this.fileName = ''})
       : super(key: key);
 
+  Future<void> openFile() async {
+    final _result = await OpenFile.open(fileLink);
+    print(_result.message);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -328,22 +377,28 @@ class FileWidget extends StatelessWidget {
       padding: EdgeInsets.all(2),
       child: Container(
           child: ListTile(
-              leading: Icon(
-                Icons.circle,
-                size: 10.0,
-              ),
-              title: Text(
-                '$fileName',
-                textAlign: TextAlign.left,
-                overflow: TextOverflow.ellipsis,
-                style: TextStyle(
-                    color: Color.fromRGBO(62, 62, 62, 1),
-                    fontFamily: 'Roboto',
-                    fontSize: 24,
-                    letterSpacing: 0,
-                    fontWeight: FontWeight.normal,
-                    height: 1.5),
-              ))),
+        leading: Icon(
+          Icons.circle,
+          size: 10.0,
+        ),
+        title: Text(
+          '$fileName',
+          textAlign: TextAlign.left,
+          overflow: TextOverflow.ellipsis,
+          style: TextStyle(
+              color: Color.fromRGBO(62, 62, 62, 1),
+              fontFamily: 'Roboto',
+              fontSize: 24,
+              letterSpacing: 0,
+              fontWeight: FontWeight.normal,
+              height: 1.5),
+        ),
+        trailing: IconButton(
+            onPressed: () {
+              openFile();
+            },
+            icon: Icon(Icons.open_in_new)),
+      )),
     );
   }
 }
@@ -359,9 +414,9 @@ class DataFieldState extends State<DataField> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: MediaQuery.of(context).size.height * 0.2,
+      height: 75,
       decoration: BoxDecoration(),
-      padding: EdgeInsets.all(10.0),
+      padding: EdgeInsets.fromLTRB(20, 5, 0, 5),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         mainAxisAlignment: MainAxisAlignment.start,
@@ -376,7 +431,7 @@ class DataFieldState extends State<DataField> {
               fontSize: 18,
               letterSpacing:
                   0 /*percentages not used in flutter. defaulting to zero*/,
-              fontWeight: FontWeight.normal,
+              fontWeight: FontWeight.bold,
             ),
           ),
           Text(

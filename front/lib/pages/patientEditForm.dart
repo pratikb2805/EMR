@@ -12,8 +12,7 @@ class PatientEditForm extends StatefulWidget {
 }
 
 class _PatientEditFormState extends State<PatientEditForm> {
-  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-  File? path;
+  final GlobalKey<FormState> _patientEditFormKey = GlobalKey<FormState>();
   final TextEditingController _name = TextEditingController();
   final TextEditingController _age = TextEditingController();
   final TextEditingController _phoneNo = TextEditingController();
@@ -108,7 +107,7 @@ class _PatientEditFormState extends State<PatientEditForm> {
     return AlertDialog(
       scrollable: true,
       content: Form(
-          key: _formKey,
+          key: _patientEditFormKey,
           child: Container(
               width: 900,
               child: Column(
@@ -288,7 +287,7 @@ class _PatientEditFormState extends State<PatientEditForm> {
         Center(
           child: ElevatedButton(
             onPressed: () {
-              if (_formKey.currentState!.validate()) {
+              if (_patientEditFormKey.currentState!.validate()) {
                 // Do something like updating SharedPreferences or User Settings etc.
                 Navigator.of(context).pop();
               }

@@ -5,6 +5,8 @@
 list(APPEND FLUTTER_PLUGIN_LIST
   desktop_window
   objectbox_flutter_libs
+  open_document
+  url_launcher_windows
 )
 
 set(PLUGIN_BUNDLED_LIBRARIES)
