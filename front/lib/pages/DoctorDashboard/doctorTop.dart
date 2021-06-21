@@ -1,11 +1,14 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 
 class DoctorTopBar extends StatelessWidget {
   const DoctorTopBar({
     Key? key,
+    required this.name,
     required this.urll,
   }) : super(key: key);
-
+  final String name;
   final String urll;
 
   @override
@@ -29,14 +32,14 @@ class DoctorTopBar extends StatelessWidget {
                       backgroundColor: Colors.white,
                       child: CircleAvatar(
                         radius: 55,
-                        backgroundImage: NetworkImage(urll),
+                        backgroundImage: FileImage(File(urll)),
                       ),
                     )),
                 Positioned(
                   top: 200,
                   left: 160,
                   child: NamepositionWidget(
-                    name: 'Praik Bedre',
+                    name: '$name',
                     qualification: 'MD Mbbs',
                   ),
                 ),

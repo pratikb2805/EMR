@@ -129,7 +129,7 @@ class _AppointmentSummaryState extends State<AppointmentSummary> {
                         ),
                         dataSource: AppointmentDataSource(meetings),
                         monthViewSettings: MonthViewSettings(
-                            showAgenda: true,
+                            // showAgenda: true,
                             appointmentDisplayMode:
                                 MonthAppointmentDisplayMode.appointment),
                       ),

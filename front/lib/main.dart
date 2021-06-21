@@ -1,3 +1,4 @@
+import 'package:fluent_ui/fluent_ui.dart' as fluent;
 import 'package:flutter/material.dart';
 import 'pages/pages.dart';
 // import 'package:desktop_window/desktop_window.dart';
@@ -53,10 +54,9 @@ class MyApp extends StatelessWidget {
               fontWeight: FontWeight.w600),
         ));
     return MaterialApp(
-      theme: themeData,
-      color: Colors.white,
+      // theme: themeData,
       title: 'EMR',
-      home: SignUpForm(),
+      home: DoctorDashboards(),
     );
   }
 }

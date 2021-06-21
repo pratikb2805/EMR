@@ -3,6 +3,7 @@ import 'doctorTop.dart';
 import 'patientsList.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
 import 'appoitnmentSummary.dart';
+import 'package:emr/utils/util.dart';
 
 class DoctorDashboards extends StatefulWidget {
   DoctorDashboards({Key? key}) : super(key: key);
@@ -17,7 +18,16 @@ class _DoctorDashboardsState extends State<DoctorDashboards> {
   void initState() {
     super.initState();
     _calendarController.displayDate = DateTime.now();
+    Doctor.fromSharedPref().then((doctor) {
+      setState(() {
+        doc = doctor;
+        isloaded = true;
+      });
+    });
   }
+
+  bool isloaded = false;
+  late Doctor? doc;
 
   final urll =
       'https://cdn.fastly.picmonkey.com/contentful/h6goo9gw1hh6/2sNZtFAWOdP1lmQ33VwRN3/24e953b920a9cd0ff2e1d587742a2472/1-intro-photo-final.jpg?w=800&q=70';
@@ -26,111 +36,117 @@ class _DoctorDashboardsState extends State<DoctorDashboards> {
     return Container(
       width: MediaQuery.of(context).size.width,
       color: Colors.white,
-      child: SingleChildScrollView(
-          child: Column(
-        children: [
-          DoctorTopBar(urll: urll),
-          Container(
-            color: Colors.white,
-            padding: EdgeInsets.all(5.0),
-            child: Row(
-              mainAxisSize: MainAxisSize.max,
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.start,
+      child: !isloaded
+          ? null
+          : SingleChildScrollView(
+              child: Column(
               children: [
-                Expanded(
-                    flex: 10,
-                    child: Padding(
-                      padding: EdgeInsets.all(5),
-                      child: Container(
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Center(
-                                child: SingleChildScrollView(
-                                  scrollDirection: Axis.horizontal,
-                                  child: Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Padding(
-                                          padding: const EdgeInsets.all(8.0),
-                                          child: CardBadgeWidget(
-                                              icon: Icons.ballot,
-                                              name: 'Apointments')),
-                                      Padding(
-                                        padding: const EdgeInsets.all(8.0),
-                                        child: CardBadgeWidget(
-                                            icon: Icons.people,
-                                            name: 'Patients'),
-                                      ),
-                                      Padding(
-                                          padding: const EdgeInsets.all(8.0),
-                                          child: CardBadgeWidget(
-                                              icon: Icons.assignment,
-                                              name: 'Reports')),
-                                      Padding(
-                                        padding: const EdgeInsets.all(8.0),
-                                        child: CardBadgeWidget(
-                                            icon: Icons.notifications,
-                                            name: 'Notifications'),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                              AppointmentSummary(
-                                controller: _calendarController,
-                              )
-                            ],
-                          ),
-                          decoration: BoxDecoration(
-                            border: Border.all(
-                              color: Color.fromRGBO(0, 0, 0, 0.2),
-                              width: 0.5,
-                            ),
-                            borderRadius: BorderRadius.circular(10),
-                          )),
-                    )),
-                Expanded(
-                  flex: 4,
-                  child: Column(
+                DoctorTopBar(urll: doc!.profileImage, name: doc!.displayname),
+                Container(
+                  color: Colors.white,
+                  padding: EdgeInsets.all(5.0),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.max,
                     mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      ConstrainedBox(
-                          constraints:
-                              BoxConstraints(maxWidth: 300, minWidth: 100),
-                          child: PatientsList()),
-                      ConstrainedBox(
-                          constraints:
-                              BoxConstraints(maxWidth: 300, minWidth: 100),
+                      Expanded(
+                          flex: 10,
                           child: Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: SfCalendar(
-                              view: CalendarView.month,
-                              // allowViewNavigation: true,
-                              showDatePickerButton: true,
-                              todayHighlightColor: Colors.blueAccent,
-                              onTap: (CalendarTapDetails details) {
-                                setState(() {
-                                  if (_calendarController.displayDate !=
-                                      details.date)
-                                    _calendarController.displayDate =
-                                        details.date;
-                                });
-                              },
-                            ),
-                          ))
+                            padding: EdgeInsets.all(5),
+                            child: Container(
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Center(
+                                      child: SingleChildScrollView(
+                                        scrollDirection: Axis.horizontal,
+                                        child: Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            Padding(
+                                                padding:
+                                                    const EdgeInsets.all(8.0),
+                                                child: CardBadgeWidget(
+                                                    icon: Icons.ballot,
+                                                    name: 'Apointments')),
+                                            Padding(
+                                              padding:
+                                                  const EdgeInsets.all(8.0),
+                                              child: CardBadgeWidget(
+                                                  icon: Icons.people,
+                                                  name: 'Patients'),
+                                            ),
+                                            Padding(
+                                                padding:
+                                                    const EdgeInsets.all(8.0),
+                                                child: CardBadgeWidget(
+                                                    icon: Icons.assignment,
+                                                    name: 'Reports')),
+                                            Padding(
+                                              padding:
+                                                  const EdgeInsets.all(8.0),
+                                              child: CardBadgeWidget(
+                                                  icon: Icons.notifications,
+                                                  name: 'Notifications'),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                    AppointmentSummary(
+                                      controller: _calendarController,
+                                    )
+                                  ],
+                                ),
+                                decoration: BoxDecoration(
+                                  border: Border.all(
+                                    color: Color.fromRGBO(0, 0, 0, 0.2),
+                                    width: 0.5,
+                                  ),
+                                  borderRadius: BorderRadius.circular(10),
+                                )),
+                          )),
+                      Expanded(
+                        flex: 4,
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            ConstrainedBox(
+                                constraints: BoxConstraints(
+                                  maxWidth: 300,
+                                ),
+                                child: SafeArea(child: PatientsList())),
+                            ConstrainedBox(
+                                constraints: BoxConstraints(maxWidth: 300),
+                                child: Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: SfCalendar(
+                                    view: CalendarView.month,
+                                    // allowViewNavigation: true,
+                                    showDatePickerButton: true,
+                                    todayHighlightColor: Colors.blueAccent,
+                                    onTap: (CalendarTapDetails details) {
+                                      setState(() {
+                                        if (_calendarController.displayDate !=
+                                            details.date)
+                                          _calendarController.displayDate =
+                                              details.date;
+                                      });
+                                    },
+                                  ),
+                                ))
+                          ],
+                        ),
+                      ),
                     ],
                   ),
-                ),
+                )
               ],
-            ),
-          )
-        ],
-      )),
+            )),
     );
   }
 }

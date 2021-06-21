@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 // import 'package:form_validator/form_validator.dart';
-import 'profilePhotopicker.dart';
 import 'form1.dart';
 
 class SignUpForm extends StatefulWidget {
