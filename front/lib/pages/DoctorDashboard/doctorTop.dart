@@ -17,7 +17,7 @@ class DoctorTopBar extends StatelessWidget {
       color: Colors.white,
       // decoration: BoxDecoration(color: Colors.white10),
       width: MediaQuery.of(context).size.width,
-      height: 300,
+      height: 400,
       child: Padding(
           padding: EdgeInsets.all(5.0),
           child: Container(
@@ -25,19 +25,19 @@ class DoctorTopBar extends StatelessWidget {
               children: <Widget>[
                 HeaderbgWidget(),
                 Positioned(
-                    top: 170,
-                    left: 50,
+                    top: 150,
+                    left: 30,
                     child: CircleAvatar(
-                      radius: 60,
+                      radius: 80,
                       backgroundColor: Colors.white,
                       child: CircleAvatar(
-                        radius: 55,
+                        radius: 70,
                         backgroundImage: FileImage(File(urll)),
                       ),
                     )),
                 Positioned(
                   top: 200,
-                  left: 160,
+                  left: 180,
                   child: NamepositionWidget(
                     name: '$name',
                     qualification: 'MD Mbbs',

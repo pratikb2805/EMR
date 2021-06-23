@@ -8,56 +8,11 @@ import 'package:objectbox/flatbuffers/flat_buffers.dart' as fb;
 import 'package:objectbox/internal.dart'; // generated code can access "internal" functionality
 import 'package:objectbox/objectbox.dart';
 
-import 'db/doctor.dart';
 import 'db/patient.dart';
 
 export 'package:objectbox/objectbox.dart'; // so that callers only have to import this file
 
 final _entities = <ModelEntity>[
-  ModelEntity(
-      id: const IdUid(1, 2105980254126945334),
-      name: 'Doctor',
-      lastPropertyId: const IdUid(7, 5990175068168941742),
-      flags: 0,
-      properties: <ModelProperty>[
-        ModelProperty(
-            id: const IdUid(1, 8929368112691541792),
-            name: 'id',
-            type: 6,
-            flags: 1),
-        ModelProperty(
-            id: const IdUid(2, 4596754707230663518),
-            name: 'name',
-            type: 9,
-            flags: 0),
-        ModelProperty(
-            id: const IdUid(3, 6719057657127873854),
-            name: 'qualifications',
-            type: 30,
-            flags: 0),
-        ModelProperty(
-            id: const IdUid(4, 4021103401215910054),
-            name: 'dateJoined',
-            type: 10,
-            flags: 0),
-        ModelProperty(
-            id: const IdUid(5, 7408608506485051253),
-            name: 'address',
-            type: 9,
-            flags: 0),
-        ModelProperty(
-            id: const IdUid(6, 2849318786694514610),
-            name: 'email',
-            type: 9,
-            flags: 0),
-        ModelProperty(
-            id: const IdUid(7, 5990175068168941742),
-            name: 'phone',
-            type: 9,
-            flags: 0)
-      ],
-      relations: <ModelRelation>[],
-      backlinks: <ModelBacklink>[]),
   ModelEntity(
       id: const IdUid(2, 6691604221011885210),
       name: 'Appointment',
@@ -275,71 +230,25 @@ ModelDefinition getObjectBoxModel() {
       lastIndexId: const IdUid(4, 6183435405128252369),
       lastRelationId: const IdUid(0, 0),
       lastSequenceId: const IdUid(0, 0),
-      retiredEntityUids: const [],
+      retiredEntityUids: const [2105980254126945334],
       retiredIndexUids: const [],
-      retiredPropertyUids: const [],
+      retiredPropertyUids: const [
+        8929368112691541792,
+        4596754707230663518,
+        6719057657127873854,
+        4021103401215910054,
+        7408608506485051253,
+        2849318786694514610,
+        5990175068168941742
+      ],
       retiredRelationUids: const [],
       modelVersion: 5,
       modelVersionParserMinimum: 5,
       version: 1);
 
   final bindings = <Type, EntityDefinition>{
-    Doctor: EntityDefinition<Doctor>(
-        model: _entities[0],
-        toOneRelations: (Doctor object) => [],
-        toManyRelations: (Doctor object) => {},
-        getId: (Doctor object) => object.id,
-        setId: (Doctor object, int id) {
-          object.id = id;
-        },
-        objectToFB: (Doctor object, fb.Builder fbb) {
-          final nameOffset =
-              object.name == null ? null : fbb.writeString(object.name!);
-          final qualificationsOffset = object.qualifications == null
-              ? null
-              : fbb.writeList(object.qualifications!
-                  .map(fbb.writeString)
-                  .toList(growable: false));
-          final addressOffset =
-              object.address == null ? null : fbb.writeString(object.address!);
-          final emailOffset = fbb.writeString(object.email);
-          final phoneOffset = fbb.writeString(object.phone);
-          fbb.startTable(8);
-          fbb.addInt64(0, object.id);
-          fbb.addOffset(1, nameOffset);
-          fbb.addOffset(2, qualificationsOffset);
-          fbb.addInt64(3, object.dateJoined?.millisecondsSinceEpoch);
-          fbb.addOffset(4, addressOffset);
-          fbb.addOffset(5, emailOffset);
-          fbb.addOffset(6, phoneOffset);
-          fbb.finish(fbb.endTable());
-          return object.id;
-        },
-        objectFromFB: (Store store, ByteData fbData) {
-          final buffer = fb.BufferContext(fbData);
-          final rootOffset = buffer.derefObject(0);
-          final dateJoinedValue =
-              const fb.Int64Reader().vTableGetNullable(buffer, rootOffset, 10);
-          final object = Doctor(
-              name: const fb.StringReader()
-                  .vTableGetNullable(buffer, rootOffset, 6),
-              address: const fb.StringReader()
-                  .vTableGetNullable(buffer, rootOffset, 12),
-              dateJoined: dateJoinedValue == null
-                  ? null
-                  : DateTime.fromMillisecondsSinceEpoch(dateJoinedValue),
-              email:
-                  const fb.StringReader().vTableGet(buffer, rootOffset, 14, ''),
-              phone:
-                  const fb.StringReader().vTableGet(buffer, rootOffset, 16, ''))
-            ..id = const fb.Int64Reader().vTableGet(buffer, rootOffset, 4, 0)
-            ..qualifications = const EagerListReader<String>(fb.StringReader())
-                .vTableGetNullable(buffer, rootOffset, 8);
-
-          return object;
-        }),
     Appointment: EntityDefinition<Appointment>(
-        model: _entities[1],
+        model: _entities[0],
         toOneRelations: (Appointment object) => [object.patient],
         toManyRelations: (Appointment object) => {},
         getId: (Appointment object) => object.id,
@@ -389,7 +298,7 @@ ModelDefinition getObjectBoxModel() {
           return object;
         }),
     Medicine: EntityDefinition<Medicine>(
-        model: _entities[2],
+        model: _entities[1],
         toOneRelations: (Medicine object) => [],
         toManyRelations: (Medicine object) => {},
         getId: (Medicine object) => object.id,
@@ -420,7 +329,7 @@ ModelDefinition getObjectBoxModel() {
           return object;
         }),
     Patient: EntityDefinition<Patient>(
-        model: _entities[3],
+        model: _entities[2],
         toOneRelations: (Patient object) => [],
         toManyRelations: (Patient object) => {},
         getId: (Patient object) => object.id,
@@ -470,7 +379,7 @@ ModelDefinition getObjectBoxModel() {
           return object;
         }),
     PatientFile: EntityDefinition<PatientFile>(
-        model: _entities[4],
+        model: _entities[3],
         toOneRelations: (PatientFile object) => [object.patient],
         toManyRelations: (PatientFile object) => {},
         getId: (PatientFile object) => object.id,
@@ -510,7 +419,7 @@ ModelDefinition getObjectBoxModel() {
           return object;
         }),
     Prescription: EntityDefinition<Prescription>(
-        model: _entities[5],
+        model: _entities[4],
         toOneRelations: (Prescription object) => [object.patient],
         toManyRelations: (Prescription object) => {},
         getId: (Prescription object) => object.id,
@@ -536,7 +445,7 @@ ModelDefinition getObjectBoxModel() {
           return object;
         }),
     PrescriptionEntity: EntityDefinition<PrescriptionEntity>(
-        model: _entities[6],
+        model: _entities[5],
         toOneRelations: (PrescriptionEntity object) => [object.medicine],
         toManyRelations: (PrescriptionEntity object) => {},
         getId: (PrescriptionEntity object) => object.id,
@@ -569,157 +478,130 @@ ModelDefinition getObjectBoxModel() {
   return ModelDefinition(model, bindings);
 }
 
-/// [Doctor] entity fields to define ObjectBox queries.
-class Doctor_ {
-  /// see [Doctor.id]
-  static final id = QueryIntegerProperty<Doctor>(_entities[0].properties[0]);
-
-  /// see [Doctor.name]
-  static final name = QueryStringProperty<Doctor>(_entities[0].properties[1]);
-
-  /// see [Doctor.qualifications]
-  static final qualifications =
-      QueryStringVectorProperty<Doctor>(_entities[0].properties[2]);
-
-  /// see [Doctor.dateJoined]
-  static final dateJoined =
-      QueryIntegerProperty<Doctor>(_entities[0].properties[3]);
-
-  /// see [Doctor.address]
-  static final address =
-      QueryStringProperty<Doctor>(_entities[0].properties[4]);
-
-  /// see [Doctor.email]
-  static final email = QueryStringProperty<Doctor>(_entities[0].properties[5]);
-
-  /// see [Doctor.phone]
-  static final phone = QueryStringProperty<Doctor>(_entities[0].properties[6]);
-}
-
 /// [Appointment] entity fields to define ObjectBox queries.
 class Appointment_ {
   /// see [Appointment.id]
   static final id =
-      QueryIntegerProperty<Appointment>(_entities[1].properties[0]);
+      QueryIntegerProperty<Appointment>(_entities[0].properties[0]);
 
   /// see [Appointment.patient]
   static final patient =
-      QueryRelationProperty<Appointment, Patient>(_entities[1].properties[1]);
+      QueryRelationProperty<Appointment, Patient>(_entities[0].properties[1]);
 
   /// see [Appointment.start]
   static final start =
-      QueryIntegerProperty<Appointment>(_entities[1].properties[2]);
+      QueryIntegerProperty<Appointment>(_entities[0].properties[2]);
 
   /// see [Appointment.end]
   static final end =
-      QueryIntegerProperty<Appointment>(_entities[1].properties[3]);
+      QueryIntegerProperty<Appointment>(_entities[0].properties[3]);
 
   /// see [Appointment.description]
   static final description =
-      QueryStringProperty<Appointment>(_entities[1].properties[4]);
+      QueryStringProperty<Appointment>(_entities[0].properties[4]);
 
   /// see [Appointment.name]
   static final name =
-      QueryStringProperty<Appointment>(_entities[1].properties[5]);
+      QueryStringProperty<Appointment>(_entities[0].properties[5]);
 
   /// see [Appointment.phone]
   static final phone =
-      QueryStringProperty<Appointment>(_entities[1].properties[6]);
+      QueryStringProperty<Appointment>(_entities[0].properties[6]);
 
   /// see [Appointment.email]
   static final email =
-      QueryStringProperty<Appointment>(_entities[1].properties[7]);
+      QueryStringProperty<Appointment>(_entities[0].properties[7]);
 }
 
 /// [Medicine] entity fields to define ObjectBox queries.
 class Medicine_ {
   /// see [Medicine.id]
-  static final id = QueryIntegerProperty<Medicine>(_entities[2].properties[0]);
+  static final id = QueryIntegerProperty<Medicine>(_entities[1].properties[0]);
 
   /// see [Medicine.name]
-  static final name = QueryStringProperty<Medicine>(_entities[2].properties[1]);
+  static final name = QueryStringProperty<Medicine>(_entities[1].properties[1]);
 
   /// see [Medicine.provider]
   static final provider =
-      QueryStringProperty<Medicine>(_entities[2].properties[2]);
+      QueryStringProperty<Medicine>(_entities[1].properties[2]);
 }
 
 /// [Patient] entity fields to define ObjectBox queries.
 class Patient_ {
   /// see [Patient.id]
-  static final id = QueryIntegerProperty<Patient>(_entities[3].properties[0]);
+  static final id = QueryIntegerProperty<Patient>(_entities[2].properties[0]);
 
   /// see [Patient.name]
-  static final name = QueryStringProperty<Patient>(_entities[3].properties[1]);
+  static final name = QueryStringProperty<Patient>(_entities[2].properties[1]);
 
   /// see [Patient.address]
   static final address =
-      QueryStringProperty<Patient>(_entities[3].properties[2]);
+      QueryStringProperty<Patient>(_entities[2].properties[2]);
 
   /// see [Patient.email]
-  static final email = QueryStringProperty<Patient>(_entities[3].properties[3]);
+  static final email = QueryStringProperty<Patient>(_entities[2].properties[3]);
 
   /// see [Patient.phone]
-  static final phone = QueryStringProperty<Patient>(_entities[3].properties[4]);
+  static final phone = QueryStringProperty<Patient>(_entities[2].properties[4]);
 
   /// see [Patient.dateFirstConsult]
   static final dateFirstConsult =
-      QueryIntegerProperty<Patient>(_entities[3].properties[5]);
+      QueryIntegerProperty<Patient>(_entities[2].properties[5]);
 
   /// see [Patient.dateMostRecentConsult]
   static final dateMostRecentConsult =
-      QueryIntegerProperty<Patient>(_entities[3].properties[6]);
+      QueryIntegerProperty<Patient>(_entities[2].properties[6]);
 
   /// see [Patient.diagnosis]
   static final diagnosis =
-      QueryStringProperty<Patient>(_entities[3].properties[7]);
+      QueryStringProperty<Patient>(_entities[2].properties[7]);
 }
 
 /// [PatientFile] entity fields to define ObjectBox queries.
 class PatientFile_ {
   /// see [PatientFile.name]
   static final name =
-      QueryStringProperty<PatientFile>(_entities[4].properties[0]);
+      QueryStringProperty<PatientFile>(_entities[3].properties[0]);
 
   /// see [PatientFile.id]
   static final id =
-      QueryIntegerProperty<PatientFile>(_entities[4].properties[1]);
+      QueryIntegerProperty<PatientFile>(_entities[3].properties[1]);
 
   /// see [PatientFile.path]
   static final path =
-      QueryStringProperty<PatientFile>(_entities[4].properties[2]);
+      QueryStringProperty<PatientFile>(_entities[3].properties[2]);
 
   /// see [PatientFile.description]
   static final description =
-      QueryStringProperty<PatientFile>(_entities[4].properties[3]);
+      QueryStringProperty<PatientFile>(_entities[3].properties[3]);
 
   /// see [PatientFile.patient]
   static final patient =
-      QueryRelationProperty<PatientFile, Patient>(_entities[4].properties[4]);
+      QueryRelationProperty<PatientFile, Patient>(_entities[3].properties[4]);
 }
 
 /// [Prescription] entity fields to define ObjectBox queries.
 class Prescription_ {
   /// see [Prescription.id]
   static final id =
-      QueryIntegerProperty<Prescription>(_entities[5].properties[0]);
+      QueryIntegerProperty<Prescription>(_entities[4].properties[0]);
 
   /// see [Prescription.patient]
   static final patient =
-      QueryRelationProperty<Prescription, Patient>(_entities[5].properties[1]);
+      QueryRelationProperty<Prescription, Patient>(_entities[4].properties[1]);
 }
 
 /// [PrescriptionEntity] entity fields to define ObjectBox queries.
 class PrescriptionEntity_ {
   /// see [PrescriptionEntity.id]
   static final id =
-      QueryIntegerProperty<PrescriptionEntity>(_entities[6].properties[0]);
+      QueryIntegerProperty<PrescriptionEntity>(_entities[5].properties[0]);
 
   /// see [PrescriptionEntity.medicine]
   static final medicine = QueryRelationProperty<PrescriptionEntity, Medicine>(
-      _entities[6].properties[1]);
+      _entities[5].properties[1]);
 
   /// see [PrescriptionEntity.quantity]
   static final quantity =
-      QueryIntegerProperty<PrescriptionEntity>(_entities[6].properties[2]);
+      QueryIntegerProperty<PrescriptionEntity>(_entities[5].properties[2]);
 }
