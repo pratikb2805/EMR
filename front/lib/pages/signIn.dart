@@ -1,4 +1,10 @@
+import 'package:emr/pages/form1.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:emr/utils/util.dart' as utils;
+import 'package:fluent_ui/fluent_ui.dart' as fluent;
+
+import 'dart:io';
 
 class SignIn extends StatefulWidget {
   @override
@@ -6,6 +12,29 @@ class SignIn extends StatefulWidget {
 }
 
 class _SignInState extends State<SignIn> {
+  String name = ' ';
+  bool isloaded = false;
+  String imagepath = '';
+  final password = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    getData();
+  }
+
+  Future<void> getData() async {
+    var doc = await utils.Doctor.fromSharedPref();
+    var path = await utils.Doctor.getImagePath();
+    if (doc != null) {
+      setState(() {
+        name = doc.displayname;
+        imagepath = path;
+        isloaded = true;
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext con) {
     return Scaffold(
@@ -23,121 +52,99 @@ class _SignInState extends State<SignIn> {
                 child: Container(
                     width: 200,
                     height: 150,
-                    child: Icon(
-                      Icons.account_circle_outlined,
-                      size: 100.0,
-                      color: Colors.black,
-                    )),
+                    child: isloaded
+                        ? CircleAvatar(
+                            radius: 50,
+                            backgroundImage: FileImage(File(imagepath)),
+                          )
+                        : Icon(
+                            Icons.account_circle_outlined,
+                            size: 100.0,
+                            color: Colors.black,
+                          )),
               ),
             ),
             Padding(
               padding: const EdgeInsets.all(60.0),
-              child: SignInFOrm(),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+                    child: Center(
+                      child: Container(
+                        constraints: BoxConstraints(maxWidth: 500),
+                        width: MediaQuery.of(context).size.width * .50,
+                        child: Text(name,
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              color: Colors.black,
+                              decoration: TextDecoration.none,
+                              fontSize: 32,
+                            )),
+                      ),
+                    ),
+                  ),
+                  Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 8, vertical: 16),
+                    child: Center(
+                      child: Container(
+                        constraints: BoxConstraints(maxWidth: 500),
+                        width: MediaQuery.of(context).size.width * 0.50,
+                        child: PasswordField(
+                          text: 'Password',
+                          controller: password,
+                        ),
+                      ),
+                    ),
+                  ),
+                  Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 8, vertical: 16),
+                    child: Center(
+                      child: Container(
+                          constraints: BoxConstraints(maxWidth: 500),
+                          width: MediaQuery.of(context).size.width * 0.50,
+                          child: CupertinoButton.filled(
+                            // tooltip: '',
+                            onPressed: () async {
+                              var status = await utils.Doctor.verifyPassword(
+                                  password.text);
+                              if (!status) {
+                                showDialog(
+                                    context: context,
+                                    builder: (context) {
+                                      return AlertDialog(
+                                        content: Text('Error'),
+                                      );
+                                    });
+                              } else
+                                showDialog(
+                                    context: context,
+                                    builder: (context) {
+                                      return AlertDialog(
+                                        content: Text('Success'),
+                                      );
+                                    });
+                            },
+                            child: Container(
+                                height: 50.0,
+                                child: Row(
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Text('Sign In'),
+                                  ],
+                                )),
+                          )),
+                    ),
+                  )
+                ],
+              ),
             )
           ],
         ),
       ),
-    );
-  }
-}
-
-class SignInFOrm extends StatefulWidget {
-  @override
-  SignInFOrmState createState() {
-    return SignInFOrmState();
-  }
-}
-
-class SignInFOrmState extends State<SignInFOrm> {
-  final _username = TextEditingController();
-  final password = TextEditingController();
-
-  @override
-  void dispose() {
-    // Clean up the controller when the widget is removed from the
-    // widget tree.
-    _username.dispose();
-    password.dispose();
-    super.dispose();
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    _username.addListener(printLatest);
-    password.addListener(printLatest);
-  }
-
-  void printLatest() {
-    print('UserName : ${_username.text}\nPassword :  ${password.text}');
-  }
-
-  @override
-  Widget build(BuildContext con) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: <Widget>[
-        Padding(
-          padding: EdgeInsets.symmetric(horizontal: 8, vertical: 16),
-          child: Center(
-            child: Container(
-              constraints: BoxConstraints(maxWidth: 500),
-              width: MediaQuery.of(context).size.width * .50,
-              child: TextFormField(
-                controller: _username,
-                decoration: InputDecoration(
-                    border: OutlineInputBorder(),
-                    hintText: 'Enter a user-name',
-                    labelText: 'User Name'),
-              ),
-            ),
-          ),
-        ),
-        Padding(
-          padding: EdgeInsets.symmetric(horizontal: 8, vertical: 16),
-          child: Center(
-            child: Container(
-              constraints: BoxConstraints(maxWidth: 500),
-              width: MediaQuery.of(context).size.width * 0.50,
-              child: TextFormField(
-                controller: password,
-                obscureText: true,
-                decoration: InputDecoration(
-                    border: OutlineInputBorder(),
-                    hintText: 'Enter password',
-                    labelText: 'Password'),
-              ),
-            ),
-          ),
-        ),
-        Padding(
-          padding: EdgeInsets.symmetric(horizontal: 8, vertical: 16),
-          child: Center(
-            child: Container(
-                constraints: BoxConstraints(maxWidth: 500),
-                width: MediaQuery.of(context).size.width * 0.50,
-                child: ElevatedButton(
-                  // tooltip: '',
-                  onPressed: () => {
-                    showDialog(
-                        context: context,
-                        builder: (context) {
-                          return AlertDialog(content: Text(_username.text));
-                        })
-                  },
-                  child: Container(
-                      height: 50.0,
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Text('Sign In'),
-                        ],
-                      )),
-                )),
-          ),
-        )
-      ],
     );
   }
 }

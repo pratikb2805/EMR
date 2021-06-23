@@ -1,13 +1,23 @@
+import 'package:emr/utils/util.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'profilePhotopicker.dart';
 
+//ignore: must_be_immutable
 class DetailsForm extends StatefulWidget {
   DetailsForm({Key? key}) : super(key: key);
   @override
   _DetailsFormState createState() => _DetailsFormState();
 }
 
-class _DetailsFormState extends State<DetailsForm> {
+class _DetailsFormState extends State<DetailsForm>
+    with AutomaticKeepAliveClientMixin {
+  final ProfilePhotoPicker profilePhotoPicker = ProfilePhotoPicker();
+
+  // late ProfilePhotoPicker profilePhotoPicker =
+  @override
+  bool get wantKeepAlive => true;
+
   final firstName = TextEditingController();
   final lastName = TextEditingController();
   final displayName = TextEditingController();
@@ -18,33 +28,40 @@ class _DetailsFormState extends State<DetailsForm> {
   final emailController = TextEditingController();
   final formkey = GlobalKey<FormState>();
   String? validator(String text) {
-    final nameRegExp =
-        new RegExp(r"^\s*([A-Za-z]{1,}([\.,] |[-']| ))+[A-Za-z]+\.?\s*$");
+    final nameRegExp = new RegExp(r"^[A-Z][a-z]{1,15}$");
     if (nameRegExp.hasMatch(text)) return null;
-    return 'f';
-  }
-
-  Route _createRoute() {
-    return PageRouteBuilder(
-        transitionsBuilder: (context, animation, secondaryAnimation, child) {
-          var begin = Offset(1.0, 0.0);
-          var end = Offset.zero;
-          var tween = Tween(begin: begin, end: end);
-          var offsetAnimation = animation.drive(tween);
-          return SlideTransition(position: offsetAnimation, child: child);
-        },
-        pageBuilder: (context, animation, secondaryAnimation) =>
-            ProfilePhotoPicker());
-  }
-
-  String? emailValidate(String value) {
-    if (RegExp(
-            r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
-        .hasMatch(value)) return null;
-    return ' ';
+    return 'Please provide a valid name';
   }
 
   @override
+  void initState() {
+    super.initState();
+    // OpenFile.open(r"C:\Users\Pratik Bedre\Downloads\ecell response (1).xlsx");
+  }
+
+  Future<void> saveUser() async {
+    var _user = Doctor(
+        firstName: firstName.text,
+        lastName: lastName.text,
+        displayname: displayName.text,
+        email: emailController.text,
+        phone: phoneController.text,
+        address: address.text,
+        dateJoined: DateTime.now());
+    await _user.saveToSharedPrefs();
+    await Doctor.setPassword(pass.text);
+  }
+
+  String? emailValidate(String value) {
+    if (value.isEmpty) return 'E-mail cant be empty';
+    if (RegExp(
+            r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
+        .hasMatch(value)) return null;
+    return 'Please enter valid email address';
+  }
+
+  @override
+  @mustCallSuper
   Widget build(BuildContext context) {
     var form = Form(
       key: formkey,
@@ -92,12 +109,7 @@ class _DetailsFormState extends State<DetailsForm> {
                   flex: 5,
                   child: FormField(
                       validator: (value) => this.validator(value),
-                      onchange: (value) {
-                        setState(() {
-                          displayName.text =
-                              "Dr. ${firstName.text} ${lastName.text}";
-                        });
-                      },
+                      onchange: updateDisplayName,
                       controller: firstName,
                       labe: "First Name",
                       hint: "Your first Name here"),
@@ -107,12 +119,7 @@ class _DetailsFormState extends State<DetailsForm> {
                   // last name
                   child: FormField(
                     validator: (value) => this.validator(value),
-                    onchange: (value) {
-                      setState(() {
-                        displayName.text =
-                            "Dr. ${firstName.text} ${lastName.text}";
-                      });
-                    },
+                    onchange: updateDisplayName,
                     controller: lastName,
                     labe: "Last Name",
                     hint: "Your last name",
@@ -121,7 +128,7 @@ class _DetailsFormState extends State<DetailsForm> {
               ],
             ),
             FormField(
-              validator: (value) => this.validator(value),
+              validator: (value) => null,
               onchange: (value) => {},
               controller: displayName,
               labe: "Display Name",
@@ -139,7 +146,7 @@ class _DetailsFormState extends State<DetailsForm> {
             Row(
               children: [
                 Expanded(
-                  // first name
+                  // email
                   flex: 5,
                   child: FormField(
                       icon: Icons.email_outlined,
@@ -154,7 +161,15 @@ class _DetailsFormState extends State<DetailsForm> {
                   // last name
                   child: FormField(
                     icon: Icons.phone_iphone,
-                    validator: (value) => null,
+                    validator: (value) {
+                      var regExp = new RegExp(r'(^(?:[+0]9)?[0-9]{10,12}$)');
+                      if (value.length == 0) {
+                        return 'Mobile number cant be empty';
+                      } else if (!regExp.hasMatch(value)) {
+                        return 'Please enter valid mobile number';
+                      }
+                      return null;
+                    },
                     onchange: (value) {},
                     controller: phoneController,
                     labe: "Phone No.",
@@ -193,7 +208,36 @@ class _DetailsFormState extends State<DetailsForm> {
                   child: InkWell(
                     splashColor: Colors.redAccent, // Splash color
                     onTap: () {
-                      Navigator.of(context).push(_createRoute());
+                      if (formkey.currentState!.validate()) {
+                        if (pass.text != passR.text) {
+                          showDialog(
+                              context: context,
+                              builder: (_) {
+                                return CupertinoAlertDialog(
+                                  title: Text('Passwords dont match'),
+                                  content: Text(
+                                      'Please make sure both passwords are same'),
+                                );
+                              });
+                        } else {
+                          saveUser();
+                          Navigator.of(context)
+                              .push(MaterialPageRoute(builder: (_) {
+                            return profilePhotoPicker;
+                          }));
+                        }
+
+                        // Navigator.of(context).push(_createRoute());
+                      } else {
+                        showDialog(
+                            context: context,
+                            builder: (_) {
+                              return CupertinoAlertDialog(
+                                title: Text('INVALID DATA'),
+                                content: Text('Please fill valid form'),
+                              );
+                            });
+                      }
                     },
                     child: SizedBox(
                         width: 56,
@@ -216,6 +260,12 @@ class _DetailsFormState extends State<DetailsForm> {
       child: form,
     ));
   }
+
+  updateDisplayName(value) {
+    setState(() {
+      displayName.text = "Dr. ${firstName.text} ${lastName.text}";
+    });
+  }
 }
 
 class PasswordField extends StatefulWidget {
@@ -237,6 +287,7 @@ class _PasswordFieldState extends State<PasswordField> {
         padding: EdgeInsets.all(10.0),
         child: Material(
           child: TextFormField(
+            textAlign: TextAlign.center,
             enableSuggestions: false,
             autocorrect: false,
             obscureText: !visible,
@@ -286,7 +337,7 @@ class FormField extends StatefulWidget {
   final icon;
   FormField(
       {Key? key,
-      this.icon = null,
+      this.icon,
       @required this.validator,
       @required this.onchange,
       @required this.controller,

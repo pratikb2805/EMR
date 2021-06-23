@@ -13,27 +13,51 @@ class Temp2 extends StatefulWidget {
 }
 
 class _Temp2State extends State<Temp2> {
-  void _listFile() async {
-    final _result =
-        await OpenFile.open('C:\\Users\\lenovo\\Downloads\\CSI101_End.pdf');
-    print(_result.message);
+  String filePath = '';
+  Future<void> copyFile(File result) async {
+    File newFile = await result.copy('D:\\Projects\\copy\\report1.pdf');
   }
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      home: Scaffold(
-        appBar: AppBar(
-          title: const Text('Plugin example app'),
-        ),
-        body: Center(
-            child: ElevatedButton(
-          child: Text("Open"),
-          onPressed: () {
-            _listFile();
-          },
-        )),
+        home: Scaffold(
+      appBar: AppBar(
+        title: const Text('Plugin example app'),
       ),
-    );
+      body: Center(
+          child: Container(
+        color: Colors.red,
+        padding: EdgeInsets.all(5),
+        child: TextButton.icon(
+          icon: Icon(Icons.add_rounded),
+          label: Text("Add Report"),
+          onPressed: () {
+            final file = OpenFilePicker()
+              ..filterSpecification = {
+                'PDF Files': '*.pdf',
+                'WORD Files (*.docx)': '*.docx',
+                'EXCEL Files (*.xlsx)': '*.xlsx',
+                'CSV Files (*.csv)': '*.csv',
+                'All Files': '*.pdf;*.docx;*csv;*.xlsx'
+              }
+              ..defaultFilterIndex = 0
+              ..defaultExtension = 'doc'
+              ..title = 'Select an File';
+
+            final result = file.getFile();
+            if (result != null) {
+              print(result.path);
+              copyFile(result);
+              setState(() {
+                filePath = result.path;
+              });
+            } else {
+              print('error');
+            }
+          },
+        ),
+      )),
+    ));
   }
 }

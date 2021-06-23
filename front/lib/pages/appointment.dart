@@ -1,12 +1,13 @@
+import 'dart:async';
 import 'dart:math';
 import 'package:emr/db/patient.dart';
 import 'package:emr/objectbox.g.dart';
 import 'package:emr/pages/pages.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'dart:convert';
-import 'package:flutter/services.dart';
-import 'package:emr/db/models.dart';
+import 'package:emr/db/store.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:path/path.dart';
 
 class AppointmentList extends StatefulWidget {
   @override
@@ -14,6 +15,31 @@ class AppointmentList extends StatefulWidget {
 }
 
 class _AppointmentListState extends State<AppointmentList> {
+  final _listController = StreamController<List<Appointment>>(sync: true);
+  late final ViewModel _vm;
+  bool hasBeenInitialized = false;
+
+  @override
+  void initState() {
+    super.initState();
+    getApplicationSupportDirectory().then((dir) {
+      _vm = ViewModel(dir);
+
+      setState(() {
+        _listController
+            .addStream(_vm.queryAppointmentStream.map((q) => q.find()));
+        hasBeenInitialized = true;
+      });
+    });
+  }
+
+  @override
+  void dispose() {
+    _listController.close();
+    _vm.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -51,9 +77,24 @@ class _AppointmentListState extends State<AppointmentList> {
                     label: Text("Add Appointment",
                         style: TextStyle(color: Colors.white))))
           ]),
-          Container(
-            child: DataTable(),
-          )
+          !hasBeenInitialized
+              ? Center(
+                  child: CircularProgressIndicator(),
+                )
+              : StreamBuilder<List<Appointment>>(
+                  stream: _listController.stream,
+                  builder: (context, snapshot) {
+                    if (!snapshot.hasData) {
+                      return Center(
+                        child: CircularProgressIndicator(),
+                      );
+                    } else {
+                      return DataTable(
+                        appointments: snapshot.data!,
+                      );
+                    }
+                  },
+                ),
         ],
       ),
     );
@@ -66,6 +107,10 @@ class _AppointmentListState extends State<AppointmentList> {
 // }
 
 class DataTable extends StatefulWidget {
+  final List<Appointment> appointments;
+
+  DataTable({Key? key, required this.appointments}) : super(key: key);
+
   @override
   _DataTableState createState() => _DataTableState();
 }
@@ -87,37 +132,45 @@ class _DataTableState extends State<DataTable> {
     });
   }
 
-  Future<List<Appointment>> fetchData() async {
-    final String response =
-        await rootBundle.loadString('assets/data/appointment.json');
-    final parsed = json.decode(response).cast<Map<String, dynamic>>();
-    return parsed.map<Appointment>((json) => fromJson(json)).toList();
+  void initstate() {
+    setState(() {
+      appointments = widget.appointments;
+      _source = AppointmentDataSource(appointments);
+    });
+    super.initState();
   }
 
-  Appointment fromJson(Map<String, dynamic> json) {
-    return Appointment(
-      start: DateTime.parse(json['start']).toLocal(),
-      end: DateTime.parse(json['end']).toLocal(),
-      name: json['name'] ?? '',
-      description: json['description'] ?? '',
-      email: json['email'] ?? '',
-      phone: json['phone'] ?? '',
-    );
-  }
+  // Future<List<Appointment>> fetchData() async {
+  //   final String response =
+  //       await rootBundle.loadString('assets/data/appointment.json');
+  //   final parsed = json.decode(response).cast<Map<String, dynamic>>();
+  //   return parsed.map<Appointment>((json) => fromJson(json)).toList();
+  // }
 
-  Future<void> getData() async {
-    if (!isLoaded) {
-      appointments = await fetchData();
-      setState(() {
-        isLoaded = true;
-        _source = AppointmentDataSource(appointments);
-      });
-    }
-  }
+  // Appointment fromJson(Map<String, dynamic> json) {
+  //   return Appointment(
+  //     start: DateTime.parse(json['start']).toLocal(),
+  //     end: DateTime.parse(json['end']).toLocal(),
+  //     name: json['name'] ?? '',
+  //     description: json['description'] ?? '',
+  //     email: json['email'] ?? '',
+  //     phone: json['phone'] ?? '',
+  //   );
+  // }
+
+  // Future<void> getData() async {
+  //   if (!isLoaded) {
+  //     appointments = await fetchData();
+  //     setState(() {
+  //       isLoaded = true;
+  //       _source = AppointmentDataSource(appointments);
+  //     });
+  //   }
+  // }
 
   @override
   Widget build(BuildContext context) {
-    getData();
+    // getData();
     return SingleChildScrollView(
       child: PaginatedDataTable(
         source: _source,
@@ -177,10 +230,8 @@ class _DataTableState extends State<DataTable> {
               onSort: (int columnIndex, bool ascending) => _sort<String>(
                   (Appointment d) => d.email, columnIndex, ascending)),
           DataColumn(
-              label: Text(
-            'Completed/Delete',
-            style: TextStyle(fontWeight: FontWeight.bold),
-          )),
+            label: Container(),
+          ),
         ],
       ),
     );
@@ -188,11 +239,11 @@ class _DataTableState extends State<DataTable> {
 }
 
 class AppointmentDataSource extends DataTableSource {
-  final List<Appointment> _patients;
-  AppointmentDataSource(this._patients);
+  final List<Appointment> _appointment;
+  AppointmentDataSource(this._appointment);
 
   void _sort<T>(Comparable<T> getField(Appointment d), bool ascending) {
-    _patients.sort((Appointment a, Appointment b) {
+    _appointment.sort((Appointment a, Appointment b) {
       if (!ascending) {
         final Appointment c = a;
         a = b;
@@ -207,20 +258,20 @@ class AppointmentDataSource extends DataTableSource {
 
   @override
   DataRow getRow(int index) {
-    final Appointment patient = _patients[index];
+    final Appointment appointment = _appointment[index];
     return DataRow(cells: [
-      DataCell(Text(patient.id.toString())),
-      DataCell(Text(patient.name)),
-      DataCell(Text(patient.start.toString())),
-      DataCell(Text(patient.end.toString())),
-      DataCell(Text(patient.phone)),
-      DataCell(Text(patient.email)),
+      DataCell(Text(appointment.id.toString())),
+      DataCell(Text(appointment.name)),
+      DataCell(Text(appointment.start.toString())),
+      DataCell(Text(appointment.end.toString())),
+      DataCell(Text(appointment.phone)),
+      DataCell(Text(appointment.email)),
       DataCell(Row(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: [
           ActionRow(
             index: index,
-            patient: patient,
+            patient: appointment,
           ),
           Container(
               width: 25,
@@ -246,7 +297,7 @@ class AppointmentDataSource extends DataTableSource {
   bool get isRowCountApproximate => false;
 
   @override
-  int get rowCount => _patients.length;
+  int get rowCount => _appointment.length;
 
   @override
   int get selectedRowCount => 0;

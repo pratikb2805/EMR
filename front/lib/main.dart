@@ -1,16 +1,17 @@
+import 'package:emr/db/patient.dart';
 import 'package:emr/pages/tmp.dart';
 import 'package:emr/pages/userProfile.dart';
+import 'package:fluent_ui/fluent_ui.dart' as fluent;
 import 'package:flutter/material.dart';
 import 'pages/pages.dart';
 import 'package:emr/pages/temp2.dart';
-import 'package:desktop_window/desktop_window.dart';
 import 'package:path/path.dart' as p;
 import 'package:path_provider/path_provider.dart';
 import 'dart:io';
 
 void createReportDir() async {
   String loc = (await getApplicationSupportDirectory()).path;
-  String finalDir = p.join(loc, 'reports');
+  String finalDir = p.join(loc, 'patientfiles');
   var dir = Directory(finalDir);
   bool dirExists = await dir.exists();
   if (dirExists) {
@@ -73,8 +74,7 @@ class MyApp extends StatelessWidget {
               letterSpacing: -0.05,
               fontWeight: FontWeight.w600),
         ));
-    return MaterialApp(
-        theme: themeData, title: 'EMR', home: PatientprofileWidget());
+    return MaterialApp(theme: themeData, title: 'EMR', home: BodyWidget());
   }
 }
 

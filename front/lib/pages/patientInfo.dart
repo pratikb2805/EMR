@@ -1,5 +1,7 @@
 //import 'package:emr/db/patient.dart';
 import 'dart:io';
+import 'package:filepicker_windows/filepicker_windows.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:path/path.dart' as p;
 import 'package:flutter/material.dart';
 import 'package:open_file/open_file.dart';
@@ -264,6 +266,7 @@ class ReportsWidget extends StatefulWidget {
 }
 
 class _ReportsWidgetState extends State<ReportsWidget> {
+  String filePath = '';
   void initstate() {
     super.initState();
     _listFile();
@@ -272,8 +275,10 @@ class _ReportsWidgetState extends State<ReportsWidget> {
   List _files = [];
 
   void _listFile() async {
-    String directory =
-        p.join((await getApplicationSupportDirectory()).path, "reports");
+    String directory = p.join(
+      (await getApplicationSupportDirectory()).path,
+      "patientfiles",
+    );
     setState(() {
       _files = Directory(directory).listSync();
     });
@@ -304,6 +309,20 @@ class _ReportsWidgetState extends State<ReportsWidget> {
       }
     }
     return reports;
+  }
+
+  Future<void> showInformationDialog(BuildContext context) async {
+    return await showDialog(
+        context: context,
+        builder: (context) {
+          return StatefulBuilder(builder: (context, setState) {
+            return AlertDialog(
+              content: Container(child: TextField()),
+              title: Text("Enter File Name"),
+              actions: [TextButton(onPressed: () {}, child: Text("Submit"))],
+            );
+          });
+        });
   }
 
   @override
@@ -347,6 +366,42 @@ class _ReportsWidgetState extends State<ReportsWidget> {
                   padding: EdgeInsets.symmetric(horizontal: 0, vertical: 0),
                   child: Column(children: <Widget>[
                     ..._getReportList(),
+                    Container(
+                      color: Colors.red,
+                      padding: EdgeInsets.all(5),
+                      child: TextButton.icon(
+                        icon: Icon(Icons.add_rounded),
+                        label: Text("Add Report"),
+                        onPressed: () {
+                          final file = OpenFilePicker()
+                            ..filterSpecification = {
+                              'PDF Files': '*.pdf',
+                              'WORD Files (*.docx)': '*.docx',
+                              'EXCEL Files (*.xlsx)': '*.xlsx',
+                              'CSV Files (*.csv)': '*.csv',
+                              'PNG Images': '*.png',
+                              'JPEG Images (*.jpeg)': '*.jpeg',
+                              'JPG Images (*.jpg)': '*.jpg',
+                              'All Files':
+                                  '*.pdf;*.docx;*csv;*.xlsx;*.jpg;*.png;*jpeg'
+                            }
+                            ..defaultFilterIndex = 0
+                            ..defaultExtension = 'doc'
+                            ..title = 'Select an File';
+
+                          final result = file.getFile();
+                          if (result != null) {
+                            print(result.path);
+                            setState(() {
+                              filePath = result.path;
+                            });
+                            showInformationDialog(context);
+                          } else {
+                            print('error');
+                          }
+                        },
+                      ),
+                    )
                   ]),
                 ),
                 SizedBox(width: 16)
