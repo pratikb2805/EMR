@@ -17,7 +17,7 @@ class DoctorTopBar extends StatelessWidget {
       color: Colors.white,
       // decoration: BoxDecoration(color: Colors.white10),
       width: MediaQuery.of(context).size.width,
-      height: 400,
+      height: 311,
       child: Padding(
           padding: EdgeInsets.all(5.0),
           child: Container(

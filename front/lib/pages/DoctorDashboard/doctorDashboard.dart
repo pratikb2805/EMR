@@ -38,16 +38,18 @@ class _DoctorDashboardsState extends State<DoctorDashboards> {
   @override
   Widget build(BuildContext context) {
     return Fluent.Container(
+      color: Fluent.Colors.transparent,
       width: MediaQuery.of(context).size.width,
-      color: Colors.white,
+      // color: Colors.white,
       child: !isloaded
           ? null
           : SingleChildScrollView(
               child: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
               children: [
                 DoctorTopBar(urll: doc!.profileImage, name: doc!.displayname),
                 Container(
-                  color: Colors.white,
+                  color: Colors.transparent,
                   padding: EdgeInsets.all(5.0),
                   child: Row(
                     mainAxisSize: MainAxisSize.max,
