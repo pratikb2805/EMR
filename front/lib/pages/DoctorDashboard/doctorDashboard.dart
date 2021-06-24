@@ -45,7 +45,10 @@ class _DoctorDashboardsState extends State<DoctorDashboards> {
           : SingleChildScrollView(
               child: Column(
               children: [
-                DoctorTopBar(urll: doc!.profileImage, name: doc!.displayname),
+                doc != null
+                    ? DoctorTopBar(
+                        urll: doc!.profileImage, name: doc!.displayname)
+                    : DoctorTopBar(name: "Prathamesh Wagh", urll: urll),
                 Container(
                   color: Colors.white,
                   padding: EdgeInsets.all(5.0),
