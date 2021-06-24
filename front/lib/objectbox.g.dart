@@ -14,40 +14,25 @@ export 'package:objectbox/objectbox.dart'; // so that callers only have to impor
 
 final _entities = <ModelEntity>[
   ModelEntity(
-      id: const IdUid(1, 4206659433228728473),
+      id: const IdUid(2, 6691604221011885210),
       name: 'Appointment',
-      lastPropertyId: const IdUid(8, 5561841712269699599),
+      lastPropertyId: const IdUid(8, 3111731640538589920),
       flags: 0,
       properties: <ModelProperty>[
         ModelProperty(
-            id: const IdUid(1, 1465995063070907659),
+            id: const IdUid(1, 292907942194324822),
             name: 'id',
             type: 6,
             flags: 1),
         ModelProperty(
-            id: const IdUid(2, 3268054310116021292),
+            id: const IdUid(2, 5191562190203519717),
             name: 'patientId',
             type: 11,
             flags: 520,
-            indexId: const IdUid(1, 3846074685452082189),
+            indexId: const IdUid(1, 44962279460149256),
             relationTarget: 'Patient'),
         ModelProperty(
-            id: const IdUid(3, 776827768244247391),
-            name: 'name',
-            type: 9,
-            flags: 0),
-        ModelProperty(
-            id: const IdUid(4, 2916484247760345982),
-            name: 'phone',
-            type: 9,
-            flags: 0),
-        ModelProperty(
-            id: const IdUid(5, 2041419127272937157),
-            name: 'email',
-            type: 9,
-            flags: 0),
-        ModelProperty(
-            id: const IdUid(6, 2379215213311065764),
+            id: const IdUid(3, 8948749379628251926),
             name: 'start',
             type: 10,
             flags: 0),
@@ -230,9 +215,17 @@ ModelDefinition getObjectBoxModel() {
       lastIndexId: const IdUid(4, 6731157957018303341),
       lastRelationId: const IdUid(0, 0),
       lastSequenceId: const IdUid(0, 0),
-      retiredEntityUids: const [],
+      retiredEntityUids: const [2105980254126945334],
       retiredIndexUids: const [],
-      retiredPropertyUids: const [],
+      retiredPropertyUids: const [
+        8929368112691541792,
+        4596754707230663518,
+        6719057657127873854,
+        4021103401215910054,
+        7408608506485051253,
+        2849318786694514610,
+        5990175068168941742
+      ],
       retiredRelationUids: const [],
       modelVersion: 5,
       modelVersionParserMinimum: 5,
@@ -480,28 +473,28 @@ class Appointment_ {
   static final patient =
       QueryRelationProperty<Appointment, Patient>(_entities[0].properties[1]);
 
-  /// see [Appointment.name]
-  static final name =
-      QueryStringProperty<Appointment>(_entities[0].properties[2]);
-
-  /// see [Appointment.phone]
-  static final phone =
-      QueryStringProperty<Appointment>(_entities[0].properties[3]);
-
-  /// see [Appointment.email]
-  static final email =
-      QueryStringProperty<Appointment>(_entities[0].properties[4]);
-
   /// see [Appointment.start]
   static final start =
-      QueryIntegerProperty<Appointment>(_entities[0].properties[5]);
+      QueryIntegerProperty<Appointment>(_entities[0].properties[2]);
 
   /// see [Appointment.end]
   static final end =
-      QueryIntegerProperty<Appointment>(_entities[0].properties[6]);
+      QueryIntegerProperty<Appointment>(_entities[0].properties[3]);
 
   /// see [Appointment.description]
   static final description =
+      QueryStringProperty<Appointment>(_entities[0].properties[4]);
+
+  /// see [Appointment.name]
+  static final name =
+      QueryStringProperty<Appointment>(_entities[0].properties[5]);
+
+  /// see [Appointment.phone]
+  static final phone =
+      QueryStringProperty<Appointment>(_entities[0].properties[6]);
+
+  /// see [Appointment.email]
+  static final email =
       QueryStringProperty<Appointment>(_entities[0].properties[7]);
 }
 

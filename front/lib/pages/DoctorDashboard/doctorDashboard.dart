@@ -128,10 +128,12 @@ class _DoctorDashboardsState extends State<DoctorDashboards> {
                                 child: Padding(
                                   padding: const EdgeInsets.all(8.0),
                                   child: SfCalendar(
-                                    view: CalendarView.month,
+                                    view: CalendarView.week,
+
+                                    showCurrentTimeIndicator: true,
                                     // allowViewNavigation: true,
                                     showDatePickerButton: true,
-                                    todayHighlightColor: Colors.blueAccent,
+                                    todayHighlightColor: Colors.greenAccent,
                                     onTap: (CalendarTapDetails details) {
                                       setState(() {
                                         if (_calendarController.displayDate !=

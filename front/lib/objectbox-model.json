@@ -4,33 +4,15 @@
   "_note3": "If you have VCS merge conflicts, you must resolve them according to ObjectBox docs.",
   "entities": [
     {
-      "id": "1:4206659433228728473",
-      "lastPropertyId": "8:5561841712269699599",
+      "id": "2:6691604221011885210",
+      "lastPropertyId": "8:3111731640538589920",
       "name": "Appointment",
       "properties": [
         {
-          "id": "1:1465995063070907659",
+          "id": "1:292907942194324822",
           "name": "id",
           "type": 6,
           "flags": 1
-        },
-        {
-          "id": "2:3268054310116021292",
-          "name": "patientId",
-          "type": 11,
-          "flags": 520,
-          "indexId": "1:3846074685452082189",
-          "relationTarget": "Patient"
-        },
-        {
-          "id": "3:776827768244247391",
-          "name": "name",
-          "type": 9
-        },
-        {
-          "id": "4:2916484247760345982",
-          "name": "phone",
-          "type": 9
         },
         {
           "id": "5:2041419127272937157",
@@ -221,9 +203,19 @@
   "lastSequenceId": "0:0",
   "modelVersion": 5,
   "modelVersionParserMinimum": 5,
-  "retiredEntityUids": [],
+  "retiredEntityUids": [
+    2105980254126945334
+  ],
   "retiredIndexUids": [],
-  "retiredPropertyUids": [],
+  "retiredPropertyUids": [
+    8929368112691541792,
+    4596754707230663518,
+    6719057657127873854,
+    4021103401215910054,
+    7408608506485051253,
+    2849318786694514610,
+    5990175068168941742
+  ],
   "retiredRelationUids": [],
   "version": 1
 }

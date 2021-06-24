@@ -2,7 +2,7 @@ import 'package:emr/pages/form1.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:emr/utils/util.dart' as utils;
-import 'package:fluent_ui/fluent_ui.dart' as fluent;
+// import 'package:fluent_ui/fluent_ui.dart' as fluent;
 
 import 'dart:io';
 
