@@ -1,6 +1,9 @@
-// import 'package:fluent_ui/fluent_ui.dart' as fluent;
+import 'package:fluent_ui/fluent_ui.dart' as Fluent;
+import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
 import 'pages/pages.dart';
+import 'package:system_theme/system_theme.dart';
+
 // import 'package:desktop_window/desktop_window.dart';
 
 int main() {
@@ -9,55 +12,55 @@ int main() {
   return 0;
 }
 
-class MyApp extends StatelessWidget {
-  // This widget is the root of your application.
+class MyApp extends Fluent.StatefulWidget {
+  @override
+  _MyAppState createState() => _MyAppState();
+}
+
+class _MyAppState extends Fluent.State<MyApp> {
+  int curId = 0;
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    curId = 0;
+  }
+
   @override
   Widget build(BuildContext context) {
-    // var themeData = ThemeData(
-    //     primaryColor: Colors.purple,
-    //     textTheme: TextTheme(
-    //       headline1: TextStyle(
-    //           fontSize: 32,
-    //           height: 44,
-    //           color: Colors.black,
-    //           letterSpacing: -0.05,
-    //           fontWeight: FontWeight.w600),
-    //       headline4: TextStyle(
-    //           fontSize: 20,
-    //           height: 27,
-    //           fontFamily: 'Open Sans',
-    //           color: Colors.black,
-    //           letterSpacing: 0.002,
-    //           fontStyle: FontStyle.normal,
-    //           fontWeight: FontWeight.w600),
-    //       headline3: TextStyle(
-    //           fontSize: 24,
-    //           fontFamily: 'Open Sans',
-    //           height: 33,
-    //           fontStyle: FontStyle.normal,
-    //           color: Colors.black,
-    //           fontWeight: FontWeight.w600),
-    //       headline2: TextStyle(
-    //           fontSize: 32,
-    //           fontFamily: 'Open Sans',
-    //           height: 44,
-    //           color: Colors.black,
-    //           letterSpacing: -0.05,
-    //           fontWeight: FontWeight.w600),
-    //       headline5: TextStyle(
-    //           fontSize: 16,
-    //           fontFamily: 'Open Sans',
-    //           height: 22,
-    //           fontStyle: FontStyle.normal,
-    //           color: Colors.black,
-    //           letterSpacing: -0.05,
-    //           fontWeight: FontWeight.w600),
-    //     ));
-
-    return MaterialApp(
+    return Fluent.FluentApp(
+      theme: Fluent.ThemeData(
+          typography: Fluent.Typography(
+            title: TextStyle(
+              fontSize: 36,
+              color: Colors.black,
+              fontWeight: FontWeight.normal,
+            ),
+          ),
+          brightness: Fluent.Brightness.light,
+          visualDensity: Fluent.VisualDensity.adaptivePlatformDensity,
+          accentColor: SystemTheme.accentInstance.accent.toAccentColor()),
       // theme: themeData,
       title: 'EMR',
-      home: DoctorDashboards(),
+      home: Fluent.NavigationView(
+        pane: Fluent.NavigationPane(
+            selected: curId,
+            onChanged: (i) => setState(() {
+                  curId = i;
+                }),
+            items: [
+              Fluent.PaneItem(
+                  icon: Icon(FluentIcons.person_24_regular),
+                  title: Text('Dashboard'))
+            ],
+            displayMode: Fluent.PaneDisplayMode.compact),
+        content: Fluent.NavigationBody(
+          index: curId,
+          children: [
+            DoctorDashboards(),
+          ],
+        ),
+      ),
     );
   }
 }

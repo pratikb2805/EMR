@@ -45,6 +45,8 @@ dependencies:
   filepicker_windows: ^2.0.0
   open_file: ^3.2.1
   fluent_ui: ^2.1.1
+  system_theme: ^1.0.1
+  fluentui_system_icons: ^1.1.133
 
 dev_dependencies:
   build_runner: ^1.0.0
