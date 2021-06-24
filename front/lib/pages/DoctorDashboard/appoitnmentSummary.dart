@@ -119,7 +119,7 @@ class _AppointmentSummaryState extends State<AppointmentSummary> {
                           }
                         },
                         controller: widget.controller,
-                        view: CalendarView.schedule,
+                        view: CalendarView.day,
                         appointmentTextStyle: TextStyle(
                           fontSize: 10.0,
                           color: Colors.white,

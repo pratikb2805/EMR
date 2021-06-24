@@ -47,7 +47,10 @@ class _DoctorDashboardsState extends State<DoctorDashboards> {
               child: Column(
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
-                DoctorTopBar(urll: doc!.profileImage, name: doc!.displayname),
+                doc != null
+                    ? DoctorTopBar(
+                        urll: doc!.profileImage, name: doc!.displayname)
+                    : DoctorTopBar(name: "Prathamesh Wagh", urll: urll),
                 Container(
                   color: Colors.transparent,
                   padding: EdgeInsets.all(5.0),

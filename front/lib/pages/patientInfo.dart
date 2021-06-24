@@ -1,8 +1,18 @@
+//import 'package:emr/db/patient.dart';
+import 'dart:io';
+import 'package:filepicker_windows/filepicker_windows.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:path/path.dart' as p;
 import 'package:flutter/material.dart';
+import 'package:open_file/open_file.dart';
+import 'package:path_provider/path_provider.dart';
 // import 'package:flutter_svg/flutter_svg.dart';
 import 'userProfile.dart';
+import 'pages.dart';
 
+//import 'package:objectbox/objectbox.dart';
 class PatientprofileWidget extends StatefulWidget {
+  PatientprofileWidget({Key? key});
   @override
   _PatientprofileWidgetState createState() => _PatientprofileWidgetState();
 }
@@ -36,89 +46,91 @@ class _PatientprofileWidgetState extends State<PatientprofileWidget> {
       body: Padding(
         padding: const EdgeInsets.all(5.0),
         child: Container(
-          width: MediaQuery.of(context).size.width,
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.all(Radius.circular(5)),
-          ),
-          child: Container(
-              alignment: Alignment.topLeft,
-              height: MediaQuery.of(context).size.height,
-              child: LayoutBuilder(
+            // alignment: Alignment.topLeft,
+            // height: MediaQuery.of(context).size.height,
+            child: LayoutBuilder(
+          builder: (BuildContext context, BoxConstraints con) {
+            if (con.maxWidth < 600) {
+              return LayoutBuilder(
                 builder: (BuildContext context, BoxConstraints con) {
                   if (con.maxWidth < 600) {
                     final width = MediaQuery.of(context).size.width;
-                    return Expanded(
-                        child: Column(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    return Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: <Widget>[
-                        Expanded(child: LeftPart(width: width)),
-                        Expanded(child: RIghtPart(width: width))
+                        Expanded(
+                            child: LeftPart(
+                                name: "Prathamesh  Wagh", width: width)),
+                        Expanded(child: RightPart(width: width))
                       ],
-                    ));
+                    );
                   }
                   return Row(children: [
                     Expanded(
                         flex: 3,
-                        child:
-                            LeftPart(width: MediaQuery.of(context).size.width)),
+                        child: LeftPart(
+                            name: "Prathamesh Wagh",
+                            width: MediaQuery.of(context).size.width)),
                     Expanded(
                         flex: 7,
-                        child: RIghtPart(
+                        child: RightPart(
                             width: MediaQuery.of(context).size.width * 0.7))
                   ]);
                 },
-              )),
-        ),
+              );
+            }
+            return Row(children: [
+              Expanded(
+                  flex: 3,
+                  child: LeftPart(
+                      name: "Prathamesh Wagh",
+                      width: MediaQuery.of(context).size.width * 0.3)),
+              Expanded(
+                  flex: 7,
+                  child:
+                      RightPart(width: MediaQuery.of(context).size.width * 0.7))
+            ]);
+          },
+        )),
       ),
     );
   }
 }
 
 class LeftPart extends StatelessWidget {
+  final String name;
   final double width;
-  const LeftPart({Key? key, required this.width}) : super(key: key);
+
+  const LeftPart({Key? key, required this.width, required this.name})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     String url =
         'https://th.bing.com/th/id/R34ac62561e4d2d3f73903371539bfb5b?rik=0oRU4BctwhzLIA&riu=http%3a%2f%2fthispix.com%2fwp-content%2fuploads%2f2015%2f06%2fportrait-profile-008.jpg&ehk=ZPTQOU194fjZ2VzGXGXzymsATv6%2fCUW4EFn3Ya53CZ4%3d&risl=&pid=ImgRaw';
-    return Container(
-      width: width,
-      height: MediaQuery.of(context).size.height,
-      decoration: BoxDecoration(
-        color: Color.fromRGBO(255, 255, 255, 1),
+    return ListView(shrinkWrap: true, children: <Widget>[
+      Padding(
+        padding: const EdgeInsets.all(1.0),
+        child: UserprofileWidget(profile: url),
       ),
-      child: Expanded(
-        child: Column(
-            // mainAxisSize: MainAxisSize.max,
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: UserprofileWidget(name: 'Pratik Bedre', profile: url),
-              ),
-              Expanded(child: DataField(header: 'Name', value: 'Pratik Bedre')),
-              Expanded(child: DataField(header: 'Age', value: '23')),
-              Expanded(
-                  child: DataField(
-                      header: 'Date of first consult', value: '28/05/2001')),
-              Expanded(
-                child: DataField(
-                    header: 'Date of most recent consult', value: '28/05/2001'),
-              ),
-              Expanded(
-                  child: DataField(header: 'diagnosis', value: 'Scelorsis')),
-            ]),
+      Container(child: DataField(header: 'Name', value: name)),
+      Container(child: DataField(header: 'Age', value: '23')),
+      Container(
+          child:
+              DataField(header: 'Date of first consult', value: '28/05/2001')),
+      Container(
+        child: DataField(
+            header: 'Date of most recent consult', value: '28/05/2001'),
       ),
-    );
+      Container(child: DataField(header: 'Diagnosis', value: 'Scelorsis')),
+    ]);
   }
 }
 
-class RIghtPart extends StatelessWidget {
+class RightPart extends StatelessWidget {
   final double width;
-  const RIghtPart({Key? key, required this.width}) : super(key: key);
+  const RightPart({Key? key, required this.width}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -134,7 +146,9 @@ class RIghtPart extends StatelessWidget {
               children: [
                 DescriptionWidget(),
                 SizedBox(height: 10),
-                ReportsWidget(),
+                ReportsWidget(
+                  id: "1",
+                ),
                 SizedBox(height: 20),
                 ChallengesWidger()
               ],
@@ -244,13 +258,76 @@ class ChallengesWidger extends StatelessWidget {
   }
 }
 
-class ReportsWidget extends StatelessWidget {
-  const ReportsWidget({
-    Key? key,
-  }) : super(key: key);
+class ReportsWidget extends StatefulWidget {
+  final String id;
+  ReportsWidget({Key? key, required this.id});
+  @override
+  _ReportsWidgetState createState() => _ReportsWidgetState();
+}
+
+class _ReportsWidgetState extends State<ReportsWidget> {
+  String filePath = '';
+  void initstate() {
+    super.initState();
+    _listFile();
+  }
+
+  List _files = [];
+
+  void _listFile() async {
+    String directory = p.join(
+      (await getApplicationSupportDirectory()).path,
+      "patientfiles",
+    );
+    setState(() {
+      _files = Directory(directory).listSync();
+    });
+  }
+
+  List<Widget> _getReportList() {
+    List<Widget> reports = [];
+    if (_files.isEmpty) {
+      reports.add(Text(
+        "There are no reports yet",
+        style: TextStyle(
+            color: Color.fromRGBO(62, 62, 62, 1),
+            fontFamily: 'Roboto',
+            fontSize: 24,
+            letterSpacing: 0,
+            fontWeight: FontWeight.normal,
+            height: 1.5),
+      ));
+    } else {
+      for (int i = 0; i < _files.length; i++) {
+        reports.add(FileWidget(
+          fileLink: _files[i].path,
+          fileName: p.basename(_files[i].path),
+        ));
+        reports.add(SizedBox(
+          height: 8,
+        ));
+      }
+    }
+    return reports;
+  }
+
+  Future<void> showInformationDialog(BuildContext context) async {
+    return await showDialog(
+        context: context,
+        builder: (context) {
+          return StatefulBuilder(builder: (context, setState) {
+            return AlertDialog(
+              content: Container(child: TextField()),
+              title: Text("Enter File Name"),
+              actions: [TextButton(onPressed: () {}, child: Text("Submit"))],
+            );
+          });
+        });
+  }
 
   @override
   Widget build(BuildContext context) {
+    _listFile();
     return Container(
       decoration: BoxDecoration(),
       padding: EdgeInsets.symmetric(horizontal: 30, vertical: 0),
@@ -288,13 +365,43 @@ class ReportsWidget extends StatelessWidget {
                   decoration: BoxDecoration(),
                   padding: EdgeInsets.symmetric(horizontal: 0, vertical: 0),
                   child: Column(children: <Widget>[
-                    FileWidget(fileName: 'Report1.pdf'),
-                    SizedBox(height: 8),
-                    FileWidget(fileName: 'Report1.pdf'),
-                    SizedBox(height: 8),
-                    FileWidget(fileName: 'Report1.pdf'),
-                    SizedBox(height: 8),
-                    FileWidget(fileName: 'Report1.pdf'),
+                    ..._getReportList(),
+                    Container(
+                      color: Colors.red,
+                      padding: EdgeInsets.all(5),
+                      child: TextButton.icon(
+                        icon: Icon(Icons.add_rounded),
+                        label: Text("Add Report"),
+                        onPressed: () {
+                          final file = OpenFilePicker()
+                            ..filterSpecification = {
+                              'PDF Files': '*.pdf',
+                              'WORD Files (*.docx)': '*.docx',
+                              'EXCEL Files (*.xlsx)': '*.xlsx',
+                              'CSV Files (*.csv)': '*.csv',
+                              'PNG Images': '*.png',
+                              'JPEG Images (*.jpeg)': '*.jpeg',
+                              'JPG Images (*.jpg)': '*.jpg',
+                              'All Files':
+                                  '*.pdf;*.docx;*csv;*.xlsx;*.jpg;*.png;*jpeg'
+                            }
+                            ..defaultFilterIndex = 0
+                            ..defaultExtension = 'doc'
+                            ..title = 'Select an File';
+
+                          final result = file.getFile();
+                          if (result != null) {
+                            print(result.path);
+                            setState(() {
+                              filePath = result.path;
+                            });
+                            showInformationDialog(context);
+                          } else {
+                            print('error');
+                          }
+                        },
+                      ),
+                    )
                   ]),
                 ),
                 SizedBox(width: 16)
@@ -312,6 +419,11 @@ class FileWidget extends StatelessWidget {
   const FileWidget({Key? key, this.fileLink = '', this.fileName = ''})
       : super(key: key);
 
+  Future<void> openFile() async {
+    final _result = await OpenFile.open(fileLink);
+    print(_result.message);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -320,22 +432,28 @@ class FileWidget extends StatelessWidget {
       padding: EdgeInsets.all(2),
       child: Container(
           child: ListTile(
-              leading: Icon(
-                Icons.circle,
-                size: 10.0,
-              ),
-              title: Text(
-                '$fileName',
-                textAlign: TextAlign.left,
-                overflow: TextOverflow.ellipsis,
-                style: TextStyle(
-                    color: Color.fromRGBO(62, 62, 62, 1),
-                    fontFamily: 'Roboto',
-                    fontSize: 24,
-                    letterSpacing: 0,
-                    fontWeight: FontWeight.normal,
-                    height: 1.5),
-              ))),
+        leading: Icon(
+          Icons.circle,
+          size: 10.0,
+        ),
+        title: Text(
+          '$fileName',
+          textAlign: TextAlign.left,
+          overflow: TextOverflow.ellipsis,
+          style: TextStyle(
+              color: Color.fromRGBO(62, 62, 62, 1),
+              fontFamily: 'Roboto',
+              fontSize: 24,
+              letterSpacing: 0,
+              fontWeight: FontWeight.normal,
+              height: 1.5),
+        ),
+        trailing: IconButton(
+            onPressed: () {
+              openFile();
+            },
+            icon: Icon(Icons.open_in_new)),
+      )),
     );
   }
 }
@@ -351,41 +469,36 @@ class DataFieldState extends State<DataField> {
   @override
   Widget build(BuildContext context) {
     return Container(
+      height: 75,
       decoration: BoxDecoration(),
-      padding: EdgeInsets.all(10.0),
+      padding: EdgeInsets.fromLTRB(20, 5, 0, 5),
       child: Column(
-        // mainAxisSize: MainAxisSize.max,
+        mainAxisSize: MainAxisSize.min,
         mainAxisAlignment: MainAxisAlignment.start,
-        crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
-          Expanded(
-            child: Text(
-              widget.header,
-              overflow: TextOverflow.ellipsis,
-              textAlign: TextAlign.left,
-              style: TextStyle(
-                  color: Color.fromRGBO(140, 140, 161, 1),
-                  fontFamily: 'Work Sans',
-                  fontSize: 18,
-                  letterSpacing:
-                      0 /*percentages not used in flutter. defaulting to zero*/,
-                  fontWeight: FontWeight.normal,
-                  height: 1),
+          Text(
+            widget.header,
+            overflow: TextOverflow.ellipsis,
+            textAlign: TextAlign.left,
+            style: TextStyle(
+              color: Color.fromRGBO(62, 62, 62, 1),
+              fontFamily: 'Work Sans',
+              fontSize: 18,
+              letterSpacing:
+                  0 /*percentages not used in flutter. defaulting to zero*/,
+              fontWeight: FontWeight.bold,
             ),
           ),
-          SizedBox(height: 15),
-          Expanded(
-            child: Text(
-              widget.value,
-              overflow: TextOverflow.ellipsis,
-              textAlign: TextAlign.left,
-              style: TextStyle(
-                  color: Color.fromRGBO(62, 62, 62, 1),
-                  fontFamily: 'Work Sans',
-                  fontSize: 20,
-                  letterSpacing: 0,
-                  fontWeight: FontWeight.normal,
-                  height: 1.2),
+          Text(
+            widget.value,
+            overflow: TextOverflow.ellipsis,
+            textAlign: TextAlign.left,
+            style: TextStyle(
+              color: Color.fromRGBO(62, 62, 62, 1),
+              fontFamily: 'Work Sans',
+              fontSize: 20,
+              letterSpacing: 0,
+              fontWeight: FontWeight.normal,
             ),
           ),
         ],
