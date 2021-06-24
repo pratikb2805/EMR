@@ -10,14 +10,10 @@ class DetailsForm extends StatefulWidget {
   _DetailsFormState createState() => _DetailsFormState();
 }
 
-class _DetailsFormState extends State<DetailsForm>
-    with AutomaticKeepAliveClientMixin {
+class _DetailsFormState extends State<DetailsForm> {
   final ProfilePhotoPicker profilePhotoPicker = ProfilePhotoPicker();
 
   // late ProfilePhotoPicker profilePhotoPicker =
-  @override
-  bool get wantKeepAlive => true;
-
   final firstName = TextEditingController();
   final lastName = TextEditingController();
   final displayName = TextEditingController();
@@ -61,7 +57,6 @@ class _DetailsFormState extends State<DetailsForm>
   }
 
   @override
-  @mustCallSuper
   Widget build(BuildContext context) {
     var form = Form(
       key: formkey,

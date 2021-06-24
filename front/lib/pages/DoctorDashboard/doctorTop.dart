@@ -1,5 +1,5 @@
 import 'dart:io';
-
+import 'package:fluent_ui/fluent_ui.dart' as Fluent;
 import 'package:flutter/material.dart';
 
 class DoctorTopBar extends StatelessWidget {
@@ -17,7 +17,7 @@ class DoctorTopBar extends StatelessWidget {
       color: Colors.white,
       // decoration: BoxDecoration(color: Colors.white10),
       width: MediaQuery.of(context).size.width,
-      height: 300,
+      height: 400,
       child: Padding(
           padding: EdgeInsets.all(5.0),
           child: Container(
@@ -25,20 +25,21 @@ class DoctorTopBar extends StatelessWidget {
               children: <Widget>[
                 HeaderbgWidget(),
                 Positioned(
-                    top: 170,
-                    left: 50,
+                    top: 150,
+                    left: 30,
                     child: CircleAvatar(
-                      radius: 60,
+                      radius: 80,
                       backgroundColor: Colors.white,
                       child: CircleAvatar(
-                        radius: 55,
+                        radius: 70,
                         backgroundImage: FileImage(File(urll)),
                       ),
                     )),
                 Positioned(
                   top: 200,
-                  left: 160,
+                  left: 180,
                   child: NamepositionWidget(
+                    style: Theme.of(context).textTheme,
                     name: '$name',
                     qualification: 'MD Mbbs',
                   ),
@@ -46,14 +47,18 @@ class DoctorTopBar extends StatelessWidget {
                 Positioned(
                   top: 210,
                   right: 25,
-                  child: ClipOval(
-                    child: Material(
-                      color: Colors.transparent, // Button color
-                      child: InkWell(
-                        splashColor: Colors.blueAccent, // Splash color
-                        onTap: () {},
-                        child: SizedBox(
-                            width: 48, height: 48, child: Icon(Icons.edit)),
+                  child: Fluent.Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: ClipOval(
+                      child: Fluent.IconButton(
+                        onPressed: () {},
+                        icon: Fluent.Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Icon(
+                            Fluent.Icons.edit,
+                            size: 32,
+                          ),
+                        ),
                       ),
                     ),
                   ),
@@ -104,8 +109,12 @@ class HeaderbgWidget extends StatelessWidget {
 
 class NamepositionWidget extends StatefulWidget {
   final String name, qualification;
+  final style;
   NamepositionWidget(
-      {Key? key, required this.name, required this.qualification})
+      {Key? key,
+      required this.name,
+      required this.qualification,
+      required this.style})
       : super(key: key);
 
   @override
@@ -127,29 +136,13 @@ class _NamepositionWidgetState extends State<NamepositionWidget> {
           Text(
             widget.name,
             textAlign: TextAlign.left,
-            style: TextStyle(
-                color: Color.fromRGBO(15, 38, 68, 1),
-                fontFamily: 'Open Sans',
-                fontSize: 24,
-                decoration: TextDecoration.none,
-                letterSpacing:
-                    0 /*percentages not used in flutter. defaulting to zero*/,
-                fontWeight: FontWeight.normal,
-                height: 1),
+            style: widget.style.title,
           ),
           SizedBox(height: 0),
           Text(
             widget.qualification,
             textAlign: TextAlign.left,
-            style: TextStyle(
-                decoration: TextDecoration.none,
-                color: Color.fromRGBO(114, 128, 148, 1),
-                fontFamily: 'Open Sans',
-                fontSize: 16,
-                letterSpacing:
-                    0 /*percentages not used in flutter. defaulting to zero*/,
-                fontWeight: FontWeight.normal,
-                height: 1.3846153846153846),
+            style: widget.style.subtitle,
           ),
         ],
       ),

@@ -64,8 +64,10 @@ class Appointment {
         phone = json['phone'],
         email = json['email'],
         end = DateTime.parse(json['end']),
-        description = json['description'],
-        patient = json['patient']['id'];
+        description = json['description'];
+  // patient = json['patient'] == null ? 0 : json['patient']['id'],
+  // id = 0;
+
 }
 
 @Entity()
