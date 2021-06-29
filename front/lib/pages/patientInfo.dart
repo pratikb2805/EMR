@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:emr/db/patient.dart';
 import 'package:filepicker_windows/filepicker_windows.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:intl/intl.dart';
 import 'package:path/path.dart' as p;
 import 'package:flutter/material.dart';
 import 'package:open_file/open_file.dart';
@@ -66,8 +67,10 @@ class _PatientprofileWidgetState extends State<PatientprofileWidget> {
                       children: <Widget>[
                         Expanded(
                             child: LeftPart(
-                                name: "Prathamesh  Wagh", width: width)),
-                        Expanded(child: RightPart(width: width))
+                                patient: widget.patient, width: width)),
+                        Expanded(
+                            child: RightPart(
+                                patient: widget.patient, width: width))
                       ],
                     );
                   }
@@ -75,11 +78,12 @@ class _PatientprofileWidgetState extends State<PatientprofileWidget> {
                     Expanded(
                         flex: 3,
                         child: LeftPart(
-                            name: "Prathamesh Wagh",
+                            patient: widget.patient,
                             width: MediaQuery.of(context).size.width)),
                     Expanded(
                         flex: 7,
                         child: RightPart(
+                            patient: widget.patient,
                             width: MediaQuery.of(context).size.width * 0.7))
                   ]);
                 },
@@ -89,12 +93,13 @@ class _PatientprofileWidgetState extends State<PatientprofileWidget> {
               Expanded(
                   flex: 3,
                   child: LeftPart(
-                      name: "Prathamesh Wagh",
+                      patient: widget.patient,
                       width: MediaQuery.of(context).size.width * 0.3)),
               Expanded(
                   flex: 7,
-                  child:
-                      RightPart(width: MediaQuery.of(context).size.width * 0.7))
+                  child: RightPart(
+                      patient: widget.patient,
+                      width: MediaQuery.of(context).size.width * 0.7))
             ]);
           },
         )),
@@ -104,10 +109,9 @@ class _PatientprofileWidgetState extends State<PatientprofileWidget> {
 }
 
 class LeftPart extends StatelessWidget {
-  final String name;
   final double width;
-
-  const LeftPart({Key? key, required this.width, required this.name})
+  final Patient patient;
+  const LeftPart({Key? key, required this.width, required this.patient})
       : super(key: key);
 
   @override
@@ -119,23 +123,32 @@ class LeftPart extends StatelessWidget {
         padding: const EdgeInsets.all(1.0),
         child: UserprofileWidget(profile: url),
       ),
-      Container(child: DataField(header: 'Name', value: name)),
-      Container(child: DataField(header: 'Age', value: '23')),
+      Container(child: DataField(header: 'Name', value: patient.name)),
+      Container(child: DataField(header: 'Age', value: patient.age)),
       Container(
-          child:
-              DataField(header: 'Date of first consult', value: '28/05/2001')),
+          child: DataField(
+              header: 'Date of first consult',
+              value: DateFormat('dd-MM-yyyy')
+                  .format(patient.dateFirstConsult)
+                  .toString())),
       Container(
         child: DataField(
-            header: 'Date of most recent consult', value: '28/05/2001'),
+            header: 'Date of most recent consult',
+            value: DateFormat('dd-MM-yyyy')
+                .format(patient.dateMostRecentConsult)
+                .toString()),
       ),
-      Container(child: DataField(header: 'Diagnosis', value: 'Scelorsis')),
+      Container(
+          child: DataField(header: 'Diagnosis', value: patient.diagnosis)),
     ]);
   }
 }
 
 class RightPart extends StatelessWidget {
   final double width;
-  const RightPart({Key? key, required this.width}) : super(key: key);
+  final Patient patient;
+  const RightPart({Key? key, required this.width, required this.patient})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -149,13 +162,15 @@ class RightPart extends StatelessWidget {
                 child: Column(
               // alignment: Alignment.topCenter,
               children: [
-                DescriptionWidget(),
+                DescriptionWidget(
+                  description: patient.diagnosis,
+                ),
                 SizedBox(height: 10),
                 ReportsWidget(
                   id: "1",
                 ),
                 SizedBox(height: 20),
-                ChallengesWidger()
+                ChallengesWidger(challenge: patient.diagnosis)
               ],
             ))),
       ),
@@ -164,9 +179,9 @@ class RightPart extends StatelessWidget {
 }
 
 class DescriptionWidget extends StatelessWidget {
-  const DescriptionWidget({
-    Key? key,
-  }) : super(key: key);
+  final String description;
+  const DescriptionWidget({Key? key, required this.description})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -199,7 +214,7 @@ class DescriptionWidget extends StatelessWidget {
                 ),
                 SizedBox(height: 16),
                 Text(
-                  'Fabian\'s lifestyle is quite active. He works out three times a week. His fitness routine is a healthy mix of strength-training and cardio. Apart from fitness, his priority is a healthy and balanced diet. He have some sort of a meal plan, but he is quite fliexible with it.\nHe prefers to do shopping online because it is convenient and less time-consuming, as he can do it whenever it suits him.fbrbbbbbbbbbrif 3fffrrfybwecbob3ufb93fr9ubrebvpurevurev',
+                  description,
                   textAlign: TextAlign.left,
                   style: TextStyle(
                       color: Color.fromRGBO(62, 62, 62, 1),
@@ -220,9 +235,8 @@ class DescriptionWidget extends StatelessWidget {
 }
 
 class ChallengesWidger extends StatelessWidget {
-  const ChallengesWidger({
-    Key? key,
-  }) : super(key: key);
+  final String challenge;
+  const ChallengesWidger({Key? key, required this.challenge}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -234,7 +248,7 @@ class ChallengesWidger extends StatelessWidget {
         children: <Widget>[
           SizedBox(height: 20),
           Text(
-            'Challenge',
+            challenge,
             textAlign: TextAlign.left,
             style: TextStyle(
                 color: Color.fromRGBO(62, 62, 62, 1),

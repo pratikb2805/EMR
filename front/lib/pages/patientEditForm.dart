@@ -72,6 +72,13 @@ class _PatientEditFormState extends State<PatientEditForm> {
   //   print('UserName : ${_discription.text}');
   // }
 
+  String? validator(String? val) {
+    if (val == '') {
+      return "Enter Valid Input";
+    }
+    return null;
+  }
+
   List<Widget> _getMedicines() {
     List<Widget> medicinesTextFieldsList = [];
     for (int i = 0; i < medicinesList.length; i++) {
@@ -101,7 +108,9 @@ class _PatientEditFormState extends State<PatientEditForm> {
     return InkWell(
       onTap: () {
         if (add) {
-          medicinesList.insert(medicinesList.length, ['', '']);
+          if (medicinesList[index][0] != '' && medicinesList[index][1] != '') {
+            medicinesList.insert(medicinesList.length, ['', '']);
+          }
         } else
           medicinesList.removeAt(index);
         setState(() {});
@@ -146,9 +155,13 @@ class _PatientEditFormState extends State<PatientEditForm> {
                               children: [
                                 TitleWidget(title: "Personal Details"),
                                 TextInputOneLineWidget(
-                                    controller: _name, label: "Name"),
+                                    validator: validator,
+                                    controller: _name,
+                                    label: "Name"),
                                 TextInputOneLineWidget(
-                                    controller: _age, label: "Age")
+                                    validator: validator,
+                                    controller: _age,
+                                    label: "Age")
                               ],
                             )),
                       ),
@@ -162,9 +175,23 @@ class _PatientEditFormState extends State<PatientEditForm> {
                               children: [
                                 TitleWidget(title: "Contact Details"),
                                 TextInputOneLineWidget(
-                                    controller: _phoneNo, label: "Phone No."),
+                                  controller: _phoneNo,
+                                  label: "Phone No.",
+                                  validator: (value) {
+                                    var regExp = new RegExp(
+                                        r'(^(?:[+0]9)?[0-9]{10,12}$)');
+                                    if (value!.length == 0) {
+                                      return 'Mobile number cant be empty';
+                                    } else if (!regExp.hasMatch(value)) {
+                                      return 'Please enter valid mobile number';
+                                    }
+                                    return null;
+                                  },
+                                ),
                                 TextInputOneLineWidget(
-                                    controller: _email, label: "Email"),
+                                    validator: validator,
+                                    controller: _email,
+                                    label: "Email"),
                                 TextInputMultiLineWidget(
                                     controller: _address,
                                     label: "Address",
@@ -318,6 +345,7 @@ class _PatientEditFormState extends State<PatientEditForm> {
                       phone: _phoneNo.text);
                 } else {
                   patient = widget.appointment.patient.target!;
+                  patient.id = widget.appointment.patient.targetId;
                   patient.dateMostRecentConsult = widget.appointment.start;
                 }
                 PatientModel pm = PatientModel();
@@ -427,8 +455,9 @@ class _QuantityInputFieldState extends State<QuantityInputField> {
 class TextInputOneLineWidget extends StatefulWidget {
   final String label;
   final TextEditingController controller;
+  final validator;
   TextInputOneLineWidget(
-      {Key? key, required this.controller, required this.label})
+      {Key? key, required this.controller, required this.label, this.validator})
       : super(key: key);
   @override
   _TextInputOneLineWidgetState createState() => _TextInputOneLineWidgetState();
@@ -441,9 +470,10 @@ class _TextInputOneLineWidgetState extends State<TextInputOneLineWidget> {
         padding: EdgeInsets.symmetric(horizontal: 8, vertical: 8),
         width: MediaQuery.of(context).size.width * 0.3,
         child: TextFormField(
+          validator: widget.validator,
           controller: widget.controller,
           decoration: InputDecoration(
-              constraints: BoxConstraints(maxHeight: 45),
+              constraints: BoxConstraints(),
               labelText: widget.label,
               border: OutlineInputBorder()),
         ));
