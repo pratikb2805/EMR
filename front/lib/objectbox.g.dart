@@ -14,7 +14,6 @@ export 'package:objectbox/objectbox.dart'; // so that callers only have to impor
 
 final _entities = <ModelEntity>[
   ModelEntity(
-
       id: const IdUid(1, 4206659433228728473),
       name: 'Appointment',
       lastPropertyId: const IdUid(8, 5561841712269699599),

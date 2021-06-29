@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 import 'pages.dart';
-import 'dart:io';
+// import 'dart:io';
 
 class PatientEditForm extends StatefulWidget {
   final Patient patient;
@@ -178,8 +178,8 @@ class _PatientEditFormState extends State<PatientEditForm> {
                                       decoration: InputDecoration(
                                           suffixIcon:
                                               Icon(Icons.calendar_today),
-                                          constraints:
-                                              BoxConstraints(maxHeight: 45),
+                                          // constraints:
+                                          //     BoxConstraints(maxHeight: 45),
                                           labelText: "Next Appointment Date",
                                           border: OutlineInputBorder()),
                                       onTap: () async {
@@ -204,8 +204,8 @@ class _PatientEditFormState extends State<PatientEditForm> {
                                       readOnly: true,
                                       controller: _lastVisitedDateCtl,
                                       decoration: InputDecoration(
-                                          constraints:
-                                              BoxConstraints(maxHeight: 45),
+                                          // constraints:
+                                          //     BoxConstraints(maxHeight: 45),
                                           labelText: "Date of Appointment",
                                           border: OutlineInputBorder()),
                                     ))
@@ -337,7 +337,8 @@ class _MedicineInputFieldState extends State<MedicineInputField> {
       // whenever text field value changes
       onChanged: (v) => _PatientEditFormState.friendsList[widget.index][0] = v,
       decoration: InputDecoration(
-          constraints: BoxConstraints(maxHeight: 45),
+          // constraints: BoxConstraints(maxHeight: 45),
+
           border: OutlineInputBorder(),
           labelText: 'Enter Medicine Name'),
       validator: (v) {
@@ -383,7 +384,7 @@ class _QuantityInputFieldState extends State<QuantityInputField> {
           FilteringTextInputFormatter.allow(RegExp(r'[0-9]')),
         ],
         decoration: InputDecoration(
-          constraints: BoxConstraints(maxHeight: 45),
+          // constraints: BoxConstraints(maxHeight: 45),
           border: OutlineInputBorder(),
           labelText: "Quanitity",
         ));
@@ -409,7 +410,7 @@ class _TextInputOneLineWidgetState extends State<TextInputOneLineWidget> {
         child: TextFormField(
           controller: widget.controller,
           decoration: InputDecoration(
-              constraints: BoxConstraints(maxHeight: 45),
+              // constraints: BoxConstraints(maxHeight: 45),
               labelText: widget.label,
               border: OutlineInputBorder()),
         ));
@@ -441,7 +442,7 @@ class _TextInputMultiLineWidgetState extends State<TextInputMultiLineWidget> {
           maxLines: null,
           controller: widget.controller,
           decoration: InputDecoration(
-              constraints: BoxConstraints(maxHeight: widget.maxHeight),
+              // constraints: BoxConstraints(maxHeight: widget.maxHeight),
               labelText: widget.label,
               border: OutlineInputBorder()),
         ));

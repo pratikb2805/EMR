@@ -19,6 +19,20 @@ class Patient {
       required this.dateMostRecentConsult,
       required this.email,
       required this.phone});
+
+  factory Patient.fromJson(Map<String, dynamic> json) => Patient(
+      name: json['name'] as String,
+      address: json['address'] != null ? json['address'] as String : '',
+      email: json['email']! as String,
+      dateFirstConsult: json['dateFirstConsult'] != null
+          ? DateTime.parse(json['dateFirstConsult'] as String)
+          : DateTime.now(),
+      dateMostRecentConsult: json['dateMostRecentConsult'] != null
+          ? DateTime.parse(json['dateMostRecentConsult'] as String)
+          : DateTime.now(),
+      phone: json['phone'] as String,
+      diagnosis: json['diagnosis'] as String);
+
   Map<String, dynamic> toJson() => {
         'id': id,
         'name': name,

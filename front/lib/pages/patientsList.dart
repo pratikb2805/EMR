@@ -1,6 +1,5 @@
 import 'dart:async';
-import 'dart:math';
-import 'package:emr/db/patient.dart';
+import 'package:emr/db/patient.dart' as db;
 // import 'package:emr/objectbox.g.dart';
 import 'package:emr/pages/pages.dart';
 import 'package:fluent_ui/fluent_ui.dart' as Fluent;
@@ -9,16 +8,14 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:emr/db/store.dart';
 import 'package:path_provider/path_provider.dart';
-// import 'package:system_theme/system_theme.dart';
-// import 'package:path/path.dart';
 
-class AppointmentList extends StatefulWidget {
+class PatientsList extends StatefulWidget {
   @override
-  _AppointmentListState createState() => _AppointmentListState();
+  _PatientsListState createState() => _PatientsListState();
 }
 
-class _AppointmentListState extends State<AppointmentList> {
-  final _listController = StreamController<List<Appointment>>(sync: true);
+class _PatientsListState extends State<PatientsList> {
+  final _listController = StreamController<List<db.Patient>>(sync: true);
   late final ViewModel _vm;
   bool hasBeenInitialized = false;
 
@@ -26,11 +23,11 @@ class _AppointmentListState extends State<AppointmentList> {
   void initState() {
     super.initState();
     getApplicationSupportDirectory().then((dir) {
+      print(dir.path);
       _vm = ViewModel(dir);
 
       setState(() {
-        _listController
-            .addStream(_vm.queryAppointmentStream.map((q) => q.find()));
+        _listController.addStream(_vm.queryPatientStream.map((q) => q.find()));
         hasBeenInitialized = true;
       });
     });
@@ -39,6 +36,7 @@ class _AppointmentListState extends State<AppointmentList> {
   @override
   void dispose() {
     _listController.close();
+
     _vm.dispose();
     super.dispose();
   }
@@ -52,44 +50,44 @@ class _AppointmentListState extends State<AppointmentList> {
         children: <Widget>[
           Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
             Container(
-              height: max(MediaQuery.of(context).size.height * 0.1, 70),
+              height: 70,
               padding: EdgeInsets.all(10),
               alignment: Alignment.centerLeft,
               child: Text(
-                "Appointments",
+                "Patients",
                 style: Fluent.FluentTheme.of(context).typography.header,
               ),
             ),
-            Container(
-                height: max(MediaQuery.of(context).size.height * 0.07, 40),
-                color: Fluent.FluentTheme.of(context).accentColor,
-                child: TextButton.icon(
-                    onPressed: () async {
-                      await Fluent.showDialog(
-                          context: context,
-                          builder: (context) {
-                            return StatefulBuilder(
-                                builder: (context, setState) {
-                              return NewAppointment();
-                            });
-                          });
-                    },
-                    icon: Fluent.Padding(
-                      padding: const EdgeInsets.all(4.0),
-                      child:
-                          Icon(FluentIcons.add_24_regular, color: Colors.white),
-                    ),
-                    label: Fluent.Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Text("Add Appointment",
-                          style: TextStyle(color: Colors.white)),
-                    )))
+            // Container(
+            //     height: 40,
+            //     color: Fluent.FluentTheme.of(context).accentColor,
+            //     child: TextButton.icon(
+            //         onPressed: () async {
+            //           await Fluent.showDialog(
+            //               context: context,
+            //               builder: (context) {
+            //                 return StatefulBuilder(
+            //                     builder: (context, setState) {
+            //                   return
+            //                 });
+            //               });
+            //         },
+            //         icon: Fluent.Padding(
+            //           padding: const EdgeInsets.all(4.0),
+            //           child:
+            //               Icon(FluentIcons.add_24_regular, color: Colors.white),
+            //         ),
+            //         label: Fluent.Padding(
+            //           padding: const EdgeInsets.all(8.0),
+            //           child: Text("Add db.Patient",
+            //               style: TextStyle(color: Colors.white)),
+            //         )))
           ]),
           !hasBeenInitialized
               ? Center(
                   child: CircularProgressIndicator(),
                 )
-              : StreamBuilder<List<Appointment>>(
+              : StreamBuilder<List<db.Patient>>(
                   stream: _listController.stream,
                   builder: (context, snapshot) {
                     if (!snapshot.hasData) {
@@ -97,8 +95,8 @@ class _AppointmentListState extends State<AppointmentList> {
                         child: CircularProgressIndicator(),
                       );
                     } else {
-                      return DataTable(
-                        appointments: snapshot.data!,
+                      return PatientsDataTable(
+                        patients: snapshot.data!,
                       );
                     }
                   },
@@ -109,30 +107,30 @@ class _AppointmentListState extends State<AppointmentList> {
   }
 }
 
-// List<Appointment> parseData(String responseBody) {
+// List<db.Patient> parseData(String responseBody) {
 //   final parsed = json.decode(responseBody).cast<Map<String, dynamic>>();
-//   return parsed.map<Appointment>((json) => Appointment.fromJson(json)).toList();
+//   return parsed.map<db.Patient>((json) => db.Patient.fromJson(json)).toList();
 // }
 
-class DataTable extends StatefulWidget {
-  final List<Appointment> appointments;
+class PatientsDataTable extends StatefulWidget {
+  final List<db.Patient> patients;
 
-  DataTable({Key? key, required this.appointments}) : super(key: key);
+  PatientsDataTable({Key? key, required this.patients}) : super(key: key);
 
   @override
-  _DataTableState createState() => _DataTableState();
+  _PatientsDataTableState createState() => _PatientsDataTableState();
 }
 
-class _DataTableState extends State<DataTable> {
-  AppointmentDataSource _source = AppointmentDataSource([]);
+class _PatientsDataTableState extends State<PatientsDataTable> {
+  PatientDataSource _source = PatientDataSource([]);
   int _sortColumnIndex = 0;
   bool _sortAscending = true;
   bool isLoaded = false;
   int _rowsPerPage = PaginatedDataTable.defaultRowsPerPage;
-  List<Appointment> appointments = [];
+  List<db.Patient> Patients = [];
 
   void _sort<T>(
-      Comparable<T> getField(Appointment d), int columnIndex, bool ascending) {
+      Comparable<T> getField(db.Patient d), int columnIndex, bool ascending) {
     _source._sort<T>(getField, ascending);
     setState(() {
       _sortColumnIndex = columnIndex;
@@ -142,21 +140,21 @@ class _DataTableState extends State<DataTable> {
 
   void initstate() {
     setState(() {
-      appointments = widget.appointments;
-      _source = AppointmentDataSource(appointments);
+      Patients = widget.patients;
+      _source = PatientDataSource(Patients);
     });
     super.initState();
   }
 
-  // Future<List<Appointment>> fetchData() async {
+  // Future<List<db.Patient>> fetchData() async {
   //   final String response =
-  //       await rootBundle.loadString('assets/data/appointment.json');
+  //       await rootBundle.loadString('assets/data/db.Patient.json');
   //   final parsed = json.decode(response).cast<Map<String, dynamic>>();
-  //   return parsed.map<Appointment>((json) => fromJson(json)).toList();
+  //   return parsed.map<db.Patient>((json) => fromJson(json)).toList();
   // }
 
-  // Appointment fromJson(Map<String, dynamic> json) {
-  //   return Appointment(
+  // db.Patient fromJson(Map<String, dynamic> json) {
+  //   return db.Patient(
   //     start: DateTime.parse(json['start']).toLocal(),
   //     end: DateTime.parse(json['end']).toLocal(),
   //     name: json['name'] ?? '',
@@ -168,10 +166,10 @@ class _DataTableState extends State<DataTable> {
 
   // Future<void> getData() async {
   //   if (!isLoaded) {
-  //     appointments = await fetchData();
+  //     db.Patients = await fetchData();
   //     setState(() {
   //       isLoaded = true;
-  //       _source = AppointmentDataSource(appointments);
+  //       _source = db.PatientDataSource(db.Patients);
   //     });
   //   }
   // }
@@ -199,44 +197,46 @@ class _DataTableState extends State<DataTable> {
                 style: TextStyle(fontWeight: FontWeight.bold),
               ),
               onSort: (int columnIndex, bool ascending) =>
-                  _sort<num>((Appointment d) => d.id, columnIndex, ascending)),
+                  _sort<num>((db.Patient d) => d.id, columnIndex, ascending)),
           DataColumn(
               label: Text(
                 'Name',
                 style: TextStyle(fontWeight: FontWeight.bold),
               ),
               onSort: (int columnIndex, bool ascending) => _sort<String>(
-                  (Appointment d) => d.name, columnIndex, ascending)),
+                  (db.Patient d) => d.name, columnIndex, ascending)),
           DataColumn(
               label: Text(
-                'Start Time',
+                'First Consult',
                 style: TextStyle(fontWeight: FontWeight.bold),
               ),
               onSort: (int columnIndex, bool ascending) => _sort<String>(
-                  (Appointment d) => d.start.toString(),
+                  (db.Patient d) => d.dateFirstConsult.toString(),
                   columnIndex,
                   ascending)),
           DataColumn(
               label: Text(
-                'End Time',
+                'Last Consult',
                 style: TextStyle(fontWeight: FontWeight.bold),
               ),
               onSort: (int columnIndex, bool ascending) => _sort<String>(
-                  (Appointment d) => d.end.toString(), columnIndex, ascending)),
+                  (db.Patient d) => d.dateMostRecentConsult.toString(),
+                  columnIndex,
+                  ascending)),
           DataColumn(
               label: Text(
                 'Phone',
                 style: TextStyle(fontWeight: FontWeight.bold),
               ),
               onSort: (int columnIndex, bool ascending) => _sort<String>(
-                  (Appointment d) => d.phone, columnIndex, ascending)),
+                  (db.Patient d) => d.phone, columnIndex, ascending)),
           DataColumn(
               label: Text(
                 'Email',
                 style: TextStyle(fontWeight: FontWeight.bold),
               ),
               onSort: (int columnIndex, bool ascending) => _sort<String>(
-                  (Appointment d) => d.email, columnIndex, ascending)),
+                  (db.Patient d) => d.email, columnIndex, ascending)),
           DataColumn(
             label: Container(),
           ),
@@ -246,14 +246,14 @@ class _DataTableState extends State<DataTable> {
   }
 }
 
-class AppointmentDataSource extends DataTableSource {
-  final List<Appointment> _appointment;
-  AppointmentDataSource(this._appointment);
+class PatientDataSource extends DataTableSource {
+  final List<db.Patient> Patients;
+  PatientDataSource(this.Patients);
 
-  void _sort<T>(Comparable<T> getField(Appointment d), bool ascending) {
-    _appointment.sort((Appointment a, Appointment b) {
+  void _sort<T>(Comparable<T> getField(db.Patient d), bool ascending) {
+    Patients.sort((db.Patient a, db.Patient b) {
       if (!ascending) {
-        final Appointment c = a;
+        final db.Patient c = a;
         a = b;
         b = c;
       }
@@ -266,20 +266,20 @@ class AppointmentDataSource extends DataTableSource {
 
   @override
   DataRow getRow(int index) {
-    final Appointment appointment = _appointment[index];
+    final patient = Patients[index];
     return DataRow(cells: [
-      DataCell(Text(appointment.id.toString())),
-      DataCell(Text(appointment.name)),
-      DataCell(Text(appointment.start.toString())),
-      DataCell(Text(appointment.end.toString())),
-      DataCell(Text(appointment.phone)),
-      DataCell(Text(appointment.email)),
+      DataCell(Text(patient.id.toString())),
+      DataCell(Text(patient.name)),
+      DataCell(Text(patient.dateFirstConsult.toString())),
+      DataCell(Text(patient.dateMostRecentConsult.toString())),
+      DataCell(Text(patient.phone)),
+      DataCell(Text(patient.email)),
       DataCell(Row(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: [
-          ActionRow(
+          PatientActionRow(
             index: index,
-            patient: appointment,
+            patient: patient,
           ),
           Container(
               width: 25,
@@ -305,23 +305,23 @@ class AppointmentDataSource extends DataTableSource {
   bool get isRowCountApproximate => false;
 
   @override
-  int get rowCount => _appointment.length;
+  int get rowCount => Patients.length;
 
   @override
   int get selectedRowCount => 0;
 }
 
-class ActionRow extends StatefulWidget {
-  ActionRow({Key? key, required this.index, required this.patient})
+class PatientActionRow extends StatefulWidget {
+  PatientActionRow({Key? key, required this.index, required this.patient})
       : super(key: key);
 
   final index;
-  final Appointment patient;
+  final db.Patient patient;
   @override
-  _ActionRowState createState() => _ActionRowState();
+  _PatientActionRowState createState() => _PatientActionRowState();
 }
 
-class _ActionRowState extends State<ActionRow> {
+class _PatientActionRowState extends State<PatientActionRow> {
   Future<void> showInformationDialog(BuildContext context) async {
     return await showDialog(
         context: context,

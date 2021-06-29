@@ -7,7 +7,7 @@ class ViewModel {
   late final Box<Appointment> _appointmentBox;
   late final Box<Patient> _patientBox;
   late final Stream<Query<Appointment>> queryAppointmentStream;
-  late final Stream<Query<Patient>> _queryPatientStream;
+  late final Stream<Query<Patient>> queryPatientStream;
 
   ViewModel(Directory dir)
       : _store = Store(
@@ -23,7 +23,8 @@ class ViewModel {
     _patientBox = Box<Patient>(_store);
     final qPatientBuilder = _patientBox.query()
       ..order(Patient_.name, flags: Order.descending);
-    _queryPatientStream = qPatientBuilder.watch(triggerImmediately: true);
+    print(qPatientBuilder.build().count());
+    queryPatientStream = qPatientBuilder.watch(triggerImmediately: true);
   }
 
   void addAppointment(Appointment appointment) =>

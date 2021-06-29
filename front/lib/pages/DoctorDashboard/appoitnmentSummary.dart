@@ -1,4 +1,5 @@
 import 'package:flutter/foundation.dart';
+import 'package:fluent_ui/fluent_ui.dart' as Fluent;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
@@ -6,6 +7,8 @@ import 'package:syncfusion_flutter_calendar/calendar.dart';
 // import 'package:emr/db/patient.dart';
 import 'dart:math';
 import 'dart:convert';
+
+import 'package:system_theme/system_theme.dart';
 
 class AppointmentSummary extends StatefulWidget {
   AppointmentSummary({Key? key, this.controller}) : super(key: key);
@@ -98,13 +101,15 @@ class _AppointmentSummaryState extends State<AppointmentSummary> {
                     height: 500,
                     child: SafeArea(
                       child: SfCalendar(
+                        todayHighlightColor:
+                            Fluent.FluentTheme.of(context).accentColor,
                         showCurrentTimeIndicator: true,
                         showNavigationArrow: true,
-                        showDatePickerButton: true,
+                        // showDatePickerButton: true,
                         timeSlotViewSettings: TimeSlotViewSettings(
                             timeInterval: Duration(hours: 2),
                             timeIntervalHeight: 80,
-                            timeIntervalWidth: 1000),
+                            timeIntervalWidth: 0),
                         onTap: (CalendarTapDetails details) {
                           if (details.targetElement ==
                                   CalendarElement.appointment ||
@@ -119,7 +124,7 @@ class _AppointmentSummaryState extends State<AppointmentSummary> {
                           }
                         },
                         controller: widget.controller,
-                        view: CalendarView.day,
+                        view: CalendarView.schedule,
                         appointmentTextStyle: TextStyle(
                           fontSize: 10.0,
                           color: Colors.white,

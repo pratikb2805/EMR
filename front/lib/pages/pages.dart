@@ -1,5 +1,5 @@
 export 'appointment.dart';
-export 'patients.dart';
+export 'patientsList.dart';
 export 'signup.dart';
 export 'signIn.dart';
 export 'patientInfo.dart';
