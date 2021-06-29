@@ -2,11 +2,13 @@ import 'package:objectbox/objectbox.dart';
 
 @Entity()
 class Patient {
+  ToMany<Appointment> appointments = ToMany<Appointment>();
   int id = 0;
   String name;
   String? address;
   String email;
   String phone;
+  String age;
   DateTime dateFirstConsult;
   DateTime dateMostRecentConsult;
   String diagnosis;
@@ -15,10 +17,12 @@ class Patient {
       {required this.name,
       this.address,
       required this.diagnosis,
+      required this.age,
       required this.dateFirstConsult,
       required this.dateMostRecentConsult,
       required this.email,
       required this.phone});
+
   Map<String, dynamic> toJson() => {
         'id': id,
         'name': name,

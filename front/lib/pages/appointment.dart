@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 import 'dart:math';
 import 'package:emr/db/patient.dart';
 import 'package:emr/objectbox.g.dart';
@@ -16,27 +17,23 @@ class AppointmentList extends StatefulWidget {
 
 class _AppointmentListState extends State<AppointmentList> {
   final _listController = StreamController<List<Appointment>>(sync: true);
-  late final ViewModel _vm;
+  late final AppointmentModel vm;
   bool hasBeenInitialized = false;
 
   @override
   void initState() {
     super.initState();
-    getApplicationSupportDirectory().then((dir) {
-      _vm = ViewModel(dir);
+    vm = AppointmentModel();
 
-      setState(() {
-        _listController
-            .addStream(_vm.queryAppointmentStream.map((q) => q.find()));
-        hasBeenInitialized = true;
-      });
+    setState(() {
+      _listController.addStream(vm.queryAppointmentStream.map((q) => q.find()));
+      hasBeenInitialized = true;
     });
   }
 
   @override
   void dispose() {
     _listController.close();
-    _vm.dispose();
     super.dispose();
   }
 
@@ -69,7 +66,9 @@ class _AppointmentListState extends State<AppointmentList> {
                           builder: (context) {
                             return StatefulBuilder(
                                 builder: (context, setState) {
-                              return NewAppointment();
+                              return NewAppointment(
+                                am: vm,
+                              );
                             });
                           });
                     },
@@ -91,6 +90,7 @@ class _AppointmentListState extends State<AppointmentList> {
                     } else {
                       return DataTable(
                         appointments: snapshot.data!,
+                        vm: vm,
                       );
                     }
                   },
@@ -108,15 +108,16 @@ class _AppointmentListState extends State<AppointmentList> {
 
 class DataTable extends StatefulWidget {
   final List<Appointment> appointments;
-
-  DataTable({Key? key, required this.appointments}) : super(key: key);
+  final AppointmentModel vm;
+  DataTable({Key? key, required this.appointments, required this.vm})
+      : super(key: key);
 
   @override
   _DataTableState createState() => _DataTableState();
 }
 
 class _DataTableState extends State<DataTable> {
-  AppointmentDataSource _source = AppointmentDataSource([]);
+  late AppointmentDataSource _source;
   int _sortColumnIndex = 0;
   bool _sortAscending = true;
   bool isLoaded = false;
@@ -132,10 +133,18 @@ class _DataTableState extends State<DataTable> {
     });
   }
 
-  void initstate() {
+  void getData() {
     setState(() {
       appointments = widget.appointments;
-      _source = AppointmentDataSource(appointments);
+      _source = AppointmentDataSource(appointments, widget.vm);
+    });
+  }
+
+  void initstate() {
+    print(widget.appointments);
+    setState(() {
+      appointments = widget.appointments;
+      _source = AppointmentDataSource(appointments, widget.vm);
     });
     super.initState();
   }
@@ -170,7 +179,7 @@ class _DataTableState extends State<DataTable> {
 
   @override
   Widget build(BuildContext context) {
-    // getData();
+    getData();
     return SingleChildScrollView(
       child: PaginatedDataTable(
         source: _source,
@@ -240,7 +249,8 @@ class _DataTableState extends State<DataTable> {
 
 class AppointmentDataSource extends DataTableSource {
   final List<Appointment> _appointment;
-  AppointmentDataSource(this._appointment);
+  final AppointmentModel vm;
+  AppointmentDataSource(this._appointment, this.vm);
 
   void _sort<T>(Comparable<T> getField(Appointment d), bool ascending) {
     _appointment.sort((Appointment a, Appointment b) {
@@ -259,6 +269,7 @@ class AppointmentDataSource extends DataTableSource {
   @override
   DataRow getRow(int index) {
     final Appointment appointment = _appointment[index];
+    print(appointment.patient.target);
     return DataRow(cells: [
       DataCell(Text(appointment.id.toString())),
       DataCell(Text(appointment.name)),
@@ -270,7 +281,7 @@ class AppointmentDataSource extends DataTableSource {
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: [
           ActionRow(
-            index: index,
+            index: appointment.id,
             patient: appointment,
           ),
           Container(
@@ -285,7 +296,7 @@ class AppointmentDataSource extends DataTableSource {
                       size: 20,
                     )),
                 onPressed: () {
-                  print('Remove');
+                  vm.removeAppointment(appointment);
                 },
               ))
         ],
@@ -319,7 +330,7 @@ class _ActionRowState extends State<ActionRow> {
         context: context,
         builder: (context) {
           return StatefulBuilder(builder: (context, setState) {
-            return Container(child: Text("Hi I'm Siri"));
+            return PatientEditForm(widget.patient);
           });
         });
   }
