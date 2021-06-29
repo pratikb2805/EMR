@@ -11,8 +11,8 @@ class AppointmentModel {
   AppointmentModel()
       : _store = Store(
           getObjectBoxModel(),
-          directory: Directory('D:\\Projects\\flutter\\EMR\\front').path +
-              '/objectbox',
+          directory: Directory('D:\\Projects\\flutter\\EMR\\front\\').path +
+              r'\objectbox',
           maxReaders: 3,
         ) {
     _appointmentBox = Box<Appointment>(_store);
@@ -43,8 +43,7 @@ class PatientModel {
   PatientModel(dir)
       : _store = Store(
           getObjectBoxModel(),
-          directory: dir.path +
-              '/objectbox',
+          directory: dir.path + '/objectbox',
           maxReaders: 3,
         ) {
     _patientBox = Box<Patient>(_store);
