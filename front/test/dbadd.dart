@@ -10,15 +10,15 @@ void main() async {
       directory: p.join(
           r'C:\Users\Pratik Bedre\AppData\Roaming\com.example\front',
           'objectbox'));
-  final patientBox = store.box<Patient>();
+  final patientBox = store.box<Appointment>();
   patientBox.removeAll();
   var data = json.decode(
-      File(r"D:\EMR\front\assets\data\patient.json").readAsStringSync());
+      File(r"D:\EMR\front\assets\data\appointment.json").readAsStringSync());
   print(data[0].runtimeType);
   for (Map<String, dynamic> dt in data) {
     print(dt['name']);
     // dt['id'] = 0;
-    patientBox.put(Patient.fromJson(dt));
+    patientBox.put(Appointment.fromJson(dt));
   }
   for (var i in patientBox.getAll()) print(i.id);
   store.close();
