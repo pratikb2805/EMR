@@ -1,12 +1,14 @@
+import 'package:emr/db/store.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
-import 'pages.dart';
+import 'package:path_provider/path_provider.dart';
 // import 'dart:io';
+import 'package:emr/db/patient.dart';
 
 class PatientEditForm extends StatefulWidget {
-  final Patient patient;
-  PatientEditForm(this.patient);
+  final Appointment appointment;
+  PatientEditForm(this.appointment);
   @override
   _PatientEditFormState createState() => _PatientEditFormState();
 }
@@ -23,10 +25,11 @@ class _PatientEditFormState extends State<PatientEditForm> {
   final TextEditingController _nextAppointmentDate = TextEditingController();
   final TextEditingController _thingsToWork = TextEditingController();
 
-  static List<List<dynamic>> friendsList = [
+  static List<List<dynamic>> medicinesList = [
     ['', '']
   ];
 
+  late final Patient patient;
   @override
   void dispose() {
     _name.dispose();
@@ -37,12 +40,29 @@ class _PatientEditFormState extends State<PatientEditForm> {
     _address.dispose();
     _nextAppointmentDate.dispose();
     _thingsToWork.dispose();
+    medicinesList = [
+      ['', '']
+    ];
     super.dispose();
   }
 
   @override
   void initState() {
-    _name.text = widget.patient.companyName;
+    if (widget.appointment.patient.target == null) {
+      print("not exist");
+      _name.text = widget.appointment.name;
+      _email.text = widget.appointment.email;
+      _phoneNo.text = widget.appointment.phone;
+    } else {
+      print("exist");
+      _name.text = widget.appointment.patient.target!.name;
+      _address.text = ((widget.appointment.patient.target!.address != null)
+          ? widget.appointment.patient.target!.address
+          : '')!;
+      _discription.text = widget.appointment.patient.target!.diagnosis;
+      _phoneNo.text = widget.appointment.patient.target!.phone;
+      _email.text = widget.appointment.patient.target!.email;
+    }
     _lastVisitedDateCtl.text =
         DateFormat('dd-MM-yyyy').format(DateTime.now()).toString();
 
@@ -53,10 +73,10 @@ class _PatientEditFormState extends State<PatientEditForm> {
   //   print('UserName : ${_discription.text}');
   // }
 
-  List<Widget> _getFriends() {
-    List<Widget> friendsTextFieldsList = [];
-    for (int i = 0; i < friendsList.length; i++) {
-      friendsTextFieldsList.add(
+  List<Widget> _getMedicines() {
+    List<Widget> medicinesTextFieldsList = [];
+    for (int i = 0; i < medicinesList.length; i++) {
+      medicinesTextFieldsList.add(
         Padding(
             padding: const EdgeInsets.symmetric(vertical: 16.0),
             child: Row(
@@ -70,21 +90,21 @@ class _PatientEditFormState extends State<PatientEditForm> {
                 SizedBox(
                   width: 16,
                 ),
-                _addRemoveButton(i == friendsList.length - 1, i),
+                _addRemoveButton(i == medicinesList.length - 1, i),
               ],
             )),
       );
     }
-    return friendsTextFieldsList;
+    return medicinesTextFieldsList;
   }
 
   Widget _addRemoveButton(bool add, int index) {
     return InkWell(
       onTap: () {
         if (add) {
-          friendsList.insert(friendsList.length, ['', '']);
+          medicinesList.insert(medicinesList.length, ['', '']);
         } else
-          friendsList.removeAt(index);
+          medicinesList.removeAt(index);
         setState(() {});
       },
       child: Container(
@@ -256,7 +276,7 @@ class _PatientEditFormState extends State<PatientEditForm> {
                                   ),
                                 ),
                               ),
-                              ..._getFriends()
+                              ..._getMedicines()
                             ],
                           ))),
 
@@ -286,8 +306,26 @@ class _PatientEditFormState extends State<PatientEditForm> {
       actions: <Widget>[
         Center(
           child: ElevatedButton(
-            onPressed: () {
+            onPressed: () async {
               if (_patientEditFormKey.currentState!.validate()) {
+                if (widget.appointment.patient.target == null) {
+                  patient = Patient(
+                      name: _name.text,
+                      age: int.parse(_age.text),
+                      diagnosis: _discription.text,
+                      dateFirstConsult: widget.appointment.start,
+                      dateMostRecentConsult: widget.appointment.start,
+                      email: _email.text,
+                      phone: _phoneNo.text);
+                } else {
+                  patient = widget.appointment.patient.target!;
+                  patient.dateMostRecentConsult = widget.appointment.start;
+                }
+                var dir = await getApplicationSupportDirectory();
+                PatientModel pm = PatientModel(dir);
+                AppointmentModel am = AppointmentModel();
+                pm.addPatient(patient);
+                am.removeAppointment(widget.appointment);
                 // Do something like updating SharedPreferences or User Settings etc.
                 Navigator.of(context).pop();
               }
@@ -329,22 +367,20 @@ class _MedicineInputFieldState extends State<MedicineInputField> {
   @override
   Widget build(BuildContext context) {
     WidgetsBinding.instance!.addPostFrameCallback((timeStamp) {
-      _nameController.text = _PatientEditFormState.friendsList[widget.index][0];
+      _nameController.text =
+          _PatientEditFormState.medicinesList[widget.index][0];
     });
     return TextFormField(
       controller: _nameController,
-      // save text field data in friends list at index
+      // save text field data in medicines list at index
       // whenever text field value changes
-      onChanged: (v) => _PatientEditFormState.friendsList[widget.index][0] = v,
+      onChanged: (v) =>
+          _PatientEditFormState.medicinesList[widget.index][0] = v,
       decoration: InputDecoration(
           // constraints: BoxConstraints(maxHeight: 45),
 
           border: OutlineInputBorder(),
           labelText: 'Enter Medicine Name'),
-      validator: (v) {
-        if (v!.trim().isEmpty) return 'Please enter something';
-        return null;
-      },
     );
   }
 }
@@ -373,11 +409,11 @@ class _QuantityInputFieldState extends State<QuantityInputField> {
   @override
   Widget build(BuildContext context) {
     WidgetsBinding.instance!.addPostFrameCallback((timeStamp) {
-      _quantity.text = _PatientEditFormState.friendsList[widget.index][1];
+      _quantity.text = _PatientEditFormState.medicinesList[widget.index][1];
     });
     return TextFormField(
         onChanged: (v) =>
-            _PatientEditFormState.friendsList[widget.index][1] = v,
+            _PatientEditFormState.medicinesList[widget.index][1] = v,
         controller: _quantity,
         keyboardType: TextInputType.number,
         inputFormatters: <TextInputFormatter>[

@@ -1,9 +1,7 @@
 import 'dart:async';
 import 'package:emr/db/patient.dart' as db;
 // import 'package:emr/objectbox.g.dart';
-import 'package:emr/pages/pages.dart';
 import 'package:fluent_ui/fluent_ui.dart' as Fluent;
-import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:emr/db/store.dart';
@@ -16,7 +14,7 @@ class PatientsList extends StatefulWidget {
 
 class _PatientsListState extends State<PatientsList> {
   final _listController = StreamController<List<db.Patient>>(sync: true);
-  late final ViewModel _vm;
+  late final PatientModel _vm;
   bool hasBeenInitialized = false;
 
   @override
@@ -24,7 +22,7 @@ class _PatientsListState extends State<PatientsList> {
     super.initState();
     getApplicationSupportDirectory().then((dir) {
       print(dir.path);
-      _vm = ViewModel(dir);
+      _vm = PatientModel(dir);
 
       setState(() {
         _listController.addStream(_vm.queryPatientStream.map((q) => q.find()));

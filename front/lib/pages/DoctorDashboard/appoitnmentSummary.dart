@@ -4,11 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
-// import 'package:emr/db/patient.dart';
 import 'dart:math';
 import 'dart:convert';
-
-import 'package:system_theme/system_theme.dart';
 
 class AppointmentSummary extends StatefulWidget {
   AppointmentSummary({Key? key, this.controller}) : super(key: key);

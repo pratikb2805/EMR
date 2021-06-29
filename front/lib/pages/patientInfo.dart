@@ -1,19 +1,20 @@
 //import 'package:emr/db/patient.dart';
 import 'dart:io';
+import 'package:emr/db/patient.dart';
 import 'package:filepicker_windows/filepicker_windows.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:path/path.dart' as p;
 import 'package:flutter/material.dart';
 import 'package:open_file/open_file.dart';
 import 'package:path_provider/path_provider.dart';
-// import 'package:flutter_svg/flutter_svg.dart';
 import 'userProfile.dart';
 // import 'pages.dart';
 
 //
 //import 'package:objectbox/objectbox.dart';
 class PatientprofileWidget extends StatefulWidget {
-  PatientprofileWidget({Key? key});
+  final Patient patient;
+  PatientprofileWidget({Key? key, required this.patient});
   @override
   _PatientprofileWidgetState createState() => _PatientprofileWidgetState();
 }
@@ -25,6 +26,11 @@ class _PatientprofileWidgetState extends State<PatientprofileWidget> {
 
     return Scaffold(
       appBar: AppBar(
+        leading: IconButton(
+            onPressed: () {
+              Navigator.pop(context);
+            },
+            icon: Icon(Icons.arrow_back)),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.vertical(
             bottom: Radius.circular(10.0),
