@@ -84,7 +84,7 @@ class _DoctorDashboardsState extends State<DoctorDashboards> {
                               Center(
                                 child: Fluent.SingleChildScrollView(
                                   key: UniqueKey(),
-                                  controller: Fluent.ScrollController(),
+                                  // controller: Fluent.ScrollController(),
                                   scrollDirection: Axis.horizontal,
                                   child: Row(
                                     mainAxisAlignment:
