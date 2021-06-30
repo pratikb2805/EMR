@@ -1,11 +1,13 @@
 import 'package:flutter/foundation.dart';
 import 'package:fluent_ui/fluent_ui.dart' as Fluent;
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
+
 import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
 import 'dart:math';
-import 'dart:convert';
+import 'package:emr/db/store.dart';
+import 'package:emr/db/patient.dart' as db;
 
 class AppointmentSummary extends StatefulWidget {
   AppointmentSummary({Key? key, this.controller}) : super(key: key);
@@ -16,19 +18,30 @@ class AppointmentSummary extends StatefulWidget {
 }
 
 class _AppointmentSummaryState extends State<AppointmentSummary> {
-  bool isloaded = false;
-  List<Appointment> meetings = [];
-  late AppointmentDataSource source = AppointmentDataSource([]);
+  // final _listController = StreamController<List<db.Appointment>>(sync: true);
+  // late final AppointmentModel vm;
+  bool hasBeenInitialized = false;
+
   @override
   void initState() {
     super.initState();
-    if (!isloaded) {
-      getData();
-    }
+    // vm = AppointmentModel();
+
+    setState(() {
+      // _listController.addStream(vm.queryAppointmentStream.map((q) => q.find()));
+      isloaded = true;
+    });
   }
 
+  bool isloaded = false;
+  // @override
+  // void initState() {
+  //   super.initState();
+  //   getData();
+  // }
+
   String formatted(DateTime tm) {
-    return DateFormat('hh:mm').format(tm);
+    return DateFormat('hh:mm').add_jm().format(tm);
   }
 
   void showAppointmentAlert(Appointment app, BuildContext context) {
@@ -49,11 +62,11 @@ class _AppointmentSummaryState extends State<AppointmentSummary> {
                         Padding(
                           padding: EdgeInsets.all(5),
                           child: Text(
-                              """Date : ${app.startTime.day}\nTime : ${formatted(app.startTime)}- ${formatted(app.endTime)}"""),
+                              """Date : ${DateFormat('dd/MM/yyyy').format(app.startTime)}\nTime : ${formatted(app.startTime)} - ${formatted(app.endTime)}"""),
                         ),
                         Padding(
                           padding: EdgeInsets.all(5),
-                          child: Text("Desription: ${app.notes}"),
+                          child: Text("Description: ${app.subject}"),
                         )
                       ],
                     )),
@@ -62,103 +75,106 @@ class _AppointmentSummaryState extends State<AppointmentSummary> {
   }
 
   @override
-  Widget build(BuildContext context) {
-    return FutureBuilder<dynamic>(
-      future: getData(),
-      builder: (BuildContext context, AsyncSnapshot snap) {
-        if (snap.connectionState == ConnectionState.done) {
-          if (snap.hasError) return Text('${snap.error}');
-          // for (var i in meetings) {
-          //   print('${i.startTime}');
-          // }
+  void dispose() {
+    // _listController.close();
+    super.dispose();
+  }
 
-          return Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Flexible(
-                child: Padding(
-                    padding: EdgeInsets.fromLTRB(20, 5, 5, 10),
-                    child: Text(
-                      'Appointments',
-                      style: TextStyle(
-                          fontSize: 36.0,
-                          decoration: TextDecoration.none,
-                          fontStyle: FontStyle.normal,
-                          fontWeight: FontWeight.normal,
-                          color: Colors.black),
-                    )),
-              ),
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Container(
-                    // constraints: BoxConstraints.expand(),
-                    width: MediaQuery.of(context).size.width * 0.9,
-                    height: 500,
-                    child: SafeArea(
-                      child: SfCalendar(
-                        todayHighlightColor:
-                            Fluent.FluentTheme.of(context).accentColor,
-                        showCurrentTimeIndicator: true,
-                        showNavigationArrow: true,
-                        // showDatePickerButton: true,
-                        timeSlotViewSettings: TimeSlotViewSettings(
-                            timeInterval: Duration(hours: 2),
-                            timeIntervalHeight: 80,
-                            timeIntervalWidth: 0),
-                        onTap: (CalendarTapDetails details) {
-                          if (details.targetElement ==
-                                  CalendarElement.appointment ||
-                              details.targetElement ==
-                                  CalendarElement.viewHeader) {
-                            final Appointment appointmentDetails =
-                                details.appointments![0];
-                            showAppointmentAlert(appointmentDetails, context);
-                          } else if (details.targetElement ==
-                              CalendarElement.allDayPanel) {
-                            print('tapped on date');
-                          }
-                        },
-                        controller: widget.controller,
-                        view: CalendarView.schedule,
-                        appointmentTextStyle: TextStyle(
-                          fontSize: 10.0,
-                          color: Colors.white,
-                          decoration: TextDecoration.none,
-                          fontStyle: FontStyle.normal,
-                          fontWeight: FontWeight.bold,
-                        ),
-                        dataSource: AppointmentDataSource(meetings),
-                        monthViewSettings: MonthViewSettings(
-                            // showAgenda: true,
-                            appointmentDisplayMode:
-                                MonthAppointmentDisplayMode.appointment),
+  @override
+  Widget build(BuildContext context) {
+    if (!isloaded) return Fluent.ProgressRing();
+    return Consumer<AppointmentModel>(
+      // stream: _listController.stream,
+      builder: (context, model, child) {
+        // if (!snapshot.hasData) return Fluent.ProgressRing();
+        // if (snapshot.hasError) return Text('error');
+        return Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Flexible(
+              child: Padding(
+                  padding: EdgeInsets.fromLTRB(20, 5, 5, 10),
+                  child: Text(
+                    'Appointments',
+                    style: TextStyle(
+                        fontSize: 36.0,
+                        decoration: TextDecoration.none,
+                        fontStyle: FontStyle.normal,
+                        fontWeight: FontWeight.normal,
+                        color: Colors.black),
+                  )),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Container(
+                  // constraints: BoxConstraints.expand(),
+                  width: MediaQuery.of(context).size.width * 0.9,
+                  height: 500,
+                  child: SafeArea(
+                    child: SfCalendar(
+                      todayHighlightColor:
+                          Fluent.FluentTheme.of(context).accentColor,
+                      showCurrentTimeIndicator: true,
+                      showNavigationArrow: true,
+                      // showDatePickerButton: true,
+                      timeSlotViewSettings: TimeSlotViewSettings(
+                          timeInterval: Duration(hours: 2),
+                          timeIntervalHeight: 80,
+                          timeIntervalWidth: 0),
+                      onTap: (CalendarTapDetails details) {
+                        if (details.targetElement ==
+                                CalendarElement.appointment ||
+                            details.targetElement ==
+                                CalendarElement.viewHeader) {
+                          final Appointment appointmentDetails =
+                              details.appointments![0];
+                          showAppointmentAlert(appointmentDetails, context);
+                        } else if (details.targetElement ==
+                            CalendarElement.allDayPanel) {
+                          print('tapped on date');
+                        }
+                      },
+                      controller: widget.controller,
+                      view: CalendarView.schedule,
+                      appointmentTextStyle: TextStyle(
+                        fontSize: 10.0,
+                        color: Colors.white,
+                        decoration: TextDecoration.none,
+                        fontStyle: FontStyle.normal,
+                        fontWeight: FontWeight.bold,
                       ),
-                    )),
-              ),
-            ],
-          );
-        }
-        return Container();
+                      dataSource: AppointmentDataSource(
+                          model.getAll().map((e) => fromDB(e)).toList()),
+                      monthViewSettings: MonthViewSettings(
+                          // showAgenda: true,
+                          appointmentDisplayMode:
+                              MonthAppointmentDisplayMode.appointment),
+                    ),
+                  )),
+            ),
+          ],
+        );
       },
     );
   }
 
-  Future<void> getData() async {
-    if (!isloaded) {
-      meetings = await fetchData();
-      setState(() {
-        isloaded = true;
-        source = AppointmentDataSource(meetings);
-      });
-    }
-  }
-
-  Color randomCOlor() {
+  get randomCOlor {
     var colors = Colors.accents;
     var _random = new Random();
     return colors[_random.nextInt(colors.length)];
+  }
+
+  Appointment fromDB(db.Appointment ap) {
+    // print(ap.name);
+    return Appointment(
+        startTime: ap.start,
+        endTime: ap.end,
+        isAllDay: false,
+        subject: ap.name,
+        notes: ap.description,
+        color: randomCOlor);
   }
 
   Appointment fromJson(Map<String, dynamic> json) {
@@ -168,19 +184,13 @@ class _AppointmentSummaryState extends State<AppointmentSummary> {
         endTime: DateTime.parse(json['end']).toLocal(),
         subject: json['name'] ?? '',
         notes: json['description'] ?? '',
-        color: randomCOlor());
-  }
-
-  Future<List<Appointment>> fetchData() async {
-    final String response =
-        await rootBundle.loadString('assets/data/appointment.json');
-    final parsed = json.decode(response).cast<Map<String, dynamic>>();
-    return parsed.map<Appointment>((json) => fromJson(json)).toList();
+        color: randomCOlor);
   }
 }
 
 class AppointmentDataSource extends CalendarDataSource {
   AppointmentDataSource(List<Appointment> source) {
+    // if (source.length > 0) print(source[0]);
     appointments = source;
   }
 

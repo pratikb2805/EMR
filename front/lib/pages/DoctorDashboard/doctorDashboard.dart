@@ -1,3 +1,4 @@
+import 'package:emr/db/store.dart';
 import 'package:flutter/material.dart';
 import 'doctorTop.dart';
 import 'patientsList.dart';
@@ -8,6 +9,7 @@ import 'package:fluent_ui/fluent_ui.dart' as Fluent;
 import 'package:system_theme/system_theme.dart';
 import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 // import 'package:emr/main.dart' as m;
+import 'package:provider/provider.dart';
 
 class DoctorDashboards extends StatefulWidget {
   DoctorDashboards(
@@ -90,24 +92,34 @@ class _DoctorDashboardsState extends State<DoctorDashboards> {
                                     children: [
                                       Padding(
                                           padding: const EdgeInsets.all(8.0),
-                                          child: CardBadgeWidget(
-                                              onPressed:
-                                                  widget.appointMentOnpresed,
-                                              color: SystemTheme
-                                                  .accentInstance.accent
-                                                  .toAccentColor(),
-                                              icon: FluentIcons
-                                                  .briefcase_medical_24_regular,
-                                              name: 'Apointments')),
+                                          child: Consumer<AppointmentModel>(
+                                            builder: (context, model, childe) =>
+                                                CardBadgeWidget(
+                                                    count: model.count,
+                                                    onPressed: widget
+                                                        .appointMentOnpresed,
+                                                    color: SystemTheme
+                                                        .accentInstance.accent
+                                                        .toAccentColor(),
+                                                    icon: FluentIcons
+                                                        .briefcase_medical_24_regular,
+                                                    name: 'Apointments'),
+                                          )),
                                       Padding(
                                         padding: const EdgeInsets.all(8.0),
-                                        child: CardBadgeWidget(
-                                            onPressed: widget.patientsOnPressed,
-                                            color: SystemTheme
-                                                .accentInstance.accent
-                                                .toAccentColor(),
-                                            icon: FluentIcons.people_24_regular,
-                                            name: 'Patients'),
+                                        child: Consumer<PatientModel>(
+                                          builder: (context, model, child) =>
+                                              CardBadgeWidget(
+                                                  onPressed:
+                                                      widget.patientsOnPressed,
+                                                  count: model.count,
+                                                  color: SystemTheme
+                                                      .accentInstance.accent
+                                                      .toAccentColor(),
+                                                  icon: FluentIcons
+                                                      .people_24_regular,
+                                                  name: 'Patients'),
+                                        ),
                                       ),
                                       Padding(
                                           padding: const EdgeInsets.all(8.0),
@@ -167,7 +179,10 @@ class _DoctorDashboardsState extends State<DoctorDashboards> {
                               constraints: BoxConstraints(
                                 maxWidth: 300,
                               ),
-                              child: SafeArea(child: PatientsList())),
+                              child: SafeArea(
+                                  child: PatientsList(
+                                onPressed: widget.patientsOnPressed,
+                              ))),
                         ],
                       ),
                     ],

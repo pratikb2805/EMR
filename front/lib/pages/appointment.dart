@@ -8,18 +8,16 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:emr/db/store.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
 
 class AppointmentList extends StatefulWidget {
-  final AppointmentModel appointmentModel;
-  final PatientModel patientModel;
-  AppointmentList(
-      {Key? key, required this.appointmentModel, required this.patientModel});
   @override
   _AppointmentListState createState() => _AppointmentListState();
 }
 
 class _AppointmentListState extends State<AppointmentList> {
-  final _listController = StreamController<List<Appointment>>(sync: true);
+  //final _listController = StreamController<List<Appointment>>(sync: true);
   bool hasBeenInitialized = false;
   AppointmentModel vm = AppointmentModel();
   @override
@@ -27,15 +25,15 @@ class _AppointmentListState extends State<AppointmentList> {
     super.initState();
 
     setState(() {
-      _listController.addStream(
-          widget.appointmentModel.queryAppointmentStream.map((q) => q.find()));
+      // _listController.addStream(
+      //     widget.appointmentModel.queryAppointmentStream.map((q) => q.find()));
       hasBeenInitialized = true;
     });
   }
 
   @override
   void dispose() {
-    _listController.close();
+    //_listController.close();
     super.dispose();
   }
 
@@ -68,16 +66,16 @@ class _AppointmentListState extends State<AppointmentList> {
                             return StatefulBuilder(
                                 builder: (context, setState) {
                               return NewAppointment(
-                                appointmentModel: widget.appointmentModel,
-                                patientModel: widget.patientModel,
-                              );
+                                  //appointmentModel: widget.appointmentModel,
+                                  //patientModel: widget.patientModel,
+                                  );
                             });
                           });
                     },
                     icon: Fluent.Padding(
-                      padding: const EdgeInsets.all(4.0),
-                      child:
-                          Icon(FluentIcons.add_24_regular, color: Colors.white),
+                      padding: const EdgeInsets.all(8.0),
+                      child: const Icon(FluentIcons.add_24_regular,
+                          color: Colors.white),
                     ),
                     label: Fluent.Padding(
                       padding: const EdgeInsets.all(8.0),
@@ -85,26 +83,19 @@ class _AppointmentListState extends State<AppointmentList> {
                           style: TextStyle(color: Colors.white)),
                     )))
           ]),
-          !hasBeenInitialized
-              ? Center(
-                  child: CircularProgressIndicator(),
-                )
-              : StreamBuilder<List<Appointment>>(
-                  stream: _listController.stream,
-                  builder: (context, snapshot) {
-                    if (!snapshot.hasData) {
-                      return Center(
-                        child: CircularProgressIndicator(),
-                      );
-                    } else {
-                      return DataTable(
-                        appointments: snapshot.data!,
-                        appointmentModel: widget.appointmentModel,
-                        patientModel: widget.patientModel,
-                      );
-                    }
-                  },
-                ),
+          Consumer<AppointmentModel>(
+            // stream: _listController.stream,
+            builder: (context, model, child) {
+              // if (!snapshot.hasData) {
+              //   return Center(
+              //     child: CircularProgressIndicator(),
+              //   );
+              // } else {
+              return DataTable(
+                appointments: model.getAll(),
+              );
+            },
+          ),
         ],
       ),
     );
@@ -118,14 +109,7 @@ class _AppointmentListState extends State<AppointmentList> {
 
 class DataTable extends StatefulWidget {
   final List<Appointment> appointments;
-  final AppointmentModel appointmentModel;
-  final patientModel;
-  DataTable(
-      {Key? key,
-      required this.appointments,
-      required this.appointmentModel,
-      required this.patientModel})
-      : super(key: key);
+  DataTable({Key? key, required this.appointments}) : super(key: key);
 
   @override
   _DataTableState createState() => _DataTableState();
@@ -152,9 +136,8 @@ class _DataTableState extends State<DataTable> {
     setState(() {
       appointments = widget.appointments;
       _source = AppointmentDataSource(
-          appointments: appointments,
-          appointmentModel: widget.appointmentModel,
-          patientModel: widget.patientModel);
+        appointments: appointments,
+      );
     });
   }
 
@@ -162,10 +145,7 @@ class _DataTableState extends State<DataTable> {
     print(widget.appointments);
     setState(() {
       appointments = widget.appointments;
-      _source = AppointmentDataSource(
-          appointments: appointments,
-          appointmentModel: widget.appointmentModel,
-          patientModel: widget.patientModel);
+      _source = AppointmentDataSource(appointments: appointments);
     });
     super.initState();
   }
@@ -201,6 +181,10 @@ class _DataTableState extends State<DataTable> {
   @override
   Widget build(BuildContext context) {
     getData();
+    var lableStyle = Fluent.FluentTheme.of(context)
+        .typography
+        .body!
+        .apply(fontSizeDelta: 2, fontWeightDelta: 2);
     return SingleChildScrollView(
       child: PaginatedDataTable(
         source: _source,
@@ -216,23 +200,33 @@ class _DataTableState extends State<DataTable> {
         },
         columns: [
           DataColumn(
+              numeric: true,
               label: Text(
                 'ID',
-                style: TextStyle(fontWeight: FontWeight.bold),
+                style: lableStyle,
               ),
               onSort: (int columnIndex, bool ascending) =>
                   _sort<num>((Appointment d) => d.id, columnIndex, ascending)),
           DataColumn(
               label: Text(
                 'Name',
-                style: TextStyle(fontWeight: FontWeight.bold),
+                style: lableStyle,
               ),
               onSort: (int columnIndex, bool ascending) => _sort<String>(
                   (Appointment d) => d.name, columnIndex, ascending)),
           DataColumn(
               label: Text(
+                'Date',
+                style: lableStyle,
+              ),
+              onSort: (int columnIndex, bool ascending) => _sort<String>(
+                  (Appointment d) => d.start.toString(),
+                  columnIndex,
+                  ascending)),
+          DataColumn(
+              label: Text(
                 'Start Time',
-                style: TextStyle(fontWeight: FontWeight.bold),
+                style: lableStyle,
               ),
               onSort: (int columnIndex, bool ascending) => _sort<String>(
                   (Appointment d) => d.start.toString(),
@@ -241,21 +235,24 @@ class _DataTableState extends State<DataTable> {
           DataColumn(
               label: Text(
                 'End Time',
-                style: TextStyle(fontWeight: FontWeight.bold),
+                style: lableStyle,
               ),
               onSort: (int columnIndex, bool ascending) => _sort<String>(
                   (Appointment d) => d.end.toString(), columnIndex, ascending)),
           DataColumn(
               label: Text(
                 'Phone',
-                style: TextStyle(fontWeight: FontWeight.bold),
+                style: lableStyle,
               ),
               onSort: (int columnIndex, bool ascending) => _sort<String>(
                   (Appointment d) => d.phone, columnIndex, ascending)),
           DataColumn(
               label: Text(
                 'Email',
-                style: TextStyle(fontWeight: FontWeight.bold),
+                style: Fluent.FluentTheme.of(context)
+                    .typography
+                    .body!
+                    .apply(fontSizeDelta: 2, fontWeightDelta: 2),
               ),
               onSort: (int columnIndex, bool ascending) => _sort<String>(
                   (Appointment d) => d.email, columnIndex, ascending)),
@@ -270,12 +267,7 @@ class _DataTableState extends State<DataTable> {
 
 class AppointmentDataSource extends DataTableSource {
   final List<Appointment> appointments;
-  final AppointmentModel appointmentModel;
-  final patientModel;
-  AppointmentDataSource(
-      {required this.appointments,
-      required this.appointmentModel,
-      required this.patientModel});
+  AppointmentDataSource({required this.appointments});
 
   void _sort<T>(Comparable<T> getField(Appointment d), bool ascending) {
     appointments.sort((Appointment a, Appointment b) {
@@ -297,32 +289,32 @@ class AppointmentDataSource extends DataTableSource {
     return DataRow(cells: [
       DataCell(Text(appointment.id.toString())),
       DataCell(Text(appointment.name)),
-      DataCell(Text(appointment.start.toString())),
-      DataCell(Text(appointment.end.toString())),
+      DataCell(Text(DateFormat('dd/MM/yyyy').format(appointment.start))),
+      DataCell(Text(DateFormat('hh:mm').format(appointment.start))),
+      DataCell(Text(DateFormat('hh:mm').format(appointment.end))),
       DataCell(Text(appointment.phone)),
       DataCell(Text(appointment.email)),
       DataCell(Row(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: [
           ActionRow(
-            patientModel: patientModel,
-            appointmentModel: appointmentModel,
             index: appointment.id,
             patient: appointment,
           ),
           Container(
               width: 25,
               height: 25,
-              child: FloatingActionButton(
-                backgroundColor: Colors.red,
-                child: Padding(
+              child: Fluent.IconButton(
+                // backgroundColor: Colors.white,
+                icon: Padding(
                     padding: EdgeInsets.all(1),
                     child: Icon(
-                      Icons.delete,
+                      FluentIcons.delete_24_regular,
+                      color: Colors.black,
                       size: 20,
                     )),
                 onPressed: () {
-                  appointmentModel.removeAppointment(appointment);
+                  //appointmentModel.removeAppointment(appointment);
                 },
               ))
         ],
@@ -341,17 +333,10 @@ class AppointmentDataSource extends DataTableSource {
 }
 
 class ActionRow extends StatefulWidget {
-  ActionRow(
-      {Key? key,
-      required this.index,
-      required this.patient,
-      required this.appointmentModel,
-      required this.patientModel})
+  ActionRow({Key? key, required this.index, required this.patient})
       : super(key: key);
 
   final index;
-  final PatientModel patientModel;
-  final AppointmentModel appointmentModel;
   final Appointment patient;
   @override
   _ActionRowState createState() => _ActionRowState();
@@ -363,10 +348,7 @@ class _ActionRowState extends State<ActionRow> {
         context: context,
         builder: (context) {
           return StatefulBuilder(builder: (context, setState) {
-            return PatientEditForm(
-                patientModel: widget.patientModel,
-                appointment: widget.patient,
-                appointmentModel: widget.appointmentModel);
+            return PatientEditForm(appointment: widget.patient);
           });
         });
   }
@@ -376,11 +358,16 @@ class _ActionRowState extends State<ActionRow> {
     return Container(
         width: 25,
         height: 25,
-        child: FloatingActionButton(
-          backgroundColor: Colors.green,
-          child: Icon(Icons.check),
-          onPressed: () async {
-            await showInformationDialog(context);
+        child: Fluent.IconButton(
+          // backgroundColor: Colors.white,
+          icon: Center(
+              child: Icon(
+            FluentIcons.checkmark_24_regular,
+            color: Colors.black,
+            size: 20,
+          )),
+          onPressed: () {
+            showInformationDialog(context);
           },
         ));
   }

@@ -1,8 +1,9 @@
 import 'package:emr/db/patient.dart';
 import 'package:emr/objectbox.g.dart';
-import 'dart:io';
+import 'package:flutter/cupertino.dart';
+import 'dart:math';
 
-class AppointmentModel {
+class AppointmentModel extends ChangeNotifier {
   final Store _store;
   late final Box<Appointment> _appointmentBox;
   late final Stream<Query<Appointment>> queryAppointmentStream;
@@ -10,8 +11,8 @@ class AppointmentModel {
   AppointmentModel()
       : _store = Store(
           getObjectBoxModel(),
-          directory: Directory('D:\\Projects\\flutter\\EMR\\front').path +
-              '/objectbox',
+          directory:
+              r'C:\Users\Pratik Bedre\AppData\Roaming\com.example\front\objectbox',
           maxReaders: 3,
         ) {
     _appointmentBox = Box<Appointment>(_store);
@@ -21,42 +22,72 @@ class AppointmentModel {
         qAppointmentBuilder.watch(triggerImmediately: true);
   }
 
-  void addAppointment(Appointment appointment) =>
-      _appointmentBox.put(appointment);
+  void addAppointment(Appointment appointment) {
+    _appointmentBox.put(appointment);
+    notifyListeners();
+  }
 
   Appointment? getAppointment(String id) => _appointmentBox.get(int.parse(id));
 
-  void removeAppointment(Appointment appointment) =>
-      _appointmentBox.remove(appointment.id);
+  void removeAppointment(Appointment appointment) {
+    _appointmentBox.remove(appointment.id);
+    notifyListeners();
+  }
+
+  List<Appointment> getAll() {
+    return _appointmentBox.getAll();
+  }
+
+  get count => _appointmentBox.count();
 
   void dispose() {
     _store.close();
   }
 }
 
-class PatientModel {
+class PatientModel extends ChangeNotifier {
   final Store _store;
   late final Box<Patient> _patientBox;
   late final Stream<Query<Patient>> queryPatientStream;
-
+  var _qPatientBuilder;
   PatientModel()
       : _store = Store(
           getObjectBoxModel(),
-          directory: Directory('D:\\Projects\\flutter\\EMR\\front').path +
-              '/objectbox',
+          directory:
+              r'C:\Users\Pratik Bedre\AppData\Roaming\com.example\front\objectbox',
           maxReaders: 3,
         ) {
-    _patientBox = Box<Patient>(_store);
-    final qPatientBuilder = _patientBox.query()
+    // print(p.join(dir.path, 'objectbox'));
+    _patientBox = _store.box<Patient>();
+    // _patientBox = Box<Patient>(_store);
+    _qPatientBuilder = _patientBox.query()
       ..order(Patient_.name, flags: Order.descending);
-    queryPatientStream = qPatientBuilder.watch(triggerImmediately: true);
+    queryPatientStream = _qPatientBuilder.watch(triggerImmediately: true);
+  }
+  // get
+  get count => _patientBox.count();
+  void removePatient(Patient patient) {
+    _patientBox.remove(patient.id);
+    notifyListeners();
   }
 
-  void removePatient(Patient patient) => _patientBox.remove(patient.id);
+  List<Patient> getTop() {
+    return _patientBox
+        .getAll()
+        .getRange(0, min(5, _patientBox.count()))
+        .toList();
+  }
+
+  List<Patient> getAll() {
+    return _patientBox.getAll();
+  }
 
   Patient? getPatient(String id) => _patientBox.get(int.parse(id));
 
-  void addPatient(Patient patient) => _patientBox.put(patient);
+  void addPatient(Patient patient) {
+    _patientBox.put(patient);
+    notifyListeners();
+  }
 
   void dispose() {
     _store.close();

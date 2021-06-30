@@ -7,25 +7,26 @@ import 'package:emr/pages/pages.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:emr/db/store.dart';
-import 'package:path_provider/path_provider.dart';
-import 'package:path/path.dart';
+import 'package:fluent_ui/fluent_ui.dart' as Fluent;
+import 'package:provider/provider.dart';
 
 class PatientList extends StatefulWidget {
-  final PatientModel patientModel;
-  PatientList({Key? key, required this.patientModel});
   @override
   _PatientListState createState() => _PatientListState();
 }
 
 class _PatientListState extends State<PatientList> {
   final _listController = StreamController<List<Patient>>(sync: true);
+  final PatientModel vm = PatientModel();
   bool hasBeenInitialized = false;
 
   @override
   void initState() {
+    super.initState();
+
     setState(() {
-      _listController.addStream(
-          widget.patientModel.queryPatientStream.map((q) => q.find()));
+      _listController.addStream(vm.queryPatientStream.map((q) => q.find()));
+
       hasBeenInitialized = true;
     });
     super.initState();
@@ -57,25 +58,18 @@ class _PatientListState extends State<PatientList> {
               ),
             ),
           ]),
-          !hasBeenInitialized
-              ? Center(
-                  child: CircularProgressIndicator(),
-                )
-              : StreamBuilder<List<Patient>>(
-                  stream: _listController.stream,
-                  builder: (context, snapshot) {
-                    if (!snapshot.hasData) {
-                      return Center(
-                        child: CircularProgressIndicator(),
-                      );
-                    } else {
-                      return PatientDataTable(
-                        patients: snapshot.data!,
-                        patientModel: widget.patientModel,
-                      );
-                    }
-                  },
-                ),
+          Consumer<PatientModel>(
+            // stream: _listController.stream,
+            builder: (context, model, child) {
+              // if (!model.)
+              //   return Center(
+              //     child: CircularProgressIndicator(),
+              //   );
+              return PatientDataTable(
+                patients: model.getAll(),
+              );
+            },
+          ),
         ],
       ),
     );
@@ -89,10 +83,7 @@ class _PatientListState extends State<PatientList> {
 
 class PatientDataTable extends StatefulWidget {
   final List<Patient> patients;
-  final PatientModel patientModel;
-  PatientDataTable(
-      {Key? key, required this.patients, required this.patientModel})
-      : super(key: key);
+  PatientDataTable({Key? key, required this.patients}) : super(key: key);
 
   @override
   _PatientDataTableState createState() => _PatientDataTableState();
@@ -118,7 +109,7 @@ class _PatientDataTableState extends State<PatientDataTable> {
   void getData() {
     setState(() {
       patients = widget.patients;
-      _source = PatientDataSource(patients, widget.patientModel);
+      _source = PatientDataSource(patients);
     });
   }
 
@@ -126,7 +117,7 @@ class _PatientDataTableState extends State<PatientDataTable> {
     print(widget.patients);
     setState(() {
       patients = widget.patients;
-      _source = PatientDataSource(patients, widget.patientModel);
+      _source = PatientDataSource(patients);
     });
     super.initState();
   }
@@ -177,39 +168,58 @@ class _PatientDataTableState extends State<PatientDataTable> {
         },
         columns: [
           DataColumn(
+              numeric: true,
               label: Text(
                 'ID',
-                style: TextStyle(fontWeight: FontWeight.bold),
+                style: Fluent.FluentTheme.of(context)
+                    .typography
+                    .body!
+                    .apply(fontSizeDelta: 2, fontWeightDelta: 2),
               ),
               onSort: (int columnIndex, bool ascending) =>
                   _sort<num>((Patient d) => d.id, columnIndex, ascending)),
           DataColumn(
               label: Text(
                 'Name',
-                style: TextStyle(fontWeight: FontWeight.bold),
+                style: Fluent.FluentTheme.of(context)
+                    .typography
+                    .body!
+                    .apply(fontSizeDelta: 2, fontWeightDelta: 2),
               ),
               onSort: (int columnIndex, bool ascending) =>
                   _sort<String>((Patient d) => d.name, columnIndex, ascending)),
           DataColumn(
+              tooltip: 'Diagnosis',
               label: Text(
                 'Diagnosis',
-                style: TextStyle(fontWeight: FontWeight.bold),
+                style: Fluent.FluentTheme.of(context)
+                    .typography
+                    .body!
+                    .apply(fontSizeDelta: 2, fontWeightDelta: 2),
               ),
               onSort: (int columnIndex, bool ascending) => _sort<String>(
                   (Patient d) => d.diagnosis.toString(),
                   columnIndex,
                   ascending)),
           DataColumn(
+              tooltip: 'Patient phone +XX XXX XXX',
               label: Text(
                 'Phone',
-                style: TextStyle(fontWeight: FontWeight.bold),
+                style: Fluent.FluentTheme.of(context)
+                    .typography
+                    .body!
+                    .apply(fontSizeDelta: 2, fontWeightDelta: 2),
               ),
               onSort: (int columnIndex, bool ascending) => _sort<String>(
                   (Patient d) => d.phone, columnIndex, ascending)),
           DataColumn(
+              tooltip: 'Patient Email',
               label: Text(
                 'Email',
-                style: TextStyle(fontWeight: FontWeight.bold),
+                style: Fluent.FluentTheme.of(context)
+                    .typography
+                    .body!
+                    .apply(fontSizeDelta: 2, fontWeightDelta: 2),
               ),
               onSort: (int columnIndex, bool ascending) => _sort<String>(
                   (Patient d) => d.email, columnIndex, ascending)),
@@ -221,8 +231,7 @@ class _PatientDataTableState extends State<PatientDataTable> {
 
 class PatientDataSource extends DataTableSource {
   final List<Patient> _patient;
-  final PatientModel patientModel;
-  PatientDataSource(this._patient, this.patientModel);
+  PatientDataSource(this._patient);
 
   void _sort<T>(Comparable<T> getField(Patient d), bool ascending) {
     _patient.sort((Patient a, Patient b) {
@@ -269,7 +278,7 @@ class OpenProfileInfoButton extends StatelessWidget {
     return TextButton(
         child: Text(patient.name),
         onPressed: () => Navigator.of(context).push(MaterialPageRoute(
-            builder: (BuildContext context) =>
-                PatientprofileWidget(patient: patient))));
+            builder: (BuildContext context) => PatientprofileWidget(
+                key: ValueKey<int>(patient.id), patient: patient))));
   }
 }

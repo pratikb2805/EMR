@@ -5,7 +5,6 @@ import 'package:fluent_ui/fluent_ui.dart' as Fluent;
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:emr/db/store.dart';
-import 'package:path_provider/path_provider.dart';
 
 class PatientsList extends StatefulWidget {
   @override
@@ -20,6 +19,10 @@ class _PatientsListState extends State<PatientsList> {
   @override
   void initState() {
     super.initState();
+    getData();
+  }
+
+  void getData() async {
     _vm = PatientModel();
 
     setState(() {
@@ -31,7 +34,7 @@ class _PatientsListState extends State<PatientsList> {
   @override
   void dispose() {
     _listController.close();
-
+    _vm.dispose();
     super.dispose();
   }
 
@@ -77,24 +80,20 @@ class _PatientsListState extends State<PatientsList> {
             //               style: TextStyle(color: Colors.white)),
             //         )))
           ]),
-          !hasBeenInitialized
-              ? Center(
+          StreamBuilder<List<db.Patient>>(
+            stream: _listController.stream,
+            builder: (context, snapshot) {
+              if (snapshot.hasError) return Text('Eror');
+              if (snapshot.hasData)
+                return PatientsDataTable(
+                  patients: snapshot.data ?? [],
+                );
+              else
+                return Center(
                   child: CircularProgressIndicator(),
-                )
-              : StreamBuilder<List<db.Patient>>(
-                  stream: _listController.stream,
-                  builder: (context, snapshot) {
-                    if (!snapshot.hasData) {
-                      return Center(
-                        child: CircularProgressIndicator(),
-                      );
-                    } else {
-                      return PatientsDataTable(
-                        patients: snapshot.data!,
-                      );
-                    }
-                  },
-                ),
+                );
+            },
+          ),
         ],
       ),
     );
