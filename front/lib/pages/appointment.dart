@@ -88,8 +88,13 @@ class _AppointmentListState extends State<AppointmentList> {
                                   );
 =======
                               return Consumer<AppointmentModel>(
-                                builder: (context, vm, child) => NewAppointment(
-                                  am: vm,
+                                builder: (context, vm, child) =>
+                                    Consumer<PatientModel>(
+                                  builder: (context, pm, child) =>
+                                      NewAppointment(
+                                    pm: pm,
+                                    am: vm,
+                                  ),
                                 ),
                               );
 >>>>>>> 9aaac310a34ce8c9cd96eb1fa30a9c5d458d91bb

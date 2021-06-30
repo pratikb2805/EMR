@@ -114,7 +114,7 @@ class _PatientDataTableState extends State<PatientDataTable> {
   }
 
   void initstate() {
-    print(widget.patients);
+    // print(widget.patients);
     setState(() {
       patients = widget.patients;
       _source = PatientDataSource(patients);
