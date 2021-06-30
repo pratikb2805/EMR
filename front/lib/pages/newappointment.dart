@@ -7,13 +7,14 @@ import 'package:emr/db/patient.dart' as db;
 
 class NewAppointment extends StatefulWidget {
   final AppointmentModel am;
-  NewAppointment({Key? key, required this.am});
+  final PatientModel pm;
+  NewAppointment({Key? key, required this.am, required this.pm});
   @override
   _NewAppointmentState createState() => _NewAppointmentState();
 }
 
 class _NewAppointmentState extends State<NewAppointment> {
-  late final PatientModel pm;
+  // late final PatientModel pm;
 
   final GlobalKey<FormState> _newAppointmentFormKey = GlobalKey<FormState>();
   final TextEditingController _oldPatientId = TextEditingController();
@@ -53,7 +54,7 @@ class _NewAppointmentState extends State<NewAppointment> {
 
   void getPatientWithPatientId() {
     if (_oldPatientId.text != '') {
-      db.Patient? patient = pm.getPatient(_oldPatientId.text);
+      db.Patient? patient = widget.pm.getPatient(_oldPatientId.text);
       if (patient != null) {
         _name.text = patient.name;
         _emailController.text = patient.email;
@@ -331,7 +332,8 @@ class _NewAppointmentState extends State<NewAppointment> {
                       end: start,
                       name: _name.text);
                   if (_oldPatientId.text != '') {
-                    db.Patient? patient = pm.getPatient(_oldPatientId.text);
+                    db.Patient? patient =
+                        widget.pm.getPatient(_oldPatientId.text);
                     print("got patient");
                     if (patient != null) {
                       print("added patient");

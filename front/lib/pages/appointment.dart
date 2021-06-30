@@ -65,8 +65,13 @@ class _AppointmentListState extends State<AppointmentList> {
                             return StatefulBuilder(
                                 builder: (context, setState) {
                               return Consumer<AppointmentModel>(
-                                builder: (context, vm, child) => NewAppointment(
-                                  am: vm,
+                                builder: (context, vm, child) =>
+                                    Consumer<PatientModel>(
+                                  builder: (context, pm, child) =>
+                                      NewAppointment(
+                                    pm: pm,
+                                    am: vm,
+                                  ),
                                 ),
                               );
                             });
