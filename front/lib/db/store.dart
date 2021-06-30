@@ -8,11 +8,10 @@ class AppointmentModel extends ChangeNotifier {
   late final Box<Appointment> _appointmentBox;
   late final Stream<Query<Appointment>> queryAppointmentStream;
 
-  AppointmentModel()
+  AppointmentModel(String dir)
       : _store = Store(
           getObjectBoxModel(),
-          directory:
-              r'C:\Users\Pratik Bedre\AppData\Roaming\com.example\front\objectbox',
+          directory: dir,
           maxReaders: 3,
         ) {
     _appointmentBox = Box<Appointment>(_store);
@@ -50,13 +49,13 @@ class PatientModel extends ChangeNotifier {
   late final Box<Patient> _patientBox;
   late final Stream<Query<Patient>> queryPatientStream;
   var _qPatientBuilder;
-  PatientModel()
+  PatientModel(String dir)
       : _store = Store(
           getObjectBoxModel(),
-          directory:
-              r'C:\Users\Pratik Bedre\AppData\Roaming\com.example\front\objectbox',
+          directory: dir,
           maxReaders: 3,
         ) {
+    print(dir);
     // print(p.join(dir.path, 'objectbox'));
     _patientBox = _store.box<Patient>();
     // _patientBox = Box<Patient>(_store);

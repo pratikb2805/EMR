@@ -29,6 +29,10 @@ class _NewAppointmentState extends State<NewAppointment> {
   void initState() {
     super.initState();
 
+<<<<<<< HEAD
+=======
+    // pm = PatientModel();
+>>>>>>> 9aaac310a34ce8c9cd96eb1fa30a9c5d458d91bb
     _calendarController.displayDate = this.date;
   }
 

@@ -17,23 +17,39 @@ class AppointmentList extends StatefulWidget {
 }
 
 class _AppointmentListState extends State<AppointmentList> {
+<<<<<<< HEAD
   //final _listController = StreamController<List<Appointment>>(sync: true);
+=======
+  // final _listController = StreamController<List<Appointment>>(sync: true);
+  // late final AppointmentModel vm;
+>>>>>>> 9aaac310a34ce8c9cd96eb1fa30a9c5d458d91bb
   bool hasBeenInitialized = false;
   AppointmentModel vm = AppointmentModel();
   @override
   void initState() {
     super.initState();
+<<<<<<< HEAD
 
     setState(() {
       // _listController.addStream(
       //     widget.appointmentModel.queryAppointmentStream.map((q) => q.find()));
+=======
+    // vm = AppointmentModel();
+
+    setState(() {
+      // _listController.addStream(vm.queryAppointmentStream.map((q) => q.find()));
+>>>>>>> 9aaac310a34ce8c9cd96eb1fa30a9c5d458d91bb
       hasBeenInitialized = true;
     });
   }
 
   @override
   void dispose() {
+<<<<<<< HEAD
     //_listController.close();
+=======
+    // _listController.close();
+>>>>>>> 9aaac310a34ce8c9cd96eb1fa30a9c5d458d91bb
     super.dispose();
   }
 
@@ -65,10 +81,18 @@ class _AppointmentListState extends State<AppointmentList> {
                           builder: (context) {
                             return StatefulBuilder(
                                 builder: (context, setState) {
+<<<<<<< HEAD
                               return NewAppointment(
                                   //appointmentModel: widget.appointmentModel,
                                   //patientModel: widget.patientModel,
                                   );
+=======
+                              return Consumer<AppointmentModel>(
+                                builder: (context, vm, child) => NewAppointment(
+                                  am: vm,
+                                ),
+                              );
+>>>>>>> 9aaac310a34ce8c9cd96eb1fa30a9c5d458d91bb
                             });
                           });
                     },

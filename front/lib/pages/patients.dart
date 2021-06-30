@@ -17,7 +17,7 @@ class PatientList extends StatefulWidget {
 
 class _PatientListState extends State<PatientList> {
   final _listController = StreamController<List<Patient>>(sync: true);
-  final PatientModel vm = PatientModel();
+  // final PatientModel vm = PatientModel();
   bool hasBeenInitialized = false;
 
   @override
@@ -25,7 +25,7 @@ class _PatientListState extends State<PatientList> {
     super.initState();
 
     setState(() {
-      _listController.addStream(vm.queryPatientStream.map((q) => q.find()));
+      // _listController.addStream(vm.queryPatientStream.map((q) => q.find()));
 
       hasBeenInitialized = true;
     });
