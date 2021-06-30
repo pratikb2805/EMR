@@ -91,6 +91,9 @@ class _PatientprofileWidgetState extends State<PatientprofileWidget> {
                         patient: widget.patient,
                       ),
                     ),
+                    // VerticalDivider(
+                    //   color: Colors.grey,
+                    // ),
                     Expanded(child: DiagnosisDetails(patient: widget.patient))
                   ]),
             );

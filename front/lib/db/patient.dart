@@ -129,6 +129,15 @@ class Medicine {
   Medicine({required this.name, required this.quantity});
 }
 
+@Entity()
+class MedicineListEntity {
+  int id = 0;
+  String name;
+  String provider;
+  String type;
+  MedicineListEntity(
+      {required this.name, this.provider = '', this.type = 'Tablet'});
+}
 // @Entity()
 // class PrescriptionEntity {
 //   int id = 0;
