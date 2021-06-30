@@ -8,7 +8,6 @@ import 'package:syncfusion_flutter_calendar/calendar.dart';
 import 'dart:math';
 import 'package:emr/db/store.dart';
 import 'package:emr/db/patient.dart' as db;
-import 'dart:async';
 
 class AppointmentSummary extends StatefulWidget {
   AppointmentSummary({Key? key, this.controller}) : super(key: key);

@@ -12,7 +12,6 @@ import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
 import 'userProfile.dart';
 // import 'pages.dart';
-import 'dart:io';
 import 'package:intl/intl.dart';
 
 //
@@ -324,12 +323,12 @@ class _ReportsWidgetState extends State<ReportsWidget> {
   List<PatientFile> _files = [];
 
   void _listFile() async {
-    String directory = p.join(
-        p.join(
-          (await getApplicationSupportDirectory()).path,
-          "patientfiles",
-        ),
-        '${widget.patient.id}');
+    // String directory = p.join(
+    // p.join(
+    //   (await getApplicationSupportDirectory()).path,
+    //   "patientfiles",
+    // ),
+    // '${widget.patient.id}');
     setState(() {
       _files = widget.patient.files;
       // _files = Directory(directory).listSync();

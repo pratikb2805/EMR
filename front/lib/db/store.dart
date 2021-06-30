@@ -1,7 +1,6 @@
 import 'package:emr/db/patient.dart';
 import 'package:emr/objectbox.g.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:provider/provider.dart';
 import 'dart:math';
 
 class AppointmentModel extends ChangeNotifier {

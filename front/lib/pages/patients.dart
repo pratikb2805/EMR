@@ -63,7 +63,7 @@ class _PatientListState extends State<PatientList> {
               //     child: CircularProgressIndicator(),
               //   );
               return PatientDataTable(
-                patients: model.getAll() ?? [],
+                patients: model.getAll(),
                 vm: model,
               );
             },
