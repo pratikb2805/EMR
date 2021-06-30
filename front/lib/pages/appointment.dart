@@ -1,32 +1,34 @@
 import 'dart:async';
-import 'dart:io';
 import 'dart:math';
 import 'package:emr/db/patient.dart';
-import 'package:emr/objectbox.g.dart';
 import 'package:emr/pages/pages.dart';
+import 'package:fluent_ui/fluent_ui.dart' as Fluent;
+import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:emr/db/store.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:path/path.dart';
 
 class AppointmentList extends StatefulWidget {
+  final AppointmentModel appointmentModel;
+  final PatientModel patientModel;
+  AppointmentList(
+      {Key? key, required this.appointmentModel, required this.patientModel});
   @override
   _AppointmentListState createState() => _AppointmentListState();
 }
 
 class _AppointmentListState extends State<AppointmentList> {
   final _listController = StreamController<List<Appointment>>(sync: true);
-  late final AppointmentModel vm;
   bool hasBeenInitialized = false;
-
+  AppointmentModel vm = AppointmentModel();
   @override
   void initState() {
     super.initState();
-    vm = AppointmentModel();
 
     setState(() {
-      _listController.addStream(vm.queryAppointmentStream.map((q) => q.find()));
+      _listController.addStream(
+          widget.appointmentModel.queryAppointmentStream.map((q) => q.find()));
       hasBeenInitialized = true;
     });
   }
@@ -51,30 +53,37 @@ class _AppointmentListState extends State<AppointmentList> {
               alignment: Alignment.centerLeft,
               child: Text(
                 "Appointments",
-                style: TextStyle(
-                  fontSize: 30,
-                ),
+                style: Fluent.FluentTheme.of(context).typography.header,
               ),
             ),
             Container(
                 height: max(MediaQuery.of(context).size.height * 0.07, 40),
-                color: Colors.green,
+                color: Fluent.FluentTheme.of(context).accentColor,
                 child: TextButton.icon(
                     onPressed: () async {
-                      await showDialog(
+                      print((await getApplicationSupportDirectory()).path);
+                      await Fluent.showDialog(
                           context: context,
                           builder: (context) {
                             return StatefulBuilder(
                                 builder: (context, setState) {
                               return NewAppointment(
-                                am: vm,
+                                appointmentModel: widget.appointmentModel,
+                                patientModel: widget.patientModel,
                               );
                             });
                           });
                     },
-                    icon: Icon(Icons.add, color: Colors.white),
-                    label: Text("Add Appointment",
-                        style: TextStyle(color: Colors.white))))
+                    icon: Fluent.Padding(
+                      padding: const EdgeInsets.all(4.0),
+                      child:
+                          Icon(FluentIcons.add_24_regular, color: Colors.white),
+                    ),
+                    label: Fluent.Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Text("Add Appointment",
+                          style: TextStyle(color: Colors.white)),
+                    )))
           ]),
           !hasBeenInitialized
               ? Center(
@@ -90,7 +99,8 @@ class _AppointmentListState extends State<AppointmentList> {
                     } else {
                       return DataTable(
                         appointments: snapshot.data!,
-                        vm: vm,
+                        appointmentModel: widget.appointmentModel,
+                        patientModel: widget.patientModel,
                       );
                     }
                   },
@@ -108,8 +118,13 @@ class _AppointmentListState extends State<AppointmentList> {
 
 class DataTable extends StatefulWidget {
   final List<Appointment> appointments;
-  final AppointmentModel vm;
-  DataTable({Key? key, required this.appointments, required this.vm})
+  final AppointmentModel appointmentModel;
+  final patientModel;
+  DataTable(
+      {Key? key,
+      required this.appointments,
+      required this.appointmentModel,
+      required this.patientModel})
       : super(key: key);
 
   @override
@@ -136,7 +151,10 @@ class _DataTableState extends State<DataTable> {
   void getData() {
     setState(() {
       appointments = widget.appointments;
-      _source = AppointmentDataSource(appointments, widget.vm);
+      _source = AppointmentDataSource(
+          appointments: appointments,
+          appointmentModel: widget.appointmentModel,
+          patientModel: widget.patientModel);
     });
   }
 
@@ -144,7 +162,10 @@ class _DataTableState extends State<DataTable> {
     print(widget.appointments);
     setState(() {
       appointments = widget.appointments;
-      _source = AppointmentDataSource(appointments, widget.vm);
+      _source = AppointmentDataSource(
+          appointments: appointments,
+          appointmentModel: widget.appointmentModel,
+          patientModel: widget.patientModel);
     });
     super.initState();
   }
@@ -248,12 +269,16 @@ class _DataTableState extends State<DataTable> {
 }
 
 class AppointmentDataSource extends DataTableSource {
-  final List<Appointment> _appointment;
-  final AppointmentModel vm;
-  AppointmentDataSource(this._appointment, this.vm);
+  final List<Appointment> appointments;
+  final AppointmentModel appointmentModel;
+  final patientModel;
+  AppointmentDataSource(
+      {required this.appointments,
+      required this.appointmentModel,
+      required this.patientModel});
 
   void _sort<T>(Comparable<T> getField(Appointment d), bool ascending) {
-    _appointment.sort((Appointment a, Appointment b) {
+    appointments.sort((Appointment a, Appointment b) {
       if (!ascending) {
         final Appointment c = a;
         a = b;
@@ -268,8 +293,7 @@ class AppointmentDataSource extends DataTableSource {
 
   @override
   DataRow getRow(int index) {
-    final Appointment appointment = _appointment[index];
-    print(appointment.patient.target);
+    final Appointment appointment = appointments[index];
     return DataRow(cells: [
       DataCell(Text(appointment.id.toString())),
       DataCell(Text(appointment.name)),
@@ -281,6 +305,8 @@ class AppointmentDataSource extends DataTableSource {
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: [
           ActionRow(
+            patientModel: patientModel,
+            appointmentModel: appointmentModel,
             index: appointment.id,
             patient: appointment,
           ),
@@ -296,7 +322,7 @@ class AppointmentDataSource extends DataTableSource {
                       size: 20,
                     )),
                 onPressed: () {
-                  vm.removeAppointment(appointment);
+                  appointmentModel.removeAppointment(appointment);
                 },
               ))
         ],
@@ -308,17 +334,24 @@ class AppointmentDataSource extends DataTableSource {
   bool get isRowCountApproximate => false;
 
   @override
-  int get rowCount => _appointment.length;
+  int get rowCount => appointments.length;
 
   @override
   int get selectedRowCount => 0;
 }
 
 class ActionRow extends StatefulWidget {
-  ActionRow({Key? key, required this.index, required this.patient})
+  ActionRow(
+      {Key? key,
+      required this.index,
+      required this.patient,
+      required this.appointmentModel,
+      required this.patientModel})
       : super(key: key);
 
   final index;
+  final PatientModel patientModel;
+  final AppointmentModel appointmentModel;
   final Appointment patient;
   @override
   _ActionRowState createState() => _ActionRowState();
@@ -330,7 +363,10 @@ class _ActionRowState extends State<ActionRow> {
         context: context,
         builder: (context) {
           return StatefulBuilder(builder: (context, setState) {
-            return PatientEditForm(widget.patient);
+            return PatientEditForm(
+                patientModel: widget.patientModel,
+                appointment: widget.patient,
+                appointmentModel: widget.appointmentModel);
           });
         });
   }

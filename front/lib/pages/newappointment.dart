@@ -1,21 +1,21 @@
-import 'dart:io';
-
 import 'package:emr/db/store.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
+import 'package:fluent_ui/fluent_ui.dart' as Fluent;
 import 'package:emr/db/patient.dart' as db;
 
 class NewAppointment extends StatefulWidget {
-  final AppointmentModel am;
-  NewAppointment({Key? key, required this.am});
+  final PatientModel patientModel;
+  final AppointmentModel appointmentModel;
+  NewAppointment(
+      {Key? key, required this.appointmentModel, required this.patientModel});
   @override
   _NewAppointmentState createState() => _NewAppointmentState();
 }
 
 class _NewAppointmentState extends State<NewAppointment> {
-  final PatientModel pm = PatientModel();
-
   final GlobalKey<FormState> _newAppointmentFormKey = GlobalKey<FormState>();
   final TextEditingController _oldPatientId = TextEditingController();
   final TextEditingController _name = TextEditingController();
@@ -25,8 +25,18 @@ class _NewAppointmentState extends State<NewAppointment> {
   final TextEditingController _phoneController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
   final CalendarController _calendarController = CalendarController();
+
   late DateTime start;
   late DateTime end;
+
+  var date = DateTime.now();
+  @override
+  void initState() {
+    super.initState();
+
+    _calendarController.displayDate = this.date;
+  }
+
   String? validator(String text) {
     final nameRegExp = new RegExp(r"^[A-Z][a-z]{1,15}$");
     if (nameRegExp.hasMatch(text)) return null;
@@ -43,7 +53,7 @@ class _NewAppointmentState extends State<NewAppointment> {
 
   void getPatientWithPatientId() {
     if (_oldPatientId.text != '') {
-      db.Patient? patient = pm.getPatient(_oldPatientId.text);
+      db.Patient? patient = widget.patientModel.getPatient(_oldPatientId.text);
       if (patient != null) {
         _name.text = patient.name;
         _emailController.text = patient.email;
@@ -275,11 +285,12 @@ class _NewAppointmentState extends State<NewAppointment> {
                   )),
             )),
         title: Center(
-          child: Text("New Appointment"),
+          child: Text("New Appointment",
+              style: Fluent.FluentTheme.of(context).typography.subheader),
         ),
         actions: <Widget>[
           Center(
-            child: ElevatedButton(
+            child: Fluent.Button(
               onPressed: () {
                 if (_newAppointmentFormKey.currentState!.validate()) {
                   // Do something like updating SharedPreferences or User Settings etc.
@@ -290,14 +301,15 @@ class _NewAppointmentState extends State<NewAppointment> {
                       end: start,
                       name: _name.text);
                   if (_oldPatientId.text != '') {
-                    db.Patient? patient = pm.getPatient(_oldPatientId.text);
+                    db.Patient? patient =
+                        widget.patientModel.getPatient(_oldPatientId.text);
                     print("got patient");
                     if (patient != null) {
                       print("added patient");
                       appointment.patient.target = patient;
                     }
                   }
-                  widget.am.addAppointment(appointment);
+                  widget.appointmentModel.addAppointment(appointment);
                   Navigator.of(context).pop();
                 }
               },
@@ -306,7 +318,10 @@ class _NewAppointmentState extends State<NewAppointment> {
                 alignment: Alignment.center,
                 width: 100,
                 height: 40,
-                child: Text("Add Appointment"),
+                child: Text(
+                  "Add Appointment",
+                  style: Fluent.FluentTheme.of(context).typography.body,
+                ),
               ),
             ),
           ),

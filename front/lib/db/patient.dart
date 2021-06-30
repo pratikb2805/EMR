@@ -2,13 +2,17 @@ import 'package:objectbox/objectbox.dart';
 
 @Entity()
 class Patient {
-  ToMany<Appointment> appointments = ToMany<Appointment>();
+  @Backlink()
+  final prescription = ToMany<Prescription>();
+
+  @Backlink()
+  final appointments = ToMany<Appointment>();
   int id = 0;
   String name;
   String? address;
   String email;
   String phone;
-  String age;
+  int age;
   DateTime dateFirstConsult;
   DateTime dateMostRecentConsult;
   String diagnosis;
@@ -23,6 +27,20 @@ class Patient {
       required this.email,
       required this.phone});
 
+  factory Patient.fromJson(Map<String, dynamic> json) => Patient(
+      age: 10,
+      name: json['name'] as String,
+      address: json['address'] != null ? json['address'] as String : '',
+      email: json['email']! as String,
+      dateFirstConsult: json['dateFirstConsult'] != null
+          ? DateTime.parse(json['dateFirstConsult'] as String)
+          : DateTime.now(),
+      dateMostRecentConsult: json['dateMostRecentConsult'] != null
+          ? DateTime.parse(json['dateMostRecentConsult'] as String)
+          : DateTime.now(),
+      phone: json['phone'] as String,
+      diagnosis: json['diagnosis'] as String);
+
   Map<String, dynamic> toJson() => {
         'id': id,
         'name': name,
@@ -32,16 +50,6 @@ class Patient {
         'dateMostRecentConsult': dateMostRecentConsult,
         'phone': phone
       };
-}
-
-@Entity()
-class PatientFile {
-  String name;
-  int id = 0;
-  String path;
-  String? description;
-  final patient = ToOne<Patient>();
-  PatientFile({required this.name, required this.path, this.description});
 }
 
 @Entity()
@@ -78,20 +86,19 @@ class Appointment {
 class Medicine {
   int id = 0;
   String name;
-  String provider;
-  Medicine({required this.name, required this.provider});
-}
-
-@Entity()
-class PrescriptionEntity {
-  int id = 0;
-  final medicine = ToOne<Medicine>();
   int quantity;
-  PrescriptionEntity({required this.quantity});
+
+  ToOne<Prescription> prescription = ToOne<Prescription>();
+
+  Medicine({required this.name, required this.quantity});
 }
 
 @Entity()
 class Prescription {
   int id = 0;
-  ToOne<Patient> patient = ToOne<Patient>();
+
+  final patient = ToOne<Patient>();
+
+  @Backlink()
+  ToMany<Medicine> medicines = ToMany<Medicine>();
 }

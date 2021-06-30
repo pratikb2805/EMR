@@ -2,12 +2,18 @@ import 'package:emr/db/store.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
-import 'dart:io';
+import 'package:path_provider/path_provider.dart';
+// import 'dart:io';
 import 'package:emr/db/patient.dart';
 
 class PatientEditForm extends StatefulWidget {
+  final PatientModel patientModel;
+  final AppointmentModel appointmentModel;
   final Appointment appointment;
-  PatientEditForm(this.appointment);
+  PatientEditForm(
+      {required this.appointment,
+      required this.patientModel,
+      required this.appointmentModel});
   @override
   _PatientEditFormState createState() => _PatientEditFormState();
 }
@@ -29,6 +35,7 @@ class _PatientEditFormState extends State<PatientEditForm> {
   ];
 
   late final Patient patient;
+
   @override
   void dispose() {
     _name.dispose();
@@ -42,6 +49,7 @@ class _PatientEditFormState extends State<PatientEditForm> {
     medicinesList = [
       ['', '']
     ];
+
     super.dispose();
   }
 
@@ -68,15 +76,41 @@ class _PatientEditFormState extends State<PatientEditForm> {
     super.initState();
   }
 
-  // void printLatest() {
-  //   print('UserName : ${_discription.text}');
-  // }
-
   String? validator(String? val) {
     if (val == '') {
       return "Enter Valid Input";
     }
     return null;
+  }
+
+  void addPrescriptionToPatient(Patient patientTemp) {
+    Prescription prescription = Prescription();
+    for (int i = 0; i < medicinesList.length; i++) {
+      if (medicinesList[i][0] != '' && medicinesList[i][1] != '') {
+        Medicine medicine = Medicine(
+            name: medicinesList[i][0],
+            quantity: int.parse(medicinesList[i][1]));
+        prescription.medicines.add(medicine);
+      }
+    }
+    if (prescription.medicines.length != 0) {
+      patientTemp.prescription.add(prescription);
+      widget.patientModel.addPatient(patientTemp);
+    }
+  }
+
+  void printPres(String id) {
+    Patient? patientTemp = widget.patientModel.getPatient(id);
+    if (patientTemp != null) {
+      for (int i = 0; i < patientTemp.prescription.length; i++) {
+        print("This is Prescription $i");
+        for (int j = 0; j < patientTemp.prescription[i].medicines.length; j++) {
+          String name = patientTemp.prescription[i].medicines[j].name;
+          int quanity = patientTemp.prescription[i].medicines[j].quantity;
+          print("$name $quanity");
+        }
+      }
+    }
   }
 
   List<Widget> _getMedicines() {
@@ -224,8 +258,8 @@ class _PatientEditFormState extends State<PatientEditForm> {
                                       decoration: InputDecoration(
                                           suffixIcon:
                                               Icon(Icons.calendar_today),
-                                          constraints:
-                                              BoxConstraints(maxHeight: 45),
+                                          // constraints:
+                                          //     BoxConstraints(maxHeight: 45),
                                           labelText: "Next Appointment Date",
                                           border: OutlineInputBorder()),
                                       onTap: () async {
@@ -250,8 +284,8 @@ class _PatientEditFormState extends State<PatientEditForm> {
                                       readOnly: true,
                                       controller: _lastVisitedDateCtl,
                                       decoration: InputDecoration(
-                                          constraints:
-                                              BoxConstraints(maxHeight: 45),
+                                          // constraints:
+                                          //     BoxConstraints(maxHeight: 45),
                                           labelText: "Date of Appointment",
                                           border: OutlineInputBorder()),
                                     ))
@@ -332,12 +366,12 @@ class _PatientEditFormState extends State<PatientEditForm> {
       actions: <Widget>[
         Center(
           child: ElevatedButton(
-            onPressed: () {
+            onPressed: () async {
               if (_patientEditFormKey.currentState!.validate()) {
                 if (widget.appointment.patient.target == null) {
                   patient = Patient(
                       name: _name.text,
-                      age: _age.text,
+                      age: int.parse(_age.text),
                       diagnosis: _discription.text,
                       dateFirstConsult: widget.appointment.start,
                       dateMostRecentConsult: widget.appointment.start,
@@ -348,10 +382,10 @@ class _PatientEditFormState extends State<PatientEditForm> {
                   patient.id = widget.appointment.patient.targetId;
                   patient.dateMostRecentConsult = widget.appointment.start;
                 }
-                PatientModel pm = PatientModel();
-                AppointmentModel am = AppointmentModel();
-                pm.addPatient(patient);
-                am.removeAppointment(widget.appointment);
+                widget.patientModel.addPatient(patient);
+                widget.appointmentModel.removeAppointment(widget.appointment);
+                addPrescriptionToPatient(patient);
+                printPres(patient.id.toString());
                 // Do something like updating SharedPreferences or User Settings etc.
                 Navigator.of(context).pop();
               }
@@ -403,7 +437,8 @@ class _MedicineInputFieldState extends State<MedicineInputField> {
       onChanged: (v) =>
           _PatientEditFormState.medicinesList[widget.index][0] = v,
       decoration: InputDecoration(
-          constraints: BoxConstraints(maxHeight: 45),
+          // constraints: BoxConstraints(maxHeight: 45),
+
           border: OutlineInputBorder(),
           labelText: 'Enter Medicine Name'),
     );
@@ -445,7 +480,7 @@ class _QuantityInputFieldState extends State<QuantityInputField> {
           FilteringTextInputFormatter.allow(RegExp(r'[0-9]')),
         ],
         decoration: InputDecoration(
-          constraints: BoxConstraints(maxHeight: 45),
+          // constraints: BoxConstraints(maxHeight: 45),
           border: OutlineInputBorder(),
           labelText: "Quanitity",
         ));
@@ -473,7 +508,7 @@ class _TextInputOneLineWidgetState extends State<TextInputOneLineWidget> {
           validator: widget.validator,
           controller: widget.controller,
           decoration: InputDecoration(
-              constraints: BoxConstraints(),
+              // constraints: BoxConstraints(maxHeight: 45),
               labelText: widget.label,
               border: OutlineInputBorder()),
         ));
@@ -505,7 +540,7 @@ class _TextInputMultiLineWidgetState extends State<TextInputMultiLineWidget> {
           maxLines: null,
           controller: widget.controller,
           decoration: InputDecoration(
-              constraints: BoxConstraints(maxHeight: widget.maxHeight),
+              // constraints: BoxConstraints(maxHeight: widget.maxHeight),
               labelText: widget.label,
               border: OutlineInputBorder()),
         ));

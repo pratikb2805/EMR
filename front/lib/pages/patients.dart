@@ -11,24 +11,24 @@ import 'package:path_provider/path_provider.dart';
 import 'package:path/path.dart';
 
 class PatientList extends StatefulWidget {
+  final PatientModel patientModel;
+  PatientList({Key? key, required this.patientModel});
   @override
   _PatientListState createState() => _PatientListState();
 }
 
 class _PatientListState extends State<PatientList> {
   final _listController = StreamController<List<Patient>>(sync: true);
-  late final PatientModel vm;
   bool hasBeenInitialized = false;
 
   @override
   void initState() {
-    super.initState();
-    vm = PatientModel();
-
     setState(() {
-      _listController.addStream(vm.queryPatientStream.map((q) => q.find()));
+      _listController.addStream(
+          widget.patientModel.queryPatientStream.map((q) => q.find()));
       hasBeenInitialized = true;
     });
+    super.initState();
   }
 
   @override
@@ -71,7 +71,7 @@ class _PatientListState extends State<PatientList> {
                     } else {
                       return PatientDataTable(
                         patients: snapshot.data!,
-                        vm: vm,
+                        patientModel: widget.patientModel,
                       );
                     }
                   },
@@ -89,8 +89,9 @@ class _PatientListState extends State<PatientList> {
 
 class PatientDataTable extends StatefulWidget {
   final List<Patient> patients;
-  final PatientModel vm;
-  PatientDataTable({Key? key, required this.patients, required this.vm})
+  final PatientModel patientModel;
+  PatientDataTable(
+      {Key? key, required this.patients, required this.patientModel})
       : super(key: key);
 
   @override
@@ -117,7 +118,7 @@ class _PatientDataTableState extends State<PatientDataTable> {
   void getData() {
     setState(() {
       patients = widget.patients;
-      _source = PatientDataSource(patients, widget.vm);
+      _source = PatientDataSource(patients, widget.patientModel);
     });
   }
 
@@ -125,7 +126,7 @@ class _PatientDataTableState extends State<PatientDataTable> {
     print(widget.patients);
     setState(() {
       patients = widget.patients;
-      _source = PatientDataSource(patients, widget.vm);
+      _source = PatientDataSource(patients, widget.patientModel);
     });
     super.initState();
   }
@@ -220,8 +221,8 @@ class _PatientDataTableState extends State<PatientDataTable> {
 
 class PatientDataSource extends DataTableSource {
   final List<Patient> _patient;
-  final PatientModel vm;
-  PatientDataSource(this._patient, this.vm);
+  final PatientModel patientModel;
+  PatientDataSource(this._patient, this.patientModel);
 
   void _sort<T>(Comparable<T> getField(Patient d), bool ascending) {
     _patient.sort((Patient a, Patient b) {

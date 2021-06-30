@@ -9,7 +9,9 @@ import 'package:flutter/material.dart';
 import 'package:open_file/open_file.dart';
 import 'package:path_provider/path_provider.dart';
 import 'userProfile.dart';
+// import 'pages.dart';
 
+//
 //import 'package:objectbox/objectbox.dart';
 class PatientprofileWidget extends StatefulWidget {
   final Patient patient;
@@ -124,7 +126,7 @@ class LeftPart extends StatelessWidget {
         child: UserprofileWidget(profile: url),
       ),
       Container(child: DataField(header: 'Name', value: patient.name)),
-      Container(child: DataField(header: 'Age', value: patient.age)),
+      Container(child: DataField(header: 'Age', value: patient.age.toString())),
       Container(
           child: DataField(
               header: 'Date of first consult',

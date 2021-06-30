@@ -17,9 +17,9 @@ class DoctorTopBar extends StatelessWidget {
       color: Colors.white,
       // decoration: BoxDecoration(color: Colors.white10),
       width: MediaQuery.of(context).size.width,
-      height: 400,
+      height: 311,
       child: Padding(
-          padding: EdgeInsets.all(5.0),
+          padding: EdgeInsets.zero,
           child: Container(
             child: Stack(
               children: <Widget>[
@@ -96,8 +96,8 @@ class HeaderbgWidget extends StatelessWidget {
         width: MediaQuery.of(context).size.width,
         decoration: BoxDecoration(
           borderRadius: BorderRadius.only(
-            topLeft: Radius.circular(8),
-            topRight: Radius.circular(8),
+            topLeft: Radius.zero,
+            topRight: Radius.zero,
             bottomLeft: Radius.circular(8),
             bottomRight: Radius.circular(8),
           ),
