@@ -38,7 +38,6 @@ class AppointmentModel extends ChangeNotifier {
   }
 
   get count => _appointmentBox.count();
-
   void dispose() {
     _store.close();
   }
