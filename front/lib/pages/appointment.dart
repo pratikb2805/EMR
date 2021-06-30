@@ -16,24 +16,24 @@ class AppointmentList extends StatefulWidget {
 }
 
 class _AppointmentListState extends State<AppointmentList> {
-  final _listController = StreamController<List<Appointment>>(sync: true);
-  late final AppointmentModel vm;
+  // final _listController = StreamController<List<Appointment>>(sync: true);
+  // late final AppointmentModel vm;
   bool hasBeenInitialized = false;
 
   @override
   void initState() {
     super.initState();
-    vm = AppointmentModel();
+    // vm = AppointmentModel();
 
     setState(() {
-      _listController.addStream(vm.queryAppointmentStream.map((q) => q.find()));
+      // _listController.addStream(vm.queryAppointmentStream.map((q) => q.find()));
       hasBeenInitialized = true;
     });
   }
 
   @override
   void dispose() {
-    _listController.close();
+    // _listController.close();
     super.dispose();
   }
 
@@ -64,8 +64,10 @@ class _AppointmentListState extends State<AppointmentList> {
                           builder: (context) {
                             return StatefulBuilder(
                                 builder: (context, setState) {
-                              return NewAppointment(
-                                am: vm,
+                              return Consumer<AppointmentModel>(
+                                builder: (context, vm, child) => NewAppointment(
+                                  am: vm,
+                                ),
                               );
                             });
                           });

@@ -31,12 +31,15 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   await FlutterAcrylic.Acrylic.initialize();
-
+  final dir = (await getApplicationSupportDirectory()).path;
+  //ignore camelcase
+  final DB_DIR = p.join(dir, 'objectbox');
+  print(DB_DIR);
   createReportDir();
   runApp(MultiProvider(providers: [
-    ChangeNotifierProvider(create: (context) => AppointmentModel()),
+    ChangeNotifierProvider(create: (context) => AppointmentModel(DB_DIR)),
     ChangeNotifierProvider(
-      create: (context) => PatientModel(),
+      create: (context) => PatientModel(DB_DIR),
     )
   ], child: MyApp()));
   doWhenWindowReady(() {

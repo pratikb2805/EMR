@@ -23,10 +23,10 @@ class _PatientsListState extends State<PatientsList> {
   }
 
   void getData() async {
-    _vm = PatientModel();
+    // _vm = PatientModel();
 
     setState(() {
-      _listController.addStream(_vm.queryPatientStream.map((q) => q.find()));
+      // _listController.addStream(_vm.queryPatientStream.map((q) => q.find()));
       hasBeenInitialized = true;
     });
   }

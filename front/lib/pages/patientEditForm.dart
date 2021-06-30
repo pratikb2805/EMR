@@ -5,6 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 // import 'dart:io';
 import 'package:emr/db/patient.dart';
+import 'package:provider/provider.dart';
 
 class PatientEditForm extends StatefulWidget {
   final Appointment appointment;
@@ -318,45 +319,49 @@ class _PatientEditFormState extends State<PatientEditForm> {
       ),
       actions: <Widget>[
         Center(
-          child: ElevatedButton(
-            onPressed: () async {
-              if (_patientEditFormKey.currentState!.validate()) {
-                if (widget.appointment.patient.target == null &&
-                    patient == null) {
-                  patient = Patient(
-                      name: _name.text,
-                      age: int.parse(_age.text),
-                      diagnosis: _discription.text,
-                      dateFirstConsult: widget.appointment.start,
-                      dateMostRecentConsult: widget.appointment.start,
-                      email: _email.text,
-                      phone: _phoneNo.text);
-                } else {
-                  patient = widget.appointment.patient.target!;
-                  patient!.dateMostRecentConsult = widget.appointment.start;
-                }
-                PatientModel pm = PatientModel();
-                AppointmentModel am = AppointmentModel();
-                pm.addPatient(patient!);
-                // showDialog(
-                //     context: context,
-                //     builder: (c) {
-                //       return AlertDialog(
-                //           title: Center(child: Text('Sucess')),
-                //           content: Icon(FluentIcons.checkmark_24_filled,
-                //               color: Colors.greenAccent));
-                //     });
-                am.removeAppointment(widget.appointment);
-                // Do something like updating SharedPreferences or User Settings etc.
-                Navigator.of(context).pop();
-              }
-            },
-            child: Container(
-              padding: EdgeInsets.all(10),
-              alignment: Alignment.center,
-              width: 100,
-              height: 40,
-              child: Text("Submit"),
+          child: Consumer<PatientModel>(
+            builder: (context, pm, child) => Consumer<AppointmentModel>(
+              builder: (context, am, child) => ElevatedButton(
+                onPressed: () async {
+                  if (_patientEditFormKey.currentState!.validate()) {
+                    if (widget.appointment.patient.target == null &&
+                        patient == null) {
+                      patient = Patient(
+                          name: _name.text,
+                          age: int.parse(_age.text),
+                          diagnosis: _discription.text,
+                          dateFirstConsult: widget.appointment.start,
+                          dateMostRecentConsult: widget.appointment.start,
+                          email: _email.text,
+                          phone: _phoneNo.text);
+                    } else {
+                      patient = widget.appointment.patient.target!;
+                      patient!.dateMostRecentConsult = widget.appointment.start;
+                    }
+                    // PatientModel pm = PatientModel();
+                    // AppointmentModel am = AppointmentModel();
+                    pm.addPatient(patient!);
+                    // showDialog(
+                    //     context: context,
+                    //     builder: (c) {
+                    //       return AlertDialog(
+                    //           title: Center(child: Text('Sucess')),
+                    //           content: Icon(FluentIcons.checkmark_24_filled,
+                    //               color: Colors.greenAccent));
+                    //     });
+                    am.removeAppointment(widget.appointment);
+                    // Do something like updating SharedPreferences or User Settings etc.
+                    Navigator.of(context).pop();
+                  }
+                },
+                child: Container(
+                  padding: EdgeInsets.all(10),
+                  alignment: Alignment.center,
+                  width: 100,
+                  height: 40,
+                  child: Text("Submit"),
+                ),
+              ),
             ),
           ),
         ),
