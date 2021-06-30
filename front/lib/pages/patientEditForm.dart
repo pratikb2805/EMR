@@ -1,8 +1,8 @@
 import 'package:emr/db/store.dart';
+import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
-import 'package:path_provider/path_provider.dart';
 // import 'dart:io';
 import 'package:emr/db/patient.dart';
 
@@ -29,7 +29,7 @@ class _PatientEditFormState extends State<PatientEditForm> {
     ['', '']
   ];
 
-  late final Patient patient;
+  Patient? patient;
   @override
   void dispose() {
     _name.dispose();
@@ -111,12 +111,12 @@ class _PatientEditFormState extends State<PatientEditForm> {
         width: 30,
         height: 30,
         decoration: BoxDecoration(
-          color: (add) ? Colors.green : Colors.red,
+          // color: (add) ? Colors.green : Colors.red,
           borderRadius: BorderRadius.circular(20),
         ),
         child: Icon(
-          (add) ? Icons.add : Icons.remove,
-          color: Colors.white,
+          (add) ? FluentIcons.add_24_regular : FluentIcons.subtract_24_regular,
+          color: Colors.black,
         ),
       ),
     );
@@ -137,120 +137,133 @@ class _PatientEditFormState extends State<PatientEditForm> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
-                      Card(
-                        elevation: 5,
-                        margin: EdgeInsets.all(10),
-                        child: Container(
-                            height: 275,
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                              children: [
-                                TitleWidget(title: "Personal Details"),
-                                TextInputOneLineWidget(
-                                    controller: _name, label: "Name"),
-                                TextInputOneLineWidget(
-                                    controller: _age, label: "Age")
-                              ],
-                            )),
+                      Expanded(
+                        child: Card(
+                          elevation: 5,
+                          margin: EdgeInsets.all(10),
+                          child: Container(
+                              height: 275,
+                              child: Column(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceAround,
+                                children: [
+                                  TitleWidget(title: "Personal Details"),
+                                  TextInputOneLineWidget(
+                                      controller: _name, label: "Name"),
+                                  TextInputOneLineWidget(
+                                      controller: _age, label: "Age")
+                                ],
+                              )),
+                        ),
                       ),
-                      Card(
-                        elevation: 5,
-                        margin: EdgeInsets.all(10),
-                        child: Container(
-                            height: 275,
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                              children: [
-                                TitleWidget(title: "Contact Details"),
-                                TextInputOneLineWidget(
-                                    controller: _phoneNo, label: "Phone No."),
-                                TextInputOneLineWidget(
-                                    controller: _email, label: "Email"),
-                                TextInputMultiLineWidget(
-                                    controller: _address,
-                                    label: "Address",
-                                    maxHeight: 100),
-                              ],
-                            )),
+                      Expanded(
+                        child: Card(
+                          elevation: 5,
+                          margin: EdgeInsets.all(10),
+                          child: Container(
+                              height: 275,
+                              child: Column(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceEvenly,
+                                children: [
+                                  TitleWidget(title: "Contact Details"),
+                                  TextInputOneLineWidget(
+                                      controller: _phoneNo, label: "Phone No."),
+                                  TextInputOneLineWidget(
+                                      controller: _email, label: "Email"),
+                                  TextInputMultiLineWidget(
+                                      controller: _address,
+                                      label: "Address",
+                                      maxHeight: 100),
+                                ],
+                              )),
+                        ),
                       )
                     ],
                   ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
-                      Card(
-                        elevation: 5,
-                        margin: EdgeInsets.all(10),
-                        child: Container(
-                            height: 275,
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                              children: [
-                                TitleWidget(title: "Appointments"),
-                                Container(
-                                    padding: EdgeInsets.symmetric(
-                                        horizontal: 8, vertical: 8),
-                                    width:
-                                        MediaQuery.of(context).size.width * 0.3,
-                                    child: TextFormField(
-                                      readOnly: true,
-                                      controller: _nextAppointmentDate,
-                                      decoration: InputDecoration(
-                                          suffixIcon:
-                                              Icon(Icons.calendar_today),
-                                          // constraints:
-                                          //     BoxConstraints(maxHeight: 45),
-                                          labelText: "Next Appointment Date",
-                                          border: OutlineInputBorder()),
-                                      onTap: () async {
-                                        var date = await showDatePicker(
-                                            context: context,
-                                            initialDate: DateTime.now(),
-                                            firstDate: DateTime.now(),
-                                            lastDate: DateTime(2100));
-                                        _nextAppointmentDate.text = date != null
-                                            ? DateFormat('dd-MM-yyyy')
-                                                .format(date)
-                                                .toString()
-                                            : '';
-                                      },
-                                    )),
-                                Container(
-                                    padding: EdgeInsets.symmetric(
-                                        horizontal: 8, vertical: 8),
-                                    width:
-                                        MediaQuery.of(context).size.width * 0.3,
-                                    child: TextFormField(
-                                      readOnly: true,
-                                      controller: _lastVisitedDateCtl,
-                                      decoration: InputDecoration(
-                                          // constraints:
-                                          //     BoxConstraints(maxHeight: 45),
-                                          labelText: "Date of Appointment",
-                                          border: OutlineInputBorder()),
-                                    ))
-                              ],
-                            )),
+                      Expanded(
+                        child: Card(
+                          elevation: 5,
+                          margin: EdgeInsets.all(10),
+                          child: Container(
+                              height: 275,
+                              child: Column(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceEvenly,
+                                children: [
+                                  TitleWidget(title: "Appointments"),
+                                  Container(
+                                      padding: EdgeInsets.symmetric(
+                                          horizontal: 8, vertical: 8),
+                                      width: MediaQuery.of(context).size.width *
+                                          0.3,
+                                      child: TextFormField(
+                                        readOnly: true,
+                                        controller: _nextAppointmentDate,
+                                        decoration: InputDecoration(
+                                            suffixIcon:
+                                                Icon(Icons.calendar_today),
+                                            // constraints:
+                                            //     BoxConstraints(maxHeight: 45),
+                                            labelText: "Next Appointment Date",
+                                            border: OutlineInputBorder()),
+                                        onTap: () async {
+                                          var date = await showDatePicker(
+                                              context: context,
+                                              initialDate: DateTime.now(),
+                                              firstDate: DateTime.now(),
+                                              lastDate: DateTime(2100));
+                                          _nextAppointmentDate.text =
+                                              date != null
+                                                  ? DateFormat('dd-MM-yyyy')
+                                                      .format(date)
+                                                      .toString()
+                                                  : '';
+                                        },
+                                      )),
+                                  Container(
+                                      padding: EdgeInsets.symmetric(
+                                          horizontal: 8, vertical: 8),
+                                      width: MediaQuery.of(context).size.width *
+                                          0.3,
+                                      child: TextFormField(
+                                        readOnly: true,
+                                        controller: _lastVisitedDateCtl,
+                                        decoration: InputDecoration(
+                                            // constraints:
+                                            //     BoxConstraints(maxHeight: 45),
+                                            labelText: "Date of Appointment",
+                                            border: OutlineInputBorder()),
+                                      ))
+                                ],
+                              )),
+                        ),
                       ),
-                      Card(
-                        elevation: 5,
-                        margin: EdgeInsets.all(10),
-                        child: Container(
-                            height: 275,
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                              children: [
-                                TitleWidget(title: "Medical Details"),
-                                TextInputMultiLineWidget(
-                                    controller: _discription,
-                                    label: "Description",
-                                    maxHeight: 100),
-                                TextInputMultiLineWidget(
-                                    controller: _thingsToWork,
-                                    label: "Things to work on",
-                                    maxHeight: 100)
-                              ],
-                            )),
+                      Expanded(
+                        child: Card(
+                          elevation: 5,
+                          margin: EdgeInsets.all(10),
+                          child: Container(
+                              height: 275,
+                              child: Column(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceEvenly,
+                                children: [
+                                  TitleWidget(title: "Medical Details"),
+                                  TextInputMultiLineWidget(
+                                      controller: _discription,
+                                      label: "Description",
+                                      maxHeight: 100),
+                                  TextInputMultiLineWidget(
+                                      controller: _thingsToWork,
+                                      label: "Things to work on",
+                                      maxHeight: 100)
+                                ],
+                              )),
+                        ),
                       )
                     ],
                   ),
@@ -308,7 +321,8 @@ class _PatientEditFormState extends State<PatientEditForm> {
           child: ElevatedButton(
             onPressed: () async {
               if (_patientEditFormKey.currentState!.validate()) {
-                if (widget.appointment.patient.target == null) {
+                if (widget.appointment.patient.target == null &&
+                    patient == null) {
                   patient = Patient(
                       name: _name.text,
                       age: int.parse(_age.text),
@@ -319,12 +333,19 @@ class _PatientEditFormState extends State<PatientEditForm> {
                       phone: _phoneNo.text);
                 } else {
                   patient = widget.appointment.patient.target!;
-                  patient.dateMostRecentConsult = widget.appointment.start;
+                  patient!.dateMostRecentConsult = widget.appointment.start;
                 }
-                var dir = await getApplicationSupportDirectory();
-                PatientModel pm = PatientModel(dir);
+                PatientModel pm = PatientModel();
                 AppointmentModel am = AppointmentModel();
-                pm.addPatient(patient);
+                pm.addPatient(patient!);
+                // showDialog(
+                //     context: context,
+                //     builder: (c) {
+                //       return AlertDialog(
+                //           title: Center(child: Text('Sucess')),
+                //           content: Icon(FluentIcons.checkmark_24_filled,
+                //               color: Colors.greenAccent));
+                //     });
                 am.removeAppointment(widget.appointment);
                 // Do something like updating SharedPreferences or User Settings etc.
                 Navigator.of(context).pop();

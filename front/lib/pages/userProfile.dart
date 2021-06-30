@@ -16,9 +16,8 @@ class _UserprofileWidgetState extends State<UserprofileWidget> {
       child: Container(
           alignment: Alignment.topCenter,
           width: MediaQuery.of(context).size.width * 0.4,
-          height: MediaQuery.of(context).size.height * 0.4,
           child: CircleAvatar(
-            radius: MediaQuery.of(context).size.width * 0.3,
+            radius: 100,
             backgroundImage: NetworkImage(widget.profile),
           ),
           decoration: BoxDecoration(

@@ -7,6 +7,8 @@ import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:emr/db/store.dart';
+import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
 
 class AppointmentList extends StatefulWidget {
   @override
@@ -69,9 +71,9 @@ class _AppointmentListState extends State<AppointmentList> {
                           });
                     },
                     icon: Fluent.Padding(
-                      padding: const EdgeInsets.all(4.0),
-                      child:
-                          Icon(FluentIcons.add_24_regular, color: Colors.white),
+                      padding: const EdgeInsets.all(8.0),
+                      child: const Icon(FluentIcons.add_24_regular,
+                          color: Colors.white),
                     ),
                     label: Fluent.Padding(
                       padding: const EdgeInsets.all(8.0),
@@ -79,25 +81,20 @@ class _AppointmentListState extends State<AppointmentList> {
                           style: TextStyle(color: Colors.white)),
                     )))
           ]),
-          !hasBeenInitialized
-              ? Center(
-                  child: CircularProgressIndicator(),
-                )
-              : StreamBuilder<List<Appointment>>(
-                  stream: _listController.stream,
-                  builder: (context, snapshot) {
-                    if (!snapshot.hasData) {
-                      return Center(
-                        child: CircularProgressIndicator(),
-                      );
-                    } else {
-                      return DataTable(
-                        appointments: snapshot.data!,
-                        vm: vm,
-                      );
-                    }
-                  },
-                ),
+          Consumer<AppointmentModel>(
+            // stream: _listController.stream,
+            builder: (context, model, child) {
+              // if (!snapshot.hasData) {
+              //   return Center(
+              //     child: CircularProgressIndicator(),
+              //   );
+              // } else {
+              return DataTable(
+                appointments: model.getAll(),
+                vm: model,
+              );
+            },
+          ),
         ],
       ),
     );
@@ -183,6 +180,10 @@ class _DataTableState extends State<DataTable> {
   @override
   Widget build(BuildContext context) {
     getData();
+    var lableStyle = Fluent.FluentTheme.of(context)
+        .typography
+        .body!
+        .apply(fontSizeDelta: 2, fontWeightDelta: 2);
     return SingleChildScrollView(
       child: PaginatedDataTable(
         source: _source,
@@ -198,23 +199,33 @@ class _DataTableState extends State<DataTable> {
         },
         columns: [
           DataColumn(
+              numeric: true,
               label: Text(
                 'ID',
-                style: TextStyle(fontWeight: FontWeight.bold),
+                style: lableStyle,
               ),
               onSort: (int columnIndex, bool ascending) =>
                   _sort<num>((Appointment d) => d.id, columnIndex, ascending)),
           DataColumn(
               label: Text(
                 'Name',
-                style: TextStyle(fontWeight: FontWeight.bold),
+                style: lableStyle,
               ),
               onSort: (int columnIndex, bool ascending) => _sort<String>(
                   (Appointment d) => d.name, columnIndex, ascending)),
           DataColumn(
               label: Text(
+                'Date',
+                style: lableStyle,
+              ),
+              onSort: (int columnIndex, bool ascending) => _sort<String>(
+                  (Appointment d) => d.start.toString(),
+                  columnIndex,
+                  ascending)),
+          DataColumn(
+              label: Text(
                 'Start Time',
-                style: TextStyle(fontWeight: FontWeight.bold),
+                style: lableStyle,
               ),
               onSort: (int columnIndex, bool ascending) => _sort<String>(
                   (Appointment d) => d.start.toString(),
@@ -223,21 +234,24 @@ class _DataTableState extends State<DataTable> {
           DataColumn(
               label: Text(
                 'End Time',
-                style: TextStyle(fontWeight: FontWeight.bold),
+                style: lableStyle,
               ),
               onSort: (int columnIndex, bool ascending) => _sort<String>(
                   (Appointment d) => d.end.toString(), columnIndex, ascending)),
           DataColumn(
               label: Text(
                 'Phone',
-                style: TextStyle(fontWeight: FontWeight.bold),
+                style: lableStyle,
               ),
               onSort: (int columnIndex, bool ascending) => _sort<String>(
                   (Appointment d) => d.phone, columnIndex, ascending)),
           DataColumn(
               label: Text(
                 'Email',
-                style: TextStyle(fontWeight: FontWeight.bold),
+                style: Fluent.FluentTheme.of(context)
+                    .typography
+                    .body!
+                    .apply(fontSizeDelta: 2, fontWeightDelta: 2),
               ),
               onSort: (int columnIndex, bool ascending) => _sort<String>(
                   (Appointment d) => d.email, columnIndex, ascending)),
@@ -276,8 +290,9 @@ class AppointmentDataSource extends DataTableSource {
     return DataRow(cells: [
       DataCell(Text(appointment.id.toString())),
       DataCell(Text(appointment.name)),
-      DataCell(Text(appointment.start.toString())),
-      DataCell(Text(appointment.end.toString())),
+      DataCell(Text(DateFormat('dd/MM/yyyy').format(appointment.start))),
+      DataCell(Text(DateFormat('hh:mm').format(appointment.start))),
+      DataCell(Text(DateFormat('hh:mm').format(appointment.end))),
       DataCell(Text(appointment.phone)),
       DataCell(Text(appointment.email)),
       DataCell(Row(
@@ -290,12 +305,13 @@ class AppointmentDataSource extends DataTableSource {
           Container(
               width: 25,
               height: 25,
-              child: FloatingActionButton(
-                backgroundColor: Colors.red,
-                child: Padding(
+              child: Fluent.IconButton(
+                // backgroundColor: Colors.white,
+                icon: Padding(
                     padding: EdgeInsets.all(1),
                     child: Icon(
-                      Icons.delete,
+                      FluentIcons.delete_24_regular,
+                      color: Colors.black,
                       size: 20,
                     )),
                 onPressed: () {
@@ -343,11 +359,16 @@ class _ActionRowState extends State<ActionRow> {
     return Container(
         width: 25,
         height: 25,
-        child: FloatingActionButton(
-          backgroundColor: Colors.green,
-          child: Icon(Icons.check),
-          onPressed: () async {
-            await showInformationDialog(context);
+        child: Fluent.IconButton(
+          // backgroundColor: Colors.white,
+          icon: Center(
+              child: Icon(
+            FluentIcons.checkmark_24_regular,
+            color: Colors.black,
+            size: 20,
+          )),
+          onPressed: () {
+            showInformationDialog(context);
           },
         ));
   }

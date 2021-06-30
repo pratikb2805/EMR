@@ -5,7 +5,8 @@ import 'package:emr/pages/pages.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:emr/db/store.dart';
-import 'package:path_provider/path_provider.dart';
+import 'package:fluent_ui/fluent_ui.dart' as Fluent;
+import 'package:provider/provider.dart';
 
 class PatientList extends StatefulWidget {
   @override
@@ -14,19 +15,16 @@ class PatientList extends StatefulWidget {
 
 class _PatientListState extends State<PatientList> {
   final _listController = StreamController<List<Patient>>(sync: true);
-  late final PatientModel vm;
+  final PatientModel vm = PatientModel();
   bool hasBeenInitialized = false;
 
   @override
   void initState() {
     super.initState();
 
-    getApplicationDocumentsDirectory().then((dir) {
-      vm = PatientModel(dir);
-    });
-
     setState(() {
       _listController.addStream(vm.queryPatientStream.map((q) => q.find()));
+
       hasBeenInitialized = true;
     });
   }
@@ -57,25 +55,19 @@ class _PatientListState extends State<PatientList> {
               ),
             ),
           ]),
-          !hasBeenInitialized
-              ? Center(
-                  child: CircularProgressIndicator(),
-                )
-              : StreamBuilder<List<Patient>>(
-                  stream: _listController.stream,
-                  builder: (context, snapshot) {
-                    if (!snapshot.hasData) {
-                      return Center(
-                        child: CircularProgressIndicator(),
-                      );
-                    } else {
-                      return PatientDataTable(
-                        patients: snapshot.data!,
-                        vm: vm,
-                      );
-                    }
-                  },
-                ),
+          Consumer<PatientModel>(
+            // stream: _listController.stream,
+            builder: (context, model, child) {
+              // if (!model.)
+              //   return Center(
+              //     child: CircularProgressIndicator(),
+              //   );
+              return PatientDataTable(
+                patients: model.getAll() ?? [],
+                vm: model,
+              );
+            },
+          ),
         ],
       ),
     );
@@ -176,39 +168,58 @@ class _PatientDataTableState extends State<PatientDataTable> {
         },
         columns: [
           DataColumn(
+              numeric: true,
               label: Text(
                 'ID',
-                style: TextStyle(fontWeight: FontWeight.bold),
+                style: Fluent.FluentTheme.of(context)
+                    .typography
+                    .body!
+                    .apply(fontSizeDelta: 2, fontWeightDelta: 2),
               ),
               onSort: (int columnIndex, bool ascending) =>
                   _sort<num>((Patient d) => d.id, columnIndex, ascending)),
           DataColumn(
               label: Text(
                 'Name',
-                style: TextStyle(fontWeight: FontWeight.bold),
+                style: Fluent.FluentTheme.of(context)
+                    .typography
+                    .body!
+                    .apply(fontSizeDelta: 2, fontWeightDelta: 2),
               ),
               onSort: (int columnIndex, bool ascending) =>
                   _sort<String>((Patient d) => d.name, columnIndex, ascending)),
           DataColumn(
+              tooltip: 'Diagnosis',
               label: Text(
                 'Diagnosis',
-                style: TextStyle(fontWeight: FontWeight.bold),
+                style: Fluent.FluentTheme.of(context)
+                    .typography
+                    .body!
+                    .apply(fontSizeDelta: 2, fontWeightDelta: 2),
               ),
               onSort: (int columnIndex, bool ascending) => _sort<String>(
                   (Patient d) => d.diagnosis.toString(),
                   columnIndex,
                   ascending)),
           DataColumn(
+              tooltip: 'Patient phone +XX XXX XXX',
               label: Text(
                 'Phone',
-                style: TextStyle(fontWeight: FontWeight.bold),
+                style: Fluent.FluentTheme.of(context)
+                    .typography
+                    .body!
+                    .apply(fontSizeDelta: 2, fontWeightDelta: 2),
               ),
               onSort: (int columnIndex, bool ascending) => _sort<String>(
                   (Patient d) => d.phone, columnIndex, ascending)),
           DataColumn(
+              tooltip: 'Patient Email',
               label: Text(
                 'Email',
-                style: TextStyle(fontWeight: FontWeight.bold),
+                style: Fluent.FluentTheme.of(context)
+                    .typography
+                    .body!
+                    .apply(fontSizeDelta: 2, fontWeightDelta: 2),
               ),
               onSort: (int columnIndex, bool ascending) => _sort<String>(
                   (Patient d) => d.email, columnIndex, ascending)),
@@ -268,7 +279,7 @@ class OpenProfileInfoButton extends StatelessWidget {
     return TextButton(
         child: Text(patient.name),
         onPressed: () => Navigator.of(context).push(MaterialPageRoute(
-            builder: (BuildContext context) =>
-                PatientprofileWidget(patient: patient))));
+            builder: (BuildContext context) => PatientprofileWidget(
+                key: ValueKey<int>(patient.id), patient: patient))));
   }
 }

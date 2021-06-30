@@ -1,12 +1,16 @@
+import 'package:emr/db/store.dart';
 import 'package:fluent_ui/fluent_ui.dart' as Fluent;
 import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:system_theme/system_theme.dart';
 import 'pages/pages.dart';
 // import 'package:system_theme/system_theme.dart';
+import 'package:bitsdojo_window/bitsdojo_window.dart';
 import 'package:path_provider/path_provider.dart';
 import 'dart:io';
 import 'package:path/path.dart' as p;
+import 'package:flutter_acrylic/flutter_acrylic.dart' as FlutterAcrylic;
+import 'package:provider/provider.dart';
 
 // import 'package:desktop_window/desktop_window.dart';
 void createReportDir() async {
@@ -23,10 +27,27 @@ void createReportDir() async {
   }
 }
 
-int main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  await FlutterAcrylic.Acrylic.initialize();
+
   createReportDir();
-  runApp(MyApp());
-  return 0;
+  runApp(MultiProvider(providers: [
+    ChangeNotifierProvider(create: (context) => AppointmentModel()),
+    ChangeNotifierProvider(
+      create: (context) => PatientModel(),
+    )
+  ], child: MyApp()));
+  doWhenWindowReady(() {
+    final win = appWindow;
+    win.minSize = Size(600, 600);
+    // win.size = Size(800, 800);
+    // win.alignment = Alignment.center;
+    win.title = 'Electronic Medical Records';
+
+    win.show();
+  });
 }
 
 class MyApp extends Fluent.StatefulWidget {
@@ -92,7 +113,7 @@ class _MyAppState extends Fluent.State<MyApp> {
               },
             ),
             AppointmentList(),
-            PatientsList()
+            PatientList()
           ],
         ),
       ),
