@@ -38,10 +38,9 @@ class AppointmentModel extends ChangeNotifier {
   }
 
   get count => _appointmentBox.count();
-
-  void dispose() {
-    _store.close();
-  }
+  // void dispose() {
+  //   _store.close();
+  // }
 }
 
 class PatientModel extends ChangeNotifier {
@@ -88,7 +87,69 @@ class PatientModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  void dispose() {
-    _store.close();
+  // void dispose() {
+  //   _store.close();
+  // }
+}
+
+class MedicineModel extends ChangeNotifier {
+  final Store _store;
+  late final Box<MedicineListEntity> _box;
+  MedicineModel(String dir)
+      : _store = Store(
+          getObjectBoxModel(),
+          directory: dir,
+          maxReaders: 3,
+        ) {
+    _box = _store.box();
+  }
+  List<MedicineListEntity> get medicines => _box.getAll().toList();
+
+  void addMedicine(MedicineListEntity med) {
+    _box.put(med);
+    notifyListeners();
+  }
+
+  void removeMedicine(MedicineListEntity med) {
+    _box.remove(med.id);
+    notifyListeners();
+  }
+
+  // List<MedicineListEntity> getAll() => _box.getAll().toList();
+
+  List<MedicineListEntity> suggestions(String str) {
+    return _box
+        .query(MedicineListEntity_.name.contains(str))
+        .build()
+        .find()
+        .getRange(0, 10)
+        .toList();
   }
 }
+
+// class PrescriptionModel extends ChangeNotifier {
+//   final Store _store;
+//   late final Box<Prescription> _box;
+//   PrescriptionModel(String dir)
+//       : _store = Store(
+//           getObjectBoxModel(),
+//           directory: dir,
+//           maxReaders: 3,
+//         ) {
+//     _box = _store.box();
+//   }
+//   List<MedicineListEntity> get medicines => _box.getAll().toList();
+
+//   void addMedicine(MedicineListEntity med) {
+//     _box.put(med);
+//     notifyListeners();
+//   }
+
+//   void removeMedicine(MedicineListEntity med) {
+//     _box.remove(med.id);
+//     notifyListeners();
+//   }
+
+//   // List<MedicineListEntity> getAll() => _box.getAll().toList();
+
+// }

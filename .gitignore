@@ -7,4 +7,3 @@ front/packages
 front/build
 front/pubspec.lock
 back/node_modules
-front/objectbox

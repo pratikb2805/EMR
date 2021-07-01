@@ -5,11 +5,8 @@ import 'package:filepicker_windows/filepicker_windows.dart';
 import 'package:fluent_ui/fluent_ui.dart' as Fluent;
 import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:intl/intl.dart';
-import 'package:path/path.dart' as p;
 import 'package:flutter/material.dart';
 import 'package:open_file/open_file.dart';
-import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
 import 'userProfile.dart';
 // import 'pages.dart';
@@ -94,6 +91,9 @@ class _PatientprofileWidgetState extends State<PatientprofileWidget> {
                         patient: widget.patient,
                       ),
                     ),
+                    // VerticalDivider(
+                    //   color: Colors.grey,
+                    // ),
                     Expanded(child: DiagnosisDetails(patient: widget.patient))
                   ]),
             );
@@ -174,7 +174,7 @@ class DiagnosisDetails extends StatelessWidget {
               ),
             ),
             _divider,
-            Prescriptions(patient: patient),
+            PrescriptionWidget(patient: patient),
             _divider,
             ChallengesWidget()
           ],
@@ -254,11 +254,35 @@ class ChallengesWidget extends StatelessWidget {
   }
 }
 
-class Prescriptions extends StatelessWidget {
+class PrescriptionWidget extends StatefulWidget {
   final Patient patient;
-  Prescriptions({required this.patient});
+
+  PrescriptionWidget({Key? key, required this.patient});
+  @override
+  _PrescriptionWidgetState createState() => _PrescriptionWidgetState();
+}
+
+class _PrescriptionWidgetState extends State<PrescriptionWidget> {
+  List<Prescription> _files = [];
+
+  void _listPref() {
+    setState(() {
+      _files = widget.patient.prescriptions.toList();
+    });
+  }
+
+  List<Widget> _getPrescriptionList() {
+    return _files
+        .map((e) => FileWidget(
+              fileLink: e.filePath,
+              fileName: DateFormat("dd-MM-yyyy").format(e.date).toString(),
+            ))
+        .toList();
+  }
+
   @override
   Widget build(BuildContext context) {
+    _listPref();
     return Container(
         width: MediaQuery.of(context).size.width * 0.8,
         padding: EdgeInsets.symmetric(horizontal: 30, vertical: 0),
@@ -274,7 +298,7 @@ class Prescriptions extends StatelessWidget {
                 style: Fluent.FluentTheme.of(context).typography.subheader,
               ),
             ),
-            patient.prescriptions.isEmpty
+            widget.patient.prescriptions.isEmpty
                 ? Fluent.Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: Text(
@@ -282,19 +306,22 @@ class Prescriptions extends StatelessWidget {
                       style: Fluent.FluentTheme.of(context).typography.subtitle,
                     ),
                   )
-                : Fluent.Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: patient.prescriptions
-                          .map((pre) => Fluent.ListTile(
-                                title: Text(
-                                    DateFormat('dd/MM/YYYY').format(pre.date)),
-                                leading: Icon(
-                                    FluentIcons.inking_tool_24_regular,
-                                    color: Colors.black),
-                              ))
-                          .toList(),
+                : Container(
+                    decoration: BoxDecoration(),
+                    padding: EdgeInsets.symmetric(horizontal: 0, vertical: 0),
+                    child: Wrap(
+                      // mainAxisSize: MainAxisSize.min,
+                      children: <Widget>[
+                        Container(
+                          decoration: BoxDecoration(),
+                          padding:
+                              EdgeInsets.symmetric(horizontal: 0, vertical: 0),
+                          child: Column(children: <Widget>[
+                            ..._getPrescriptionList(),
+                          ]),
+                        ),
+                        SizedBox(width: 16)
+                      ],
                     ),
                   ),
           ],
@@ -337,14 +364,6 @@ class _ReportsWidgetState extends State<ReportsWidget> {
   }
 
   List<Widget> _getReportList() {
-    List<Widget> reports = [];
-    if (_files.isEmpty) {
-      reports.add(Text(
-        "There are no reports yet",
-        style: Fluent.FluentTheme.of(context).typography.subtitle,
-      ));
-    }
-    ;
     return _files
         .map((e) => FileWidget(
               fileLink: e.path,

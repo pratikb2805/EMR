@@ -129,6 +129,15 @@ class Medicine {
   Medicine({required this.name, required this.quantity});
 }
 
+@Entity()
+class MedicineListEntity {
+  int id = 0;
+  String name;
+  String provider;
+  String type;
+  MedicineListEntity(
+      {required this.name, this.provider = '', this.type = 'Tablet'});
+}
 // @Entity()
 // class PrescriptionEntity {
 //   int id = 0;
@@ -141,8 +150,9 @@ class Medicine {
 @Entity()
 class Prescription {
   int id = 0;
-  Prescription({required this.date});
+  Prescription({required this.date, required this.filePath});
   final patient = ToOne<Patient>();
+  final String filePath;
   final DateTime date;
   @Backlink()
   ToMany<Medicine> medicines = ToMany<Medicine>();

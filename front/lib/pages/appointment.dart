@@ -7,7 +7,6 @@ import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:emr/db/store.dart';
-import 'package:path_provider/path_provider.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
@@ -17,39 +16,24 @@ class AppointmentList extends StatefulWidget {
 }
 
 class _AppointmentListState extends State<AppointmentList> {
-<<<<<<< HEAD
-  //final _listController = StreamController<List<Appointment>>(sync: true);
-=======
   // final _listController = StreamController<List<Appointment>>(sync: true);
   // late final AppointmentModel vm;
->>>>>>> 9aaac310a34ce8c9cd96eb1fa30a9c5d458d91bb
   bool hasBeenInitialized = false;
-  AppointmentModel vm = AppointmentModel();
+
   @override
   void initState() {
     super.initState();
-<<<<<<< HEAD
-
-    setState(() {
-      // _listController.addStream(
-      //     widget.appointmentModel.queryAppointmentStream.map((q) => q.find()));
-=======
     // vm = AppointmentModel();
 
     setState(() {
       // _listController.addStream(vm.queryAppointmentStream.map((q) => q.find()));
->>>>>>> 9aaac310a34ce8c9cd96eb1fa30a9c5d458d91bb
       hasBeenInitialized = true;
     });
   }
 
   @override
   void dispose() {
-<<<<<<< HEAD
-    //_listController.close();
-=======
     // _listController.close();
->>>>>>> 9aaac310a34ce8c9cd96eb1fa30a9c5d458d91bb
     super.dispose();
   }
 
@@ -75,18 +59,11 @@ class _AppointmentListState extends State<AppointmentList> {
                 color: Fluent.FluentTheme.of(context).accentColor,
                 child: TextButton.icon(
                     onPressed: () async {
-                      print((await getApplicationSupportDirectory()).path);
                       await Fluent.showDialog(
                           context: context,
                           builder: (context) {
                             return StatefulBuilder(
                                 builder: (context, setState) {
-<<<<<<< HEAD
-                              return NewAppointment(
-                                  //appointmentModel: widget.appointmentModel,
-                                  //patientModel: widget.patientModel,
-                                  );
-=======
                               return Consumer<AppointmentModel>(
                                 builder: (context, vm, child) =>
                                     Consumer<PatientModel>(
@@ -97,7 +74,6 @@ class _AppointmentListState extends State<AppointmentList> {
                                   ),
                                 ),
                               );
->>>>>>> 9aaac310a34ce8c9cd96eb1fa30a9c5d458d91bb
                             });
                           });
                     },
@@ -122,6 +98,7 @@ class _AppointmentListState extends State<AppointmentList> {
               // } else {
               return DataTable(
                 appointments: model.getAll(),
+                vm: model,
               );
             },
           ),
@@ -138,7 +115,9 @@ class _AppointmentListState extends State<AppointmentList> {
 
 class DataTable extends StatefulWidget {
   final List<Appointment> appointments;
-  DataTable({Key? key, required this.appointments}) : super(key: key);
+  final AppointmentModel vm;
+  DataTable({Key? key, required this.appointments, required this.vm})
+      : super(key: key);
 
   @override
   _DataTableState createState() => _DataTableState();
@@ -164,9 +143,7 @@ class _DataTableState extends State<DataTable> {
   void getData() {
     setState(() {
       appointments = widget.appointments;
-      _source = AppointmentDataSource(
-        appointments: appointments,
-      );
+      _source = AppointmentDataSource(appointments, widget.vm);
     });
   }
 
@@ -174,7 +151,7 @@ class _DataTableState extends State<DataTable> {
     print(widget.appointments);
     setState(() {
       appointments = widget.appointments;
-      _source = AppointmentDataSource(appointments: appointments);
+      _source = AppointmentDataSource(appointments, widget.vm);
     });
     super.initState();
   }
@@ -295,11 +272,12 @@ class _DataTableState extends State<DataTable> {
 }
 
 class AppointmentDataSource extends DataTableSource {
-  final List<Appointment> appointments;
-  AppointmentDataSource({required this.appointments});
+  final List<Appointment> _appointment;
+  final AppointmentModel vm;
+  AppointmentDataSource(this._appointment, this.vm);
 
   void _sort<T>(Comparable<T> getField(Appointment d), bool ascending) {
-    appointments.sort((Appointment a, Appointment b) {
+    _appointment.sort((Appointment a, Appointment b) {
       if (!ascending) {
         final Appointment c = a;
         a = b;
@@ -314,7 +292,8 @@ class AppointmentDataSource extends DataTableSource {
 
   @override
   DataRow getRow(int index) {
-    final Appointment appointment = appointments[index];
+    final Appointment appointment = _appointment[index];
+    print(appointment.patient.target);
     return DataRow(cells: [
       DataCell(Text(appointment.id.toString())),
       DataCell(Text(appointment.name)),
@@ -343,7 +322,7 @@ class AppointmentDataSource extends DataTableSource {
                       size: 20,
                     )),
                 onPressed: () {
-                  //appointmentModel.removeAppointment(appointment);
+                  vm.removeAppointment(appointment);
                 },
               ))
         ],
@@ -355,7 +334,7 @@ class AppointmentDataSource extends DataTableSource {
   bool get isRowCountApproximate => false;
 
   @override
-  int get rowCount => appointments.length;
+  int get rowCount => _appointment.length;
 
   @override
   int get selectedRowCount => 0;
@@ -377,7 +356,7 @@ class _ActionRowState extends State<ActionRow> {
         context: context,
         builder: (context) {
           return StatefulBuilder(builder: (context, setState) {
-            return PatientEditForm(appointment: widget.patient);
+            return PatientEditForm(widget.patient);
           });
         });
   }

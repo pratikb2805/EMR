@@ -1,8 +1,6 @@
 import 'dart:async';
-import 'dart:io';
 import 'dart:math';
 import 'package:emr/db/patient.dart';
-import 'package:emr/objectbox.g.dart';
 import 'package:emr/pages/pages.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -29,7 +27,6 @@ class _PatientListState extends State<PatientList> {
 
       hasBeenInitialized = true;
     });
-    super.initState();
   }
 
   @override
@@ -67,6 +64,7 @@ class _PatientListState extends State<PatientList> {
               //   );
               return PatientDataTable(
                 patients: model.getAll(),
+                vm: model,
               );
             },
           ),
@@ -83,7 +81,9 @@ class _PatientListState extends State<PatientList> {
 
 class PatientDataTable extends StatefulWidget {
   final List<Patient> patients;
-  PatientDataTable({Key? key, required this.patients}) : super(key: key);
+  final PatientModel vm;
+  PatientDataTable({Key? key, required this.patients, required this.vm})
+      : super(key: key);
 
   @override
   _PatientDataTableState createState() => _PatientDataTableState();
@@ -109,7 +109,7 @@ class _PatientDataTableState extends State<PatientDataTable> {
   void getData() {
     setState(() {
       patients = widget.patients;
-      _source = PatientDataSource(patients);
+      _source = PatientDataSource(patients, widget.vm);
     });
   }
 
@@ -117,38 +117,10 @@ class _PatientDataTableState extends State<PatientDataTable> {
     // print(widget.patients);
     setState(() {
       patients = widget.patients;
-      _source = PatientDataSource(patients);
+      _source = PatientDataSource(patients, widget.vm);
     });
     super.initState();
   }
-
-  // Future<List<Patient>> fetchData() async {
-  //   final String response =
-  //       await rootBundle.loadString('assets/data/patient.json');
-  //   final parsed = json.decode(response).cast<Map<String, dynamic>>();
-  //   return parsed.map<Patient>((json) => fromJson(json)).toList();
-  // }
-
-  // Patient fromJson(Map<String, dynamic> json) {
-  //   return Patient(
-  //     start: DateTime.parse(json['start']).toLocal(),
-  //     end: DateTime.parse(json['end']).toLocal(),
-  //     name: json['name'] ?? '',
-  //     description: json['description'] ?? '',
-  //     email: json['email'] ?? '',
-  //     phone: json['phone'] ?? '',
-  //   );
-  // }
-
-  // Future<void> getData() async {
-  //   if (!isLoaded) {
-  //     patients = await fetchData();
-  //     setState(() {
-  //       isLoaded = true;
-  //       _source = PatientDataSource(patients);
-  //     });
-  //   }
-  // }
 
   @override
   Widget build(BuildContext context) {
@@ -231,7 +203,8 @@ class _PatientDataTableState extends State<PatientDataTable> {
 
 class PatientDataSource extends DataTableSource {
   final List<Patient> _patient;
-  PatientDataSource(this._patient);
+  final PatientModel vm;
+  PatientDataSource(this._patient, this.vm);
 
   void _sort<T>(Comparable<T> getField(Patient d), bool ascending) {
     _patient.sort((Patient a, Patient b) {
@@ -272,6 +245,18 @@ class PatientDataSource extends DataTableSource {
 class OpenProfileInfoButton extends StatelessWidget {
   final Patient patient;
   OpenProfileInfoButton({required this.patient});
+
+  // void printPres() {
+  //   List<Prescription> prescriptions = patient.prescriptions;
+  //   for (int i = 0; i < prescriptions.length; i++) {
+  //     List<Medicine> medicines = prescriptions[i].medicines;
+  //     print("Prescription $i");
+  //     for (int j = 0; j < medicines.length; i++) {
+  //       print(medicines[i].name);
+  //       print(medicines[i].quantity);
+  //     }
+  //   }
+  // }
 
   @override
   Widget build(BuildContext context) {

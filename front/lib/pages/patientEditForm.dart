@@ -5,11 +5,14 @@ import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 // import 'dart:io';
 import 'package:emr/db/patient.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
+import 'package:emr/pages/prescriptionpdf.dart';
+import 'package:path/path.dart' as p;
 
 class PatientEditForm extends StatefulWidget {
   final Appointment appointment;
-  PatientEditForm({required this.appointment});
+  PatientEditForm(this.appointment);
   @override
   _PatientEditFormState createState() => _PatientEditFormState();
 }
@@ -44,7 +47,6 @@ class _PatientEditFormState extends State<PatientEditForm> {
     medicinesList = [
       ['', '']
     ];
-
     super.dispose();
   }
 
@@ -71,42 +73,33 @@ class _PatientEditFormState extends State<PatientEditForm> {
     super.initState();
   }
 
-  String? validator(String? val) {
-    if (val == '') {
-      return "Enter Valid Input";
+  // void printLatest() {
+  //   print('UserName : ${_discription.text}');
+  // }
+  void savePrescription(Patient patientTemp, PatientModel pm) async {
+    final dirPath = p.join(
+        p.join((await getApplicationSupportDirectory()).path, 'patientfiles'),
+        (patientTemp.id).toString());
+    final presPath = p.join(
+        p.join(dirPath, 'prescription'),
+        DateFormat("dd-MM-yyyy")
+                .format(patientTemp.dateMostRecentConsult)
+                .toString() +
+            '.pdf');
+    Prescription prescription = Prescription(
+        date: patientTemp.dateMostRecentConsult, filePath: presPath);
+    for (int i = 0; i < medicinesList.length; i++) {
+      String name = medicinesList[i][0];
+      String quantity = medicinesList[i][1];
+      if (name != '' && quantity != '') {
+        Medicine medicine = Medicine(name: name, quantity: int.parse(quantity));
+        prescription.medicines.add(medicine);
+      }
     }
-    return null;
+    savePdf(patientTemp, prescription.medicines.toList());
+    patientTemp.prescriptions.add(prescription);
+    pm.addPatient(patientTemp);
   }
-
-  // void addPrescriptionToPatient(Patient patientTemp) {
-  //   Prescription prescription = Prescription(date: DateTime.now());
-  //   for (int i = 0; i < medicinesList.length; i++) {
-  //     if (medicinesList[i][0] != '' && medicinesList[i][1] != '') {
-  //       Medicine medicine = Medicine(
-  //           name: medicinesList[i][0],
-  //           quantity: int.parse(medicinesList[i][1]));
-  //       prescription.medicines.add(medicine);
-  //     }
-  //   }
-  //   if (prescription.medicines.length != 0) {
-  //     patientTemp.prescription.add(prescription);
-  //     //widget.patientModel.addPatient(patientTemp);
-  //   }
-  // }
-
-  // void printPres(String id) {
-  //   //Patient? patientTemp = widget.patientModel.getPatient(id);
-  //   if (patientTemp != null) {
-  //     for (int i = 0; i < patientTemp.prescription.length; i++) {
-  //       print("This is Prescription $i");
-  //       for (int j = 0; j < patientTemp.prescription[i].medicines.length; j++) {
-  //         String name = patientTemp.prescription[i].medicines[j].name;
-  //         int quanity = patientTemp.prescription[i].medicines[j].quantity;
-  //         print("$name $quanity");
-  //       }
-  //     }
-  //   }
-  // }
 
   List<Widget> _getMedicines() {
     List<Widget> medicinesTextFieldsList = [];
@@ -137,9 +130,7 @@ class _PatientEditFormState extends State<PatientEditForm> {
     return InkWell(
       onTap: () {
         if (add) {
-          if (medicinesList[index][0] != '' && medicinesList[index][1] != '') {
-            medicinesList.insert(medicinesList.length, ['', '']);
-          }
+          medicinesList.insert(medicinesList.length, ['', '']);
         } else
           medicinesList.removeAt(index);
         setState(() {});
@@ -355,50 +346,6 @@ class _PatientEditFormState extends State<PatientEditForm> {
       ),
       actions: <Widget>[
         Center(
-<<<<<<< HEAD
-          child: ElevatedButton(
-            onPressed: () async {
-              if (_patientEditFormKey.currentState!.validate()) {
-                if (widget.appointment.patient.target == null &&
-                    patient == null) {
-                  patient = Patient(
-                      name: _name.text,
-                      age: int.parse(_age.text),
-                      diagnosis: _discription.text,
-                      dateFirstConsult: widget.appointment.start,
-                      dateMostRecentConsult: widget.appointment.start,
-                      email: _email.text,
-                      phone: _phoneNo.text);
-                } else {
-                  patient = widget.appointment.patient.target!;
-
-                  patient!.dateMostRecentConsult = widget.appointment.start;
-                }
-                PatientModel pm = PatientModel();
-                AppointmentModel am = AppointmentModel();
-                pm.addPatient(patient!);
-                // showDialog(
-                //     context: context,
-                //     builder: (c) {
-                //       return AlertDialog(
-                //           title: Center(child: Text('Sucess')),
-                //           content: Icon(FluentIcons.checkmark_24_filled,
-                //               color: Colors.greenAccent));
-                //     });
-                am.removeAppointment(widget.appointment);
-                //addPrescriptionToPatient(patient!);
-                //printPres(patient!.id.toString());
-                // Do something like updating SharedPreferences or User Settings etc.
-                Navigator.of(context).pop();
-              }
-            },
-            child: Container(
-              padding: EdgeInsets.all(10),
-              alignment: Alignment.center,
-              width: 100,
-              height: 40,
-              child: Text("Submit"),
-=======
           child: Consumer<PatientModel>(
             builder: (context, pm, child) => Consumer<AppointmentModel>(
               builder: (context, am, child) => ElevatedButton(
@@ -418,9 +365,11 @@ class _PatientEditFormState extends State<PatientEditForm> {
                       patient = widget.appointment.patient.target!;
                       patient!.dateMostRecentConsult = widget.appointment.start;
                     }
+                    pm.addPatient(patient!);
+
+                    savePrescription(patient!, pm);
                     // PatientModel pm = PatientModel();
                     // AppointmentModel am = AppointmentModel();
-                    pm.addPatient(patient!);
                     // showDialog(
                     //     context: context,
                     //     builder: (c) {
@@ -442,7 +391,6 @@ class _PatientEditFormState extends State<PatientEditForm> {
                   child: Text("Submit"),
                 ),
               ),
->>>>>>> 9aaac310a34ce8c9cd96eb1fa30a9c5d458d91bb
             ),
           ),
         ),
@@ -537,9 +485,8 @@ class _QuantityInputFieldState extends State<QuantityInputField> {
 class TextInputOneLineWidget extends StatefulWidget {
   final String label;
   final TextEditingController controller;
-  final validator;
   TextInputOneLineWidget(
-      {Key? key, required this.controller, required this.label, this.validator})
+      {Key? key, required this.controller, required this.label})
       : super(key: key);
   @override
   _TextInputOneLineWidgetState createState() => _TextInputOneLineWidgetState();
@@ -552,7 +499,6 @@ class _TextInputOneLineWidgetState extends State<TextInputOneLineWidget> {
         padding: EdgeInsets.symmetric(horizontal: 8, vertical: 8),
         width: MediaQuery.of(context).size.width * 0.3,
         child: TextFormField(
-          validator: widget.validator,
           controller: widget.controller,
           decoration: InputDecoration(
               // constraints: BoxConstraints(maxHeight: 45),

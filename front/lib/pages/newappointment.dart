@@ -6,22 +6,16 @@ import 'package:fluent_ui/fluent_ui.dart' as Fluent;
 import 'package:emr/db/patient.dart' as db;
 
 class NewAppointment extends StatefulWidget {
-<<<<<<< HEAD
-=======
   final AppointmentModel am;
   final PatientModel pm;
   NewAppointment({Key? key, required this.am, required this.pm});
->>>>>>> f6837a0ab7089a6af221ec142fdfbb3862a2ba38
   @override
   _NewAppointmentState createState() => _NewAppointmentState();
 }
 
 class _NewAppointmentState extends State<NewAppointment> {
-<<<<<<< HEAD
-=======
   // late final PatientModel pm;
 
->>>>>>> f6837a0ab7089a6af221ec142fdfbb3862a2ba38
   final GlobalKey<FormState> _newAppointmentFormKey = GlobalKey<FormState>();
   final TextEditingController _oldPatientId = TextEditingController();
   final TextEditingController _name = TextEditingController();
@@ -40,10 +34,7 @@ class _NewAppointmentState extends State<NewAppointment> {
   void initState() {
     super.initState();
 
-<<<<<<< HEAD
-=======
     // pm = PatientModel();
->>>>>>> 9aaac310a34ce8c9cd96eb1fa30a9c5d458d91bb
     _calendarController.displayDate = this.date;
   }
 
@@ -61,14 +52,9 @@ class _NewAppointmentState extends State<NewAppointment> {
     return 'Please enter valid email address';
   }
 
-  PatientModel patientModel = PatientModel();
   void getPatientWithPatientId() {
     if (_oldPatientId.text != '') {
-<<<<<<< HEAD
-      db.Patient? patient = patientModel.getPatient(_oldPatientId.text);
-=======
       db.Patient? patient = widget.pm.getPatient(_oldPatientId.text);
->>>>>>> f6837a0ab7089a6af221ec142fdfbb3862a2ba38
       if (patient != null) {
         _name.text = patient.name;
         _emailController.text = patient.email;
@@ -120,7 +106,7 @@ class _NewAppointmentState extends State<NewAppointment> {
                                     border: OutlineInputBorder(),
                                   ),
                                   onChanged: (value) {
-                                    //getPatientWithPatientId();
+                                    getPatientWithPatientId();
                                   },
                                   controller: _oldPatientId,
                                 ),
@@ -347,19 +333,14 @@ class _NewAppointmentState extends State<NewAppointment> {
                       name: _name.text);
                   if (_oldPatientId.text != '') {
                     db.Patient? patient =
-<<<<<<< HEAD
-                        patientModel.getPatient(_oldPatientId.text);
-=======
                         widget.pm.getPatient(_oldPatientId.text);
->>>>>>> f6837a0ab7089a6af221ec142fdfbb3862a2ba38
                     print("got patient");
                     if (patient != null) {
                       print("added patient");
                       appointment.patient.target = patient;
                     }
                   }
-                  AppointmentModel appointmentModel = AppointmentModel();
-                  appointmentModel.addAppointment(appointment);
+                  widget.am.addAppointment(appointment);
                   Navigator.of(context).pop();
                 }
               },

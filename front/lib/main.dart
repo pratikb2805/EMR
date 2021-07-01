@@ -37,6 +37,7 @@ void main() async {
   print(DB_DIR);
   createReportDir();
   runApp(MultiProvider(providers: [
+    ChangeNotifierProvider(create: (create) => MedicineModel(DB_DIR)),
     ChangeNotifierProvider(create: (context) => AppointmentModel(DB_DIR)),
     ChangeNotifierProvider(
       create: (context) => PatientModel(DB_DIR),
@@ -58,8 +59,6 @@ class MyApp extends Fluent.StatefulWidget {
 }
 
 class _MyAppState extends Fluent.State<MyApp> {
-  final PatientModel patientModel = PatientModel();
-  final AppointmentModel appointmentModel = AppointmentModel();
   int curId = 0;
   @override
   void initState() {
@@ -98,7 +97,10 @@ class _MyAppState extends Fluent.State<MyApp> {
                   title: Text('Appointments')),
               Fluent.PaneItem(
                   icon: Icon(FluentIcons.person_24_regular),
-                  title: Text('Patients'))
+                  title: Text('Patients')),
+              Fluent.PaneItem(
+                  icon: Icon(FluentIcons.storage_24_regular),
+                  title: Text('Store'))
             ],
             displayMode: Fluent.PaneDisplayMode.compact),
         content: Fluent.NavigationBody(
@@ -118,7 +120,8 @@ class _MyAppState extends Fluent.State<MyApp> {
               },
             ),
             AppointmentList(),
-            PatientList()
+            PatientList(),
+            MedicineListEntityList()
           ],
         ),
       ),
