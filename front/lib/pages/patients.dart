@@ -123,34 +123,6 @@ class _PatientDataTableState extends State<PatientDataTable> {
     super.initState();
   }
 
-  // Future<List<Patient>> fetchData() async {
-  //   final String response =
-  //       await rootBundle.loadString('assets/data/patient.json');
-  //   final parsed = json.decode(response).cast<Map<String, dynamic>>();
-  //   return parsed.map<Patient>((json) => fromJson(json)).toList();
-  // }
-
-  // Patient fromJson(Map<String, dynamic> json) {
-  //   return Patient(
-  //     start: DateTime.parse(json['start']).toLocal(),
-  //     end: DateTime.parse(json['end']).toLocal(),
-  //     name: json['name'] ?? '',
-  //     description: json['description'] ?? '',
-  //     email: json['email'] ?? '',
-  //     phone: json['phone'] ?? '',
-  //   );
-  // }
-
-  // Future<void> getData() async {
-  //   if (!isLoaded) {
-  //     patients = await fetchData();
-  //     setState(() {
-  //       isLoaded = true;
-  //       _source = PatientDataSource(patients);
-  //     });
-  //   }
-  // }
-
   @override
   Widget build(BuildContext context) {
     getData();
@@ -289,6 +261,18 @@ class PatientDataSource extends DataTableSource {
 class OpenProfileInfoButton extends StatelessWidget {
   final Patient patient;
   OpenProfileInfoButton({required this.patient});
+
+  // void printPres() {
+  //   List<Prescription> prescriptions = patient.prescriptions;
+  //   for (int i = 0; i < prescriptions.length; i++) {
+  //     List<Medicine> medicines = prescriptions[i].medicines;
+  //     print("Prescription $i");
+  //     for (int j = 0; j < medicines.length; i++) {
+  //       print(medicines[i].name);
+  //       print(medicines[i].quantity);
+  //     }
+  //   }
+  // }
 
   @override
   Widget build(BuildContext context) {

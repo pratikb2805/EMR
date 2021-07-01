@@ -5,7 +5,10 @@ import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 // import 'dart:io';
 import 'package:emr/db/patient.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
+import 'package:emr/pages/prescriptionpdf.dart';
+import 'package:path/path.dart' as p;
 
 class PatientEditForm extends StatefulWidget {
   final Appointment appointment;
@@ -73,6 +76,30 @@ class _PatientEditFormState extends State<PatientEditForm> {
   // void printLatest() {
   //   print('UserName : ${_discription.text}');
   // }
+  void savePrescription(Patient patientTemp, PatientModel pm) async {
+    final dirPath = p.join(
+        p.join((await getApplicationSupportDirectory()).path, 'patientfiles'),
+        (patientTemp.id).toString());
+    final presPath = p.join(
+        p.join(dirPath, 'prescription'),
+        DateFormat("dd-MM-yyyy")
+                .format(patientTemp.dateMostRecentConsult)
+                .toString() +
+            '.pdf');
+    Prescription prescription = Prescription(
+        date: patientTemp.dateMostRecentConsult, filePath: presPath);
+    for (int i = 0; i < medicinesList.length; i++) {
+      String name = medicinesList[i][0];
+      String quantity = medicinesList[i][1];
+      if (name != '' && quantity != '') {
+        Medicine medicine = Medicine(name: name, quantity: int.parse(quantity));
+        prescription.medicines.add(medicine);
+      }
+    }
+    savePdf(patientTemp, prescription.medicines.toList());
+    patientTemp.prescriptions.add(prescription);
+    pm.addPatient(patientTemp);
+  }
 
   List<Widget> _getMedicines() {
     List<Widget> medicinesTextFieldsList = [];
@@ -338,9 +365,11 @@ class _PatientEditFormState extends State<PatientEditForm> {
                       patient = widget.appointment.patient.target!;
                       patient!.dateMostRecentConsult = widget.appointment.start;
                     }
+                    pm.addPatient(patient!);
+
+                    savePrescription(patient!, pm);
                     // PatientModel pm = PatientModel();
                     // AppointmentModel am = AppointmentModel();
-                    pm.addPatient(patient!);
                     // showDialog(
                     //     context: context,
                     //     builder: (c) {

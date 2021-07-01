@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'dart:math';
 import 'package:emr/db/patient.dart';

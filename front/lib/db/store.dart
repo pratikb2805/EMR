@@ -126,3 +126,30 @@ class MedicineModel extends ChangeNotifier {
         .toList();
   }
 }
+
+// class PrescriptionModel extends ChangeNotifier {
+//   final Store _store;
+//   late final Box<Prescription> _box;
+//   PrescriptionModel(String dir)
+//       : _store = Store(
+//           getObjectBoxModel(),
+//           directory: dir,
+//           maxReaders: 3,
+//         ) {
+//     _box = _store.box();
+//   }
+//   List<MedicineListEntity> get medicines => _box.getAll().toList();
+
+//   void addMedicine(MedicineListEntity med) {
+//     _box.put(med);
+//     notifyListeners();
+//   }
+
+//   void removeMedicine(MedicineListEntity med) {
+//     _box.remove(med.id);
+//     notifyListeners();
+//   }
+
+//   // List<MedicineListEntity> getAll() => _box.getAll().toList();
+
+// }

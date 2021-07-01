@@ -152,8 +152,9 @@ class MedicineListEntity {
 @Entity()
 class Prescription {
   int id = 0;
-  Prescription({required this.date});
+  Prescription({required this.date, required this.filePath});
   final patient = ToOne<Patient>();
+  final String filePath;
   final DateTime date;
   @Backlink()
   ToMany<Medicine> medicines = ToMany<Medicine>();
