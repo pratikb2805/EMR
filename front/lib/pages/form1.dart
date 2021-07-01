@@ -136,8 +136,8 @@ class _DetailsFormState extends State<DetailsForm> {
                 icon: Icons.house_outlined,
                 onchange: (value) {},
                 controller: address,
-                hint: "Address here",
-                labe: "Address"),
+                hint: "Clinic here",
+                labe: "Clinic"),
             Row(
               children: [
                 Expanded(
