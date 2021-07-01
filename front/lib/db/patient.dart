@@ -124,6 +124,8 @@ class Medicine {
   String name;
   int quantity;
 
+  void increse() => quantity++;
+  void decrease() => quantity--;
   ToOne<Prescription> prescription = ToOne<Prescription>();
 
   Medicine({required this.name, required this.quantity});

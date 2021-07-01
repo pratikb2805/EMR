@@ -24,6 +24,7 @@ class _EMRAppState extends State<EMRApp> {
   @override
   Widget build(BuildContext context) {
     return Fluent.FluentApp(
+        debugShowCheckedModeBanner: false,
         theme: Fluent.ThemeData(
             typography: Fluent.Typography(
               title: TextStyle(
