@@ -1,3 +1,4 @@
+import 'package:emr/db/store.dart';
 import 'package:flutter/material.dart';
 import 'doctorTop.dart';
 import 'patientsList.dart';
@@ -7,10 +8,16 @@ import 'package:emr/utils/util.dart';
 import 'package:fluent_ui/fluent_ui.dart' as Fluent;
 import 'package:system_theme/system_theme.dart';
 import 'package:fluentui_system_icons/fluentui_system_icons.dart';
+// import 'package:emr/main.dart' as m;
+import 'package:provider/provider.dart';
 
 class DoctorDashboards extends StatefulWidget {
-  DoctorDashboards({Key? key}) : super(key: key);
-
+  DoctorDashboards(
+      {Key? key,
+      required this.appointMentOnpresed,
+      required this.patientsOnPressed})
+      : super(key: key);
+  final appointMentOnpresed, patientsOnPressed;
   @override
   _DoctorDashboardsState createState() => _DoctorDashboardsState();
 }
@@ -38,19 +45,22 @@ class _DoctorDashboardsState extends State<DoctorDashboards> {
   @override
   Widget build(BuildContext context) {
     return Fluent.Container(
+      color: Fluent.Colors.transparent,
       width: MediaQuery.of(context).size.width,
-      color: Colors.white,
+      // color: Colors.white,
       child: !isloaded
           ? null
           : SingleChildScrollView(
               child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.start,
               children: [
                 doc != null
                     ? DoctorTopBar(
                         urll: doc!.profileImage, name: doc!.displayname)
                     : DoctorTopBar(name: "Prathamesh Wagh", urll: urll),
                 Container(
-                  color: Colors.white,
+                  color: Colors.transparent,
                   padding: EdgeInsets.all(5.0),
                   child: Row(
                     mainAxisSize: MainAxisSize.max,
@@ -72,7 +82,9 @@ class _DoctorDashboardsState extends State<DoctorDashboards> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Center(
-                                child: SingleChildScrollView(
+                                child: Fluent.SingleChildScrollView(
+                                  key: UniqueKey(),
+                                  // controller: Fluent.ScrollController(),
                                   scrollDirection: Axis.horizontal,
                                   child: Row(
                                     mainAxisAlignment:
@@ -80,25 +92,39 @@ class _DoctorDashboardsState extends State<DoctorDashboards> {
                                     children: [
                                       Padding(
                                           padding: const EdgeInsets.all(8.0),
-                                          child: CardBadgeWidget(
-                                              color: SystemTheme
-                                                  .accentInstance.accent
-                                                  .toAccentColor(),
-                                              icon: FluentIcons
-                                                  .briefcase_medical_24_regular,
-                                              name: 'Apointments')),
+                                          child: Consumer<AppointmentModel>(
+                                            builder: (context, model, childe) =>
+                                                CardBadgeWidget(
+                                                    count: model.count,
+                                                    onPressed: widget
+                                                        .appointMentOnpresed,
+                                                    color: SystemTheme
+                                                        .accentInstance.accent
+                                                        .toAccentColor(),
+                                                    icon: FluentIcons
+                                                        .briefcase_medical_24_regular,
+                                                    name: 'Apointments'),
+                                          )),
                                       Padding(
                                         padding: const EdgeInsets.all(8.0),
-                                        child: CardBadgeWidget(
-                                            color: SystemTheme
-                                                .accentInstance.accent
-                                                .toAccentColor(),
-                                            icon: FluentIcons.people_24_regular,
-                                            name: 'Patients'),
+                                        child: Consumer<PatientModel>(
+                                          builder: (context, model, child) =>
+                                              CardBadgeWidget(
+                                                  onPressed:
+                                                      widget.patientsOnPressed,
+                                                  count: model.count,
+                                                  color: SystemTheme
+                                                      .accentInstance.accent
+                                                      .toAccentColor(),
+                                                  icon: FluentIcons
+                                                      .people_24_regular,
+                                                  name: 'Patients'),
+                                        ),
                                       ),
                                       Padding(
                                           padding: const EdgeInsets.all(8.0),
                                           child: CardBadgeWidget(
+                                              onPressed: () {},
                                               color: SystemTheme
                                                   .accentInstance.accent
                                                   .toAccentColor(),
@@ -108,6 +134,7 @@ class _DoctorDashboardsState extends State<DoctorDashboards> {
                                       Padding(
                                         padding: const EdgeInsets.all(8.0),
                                         child: CardBadgeWidget(
+                                            onPressed: () {},
                                             color: SystemTheme
                                                 .accentInstance.accent
                                                 .toAccentColor(),
@@ -130,25 +157,32 @@ class _DoctorDashboardsState extends State<DoctorDashboards> {
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
                           ConstrainedBox(
-                              constraints: BoxConstraints(
-                                maxWidth: 300,
-                              ),
-                              child: SafeArea(child: PatientsList())),
-                          ConstrainedBox(
                               constraints: BoxConstraints(maxWidth: 300),
                               child: Padding(
                                 padding: const EdgeInsets.all(8.0),
                                 child: Fluent.DatePicker(
+                                  header: 'Select a date',
                                   // cursor: MouseCursor,
                                   selected: date,
                                   onChanged: (v) {
+                                    this._calendarController.displayDate = this
+                                        ._calendarController
+                                        .selectedDate = v;
+                                    // this._calendarController.
                                     setState(() {
                                       date = v;
-                                      this._calendarController.displayDate = v;
                                     });
                                   },
                                 ),
-                              ))
+                              )),
+                          ConstrainedBox(
+                              constraints: BoxConstraints(
+                                maxWidth: 300,
+                              ),
+                              child: SafeArea(
+                                  child: PatientsList(
+                                onPressed: widget.patientsOnPressed,
+                              ))),
                         ],
                       ),
                     ],
@@ -163,10 +197,12 @@ class _DoctorDashboardsState extends State<DoctorDashboards> {
 class CardBadgeWidget extends StatefulWidget {
   final icon;
   final String name;
+  final onPressed;
   final color;
   final int count;
   CardBadgeWidget(
       {Key? key,
+      required this.onPressed,
       required this.color,
       this.name = 'NAME',
       @required this.icon,
@@ -202,39 +238,42 @@ class _CardBadgeWidgetState extends State<CardBadgeWidget> {
           });
         },
         child: Card(
-          child: Container(
-              decoration: BoxDecoration(
-                  color: (ishove ? widget.color : bgColor),
-                  borderRadius: BorderRadius.circular(5),
-                  border: Border.all(width: 1, color: Colors.grey.shade100)),
-              height: 120,
-              width: 180,
-              child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: <Widget>[
-                    Padding(
-                        padding: EdgeInsets.all(2),
-                        child: Icon(
-                          widget.icon,
-                          color: ishove ? iconColorH : iconColor,
-                          size: 48,
-                        )),
-                    Padding(
-                        padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
-                        child: Text('${widget.count}',
-                            style: TextStyle(
-                                fontSize: 24,
-                                fontWeight: FontWeight.normal,
-                                color: ishove ? iconColorH : iconColor))),
-                    Padding(
-                        padding: EdgeInsets.all(2),
-                        child: Text('${widget.name}',
-                            style: TextStyle(
-                                fontSize: 12,
-                                fontWeight: FontWeight.normal,
-                                color: ishove ? iconColorH : iconColor)))
-                  ])),
+          child: InkWell(
+            onTap: () => {widget.onPressed()},
+            child: Container(
+                decoration: BoxDecoration(
+                    color: (ishove ? widget.color : bgColor),
+                    borderRadius: BorderRadius.circular(5),
+                    border: Border.all(width: 1, color: Colors.grey.shade100)),
+                height: 120,
+                width: 180,
+                child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: <Widget>[
+                      Padding(
+                          padding: EdgeInsets.all(2),
+                          child: Icon(
+                            widget.icon,
+                            color: ishove ? iconColorH : iconColor,
+                            size: 48,
+                          )),
+                      Padding(
+                          padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
+                          child: Text('${widget.count}',
+                              style: TextStyle(
+                                  fontSize: 24,
+                                  fontWeight: FontWeight.normal,
+                                  color: ishove ? iconColorH : iconColor))),
+                      Padding(
+                          padding: EdgeInsets.all(2),
+                          child: Text('${widget.name}',
+                              style: TextStyle(
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.normal,
+                                  color: ishove ? iconColorH : iconColor)))
+                    ])),
+          ),
         ));
   }
 }

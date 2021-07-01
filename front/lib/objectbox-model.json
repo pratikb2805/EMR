@@ -4,51 +4,51 @@
   "_note3": "If you have VCS merge conflicts, you must resolve them according to ObjectBox docs.",
   "entities": [
     {
-      "id": "1:4206659433228728473",
-      "lastPropertyId": "8:5561841712269699599",
+      "id": "1:980207476511745499",
+      "lastPropertyId": "8:2462211432531836962",
       "name": "Appointment",
       "properties": [
         {
-          "id": "1:1465995063070907659",
+          "id": "1:1432217913924758625",
           "name": "id",
           "type": 6,
           "flags": 1
         },
         {
-          "id": "2:3268054310116021292",
+          "id": "2:8547959311044732001",
           "name": "patientId",
           "type": 11,
           "flags": 520,
-          "indexId": "1:3846074685452082189",
+          "indexId": "1:4964824786930614709",
           "relationTarget": "Patient"
         },
         {
-          "id": "3:776827768244247391",
+          "id": "3:2729283352043843406",
           "name": "name",
           "type": 9
         },
         {
-          "id": "4:2916484247760345982",
+          "id": "4:4218355714880945287",
           "name": "phone",
           "type": 9
         },
         {
-          "id": "5:2041419127272937157",
+          "id": "5:1292040813197140458",
           "name": "email",
           "type": 9
         },
         {
-          "id": "6:2379215213311065764",
+          "id": "6:7223382681417688374",
           "name": "start",
           "type": 10
         },
         {
-          "id": "7:1541348813451311357",
+          "id": "7:332689886567221488",
           "name": "end",
           "type": 10
         },
         {
-          "id": "8:5561841712269699599",
+          "id": "8:2462211432531836962",
           "name": "description",
           "type": 9
         }
@@ -56,184 +56,204 @@
       "relations": []
     },
     {
-      "id": "2:8932114531374206770",
-      "lastPropertyId": "3:5123736557064351291",
+      "id": "2:1081398232892878123",
+      "lastPropertyId": "4:3900349319257525067",
       "name": "Medicine",
       "properties": [
         {
-          "id": "1:187178805769429642",
+          "id": "1:638353958845560741",
           "name": "id",
           "type": 6,
           "flags": 1
         },
         {
-          "id": "2:7671286888957230290",
+          "id": "2:7472851359015801325",
           "name": "name",
           "type": 9
         },
         {
-          "id": "3:5123736557064351291",
+          "id": "3:7972133536552691445",
+          "name": "quantity",
+          "type": 6
+        },
+        {
+          "id": "4:3900349319257525067",
+          "name": "prescriptionId",
+          "type": 11,
+          "flags": 520,
+          "indexId": "2:1720417996275521020",
+          "relationTarget": "Prescription"
+        }
+      ],
+      "relations": []
+    },
+    {
+      "id": "3:8597768092526273925",
+      "lastPropertyId": "4:743575235905870374",
+      "name": "MedicineListEntity",
+      "properties": [
+        {
+          "id": "1:1421541099554690973",
+          "name": "id",
+          "type": 6,
+          "flags": 1
+        },
+        {
+          "id": "2:8077515789044744813",
+          "name": "name",
+          "type": 9
+        },
+        {
+          "id": "3:8717748664895124499",
           "name": "provider",
+          "type": 9
+        },
+        {
+          "id": "4:743575235905870374",
+          "name": "type",
           "type": 9
         }
       ],
       "relations": []
     },
     {
-      "id": "3:2856338254094698875",
-      "lastPropertyId": "8:8347380164975198828",
+      "id": "4:8865348481158784631",
+      "lastPropertyId": "10:5646735255928587887",
       "name": "Patient",
       "properties": [
         {
-          "id": "1:1037461127569584606",
+          "id": "1:2777689438493610214",
           "name": "id",
           "type": 6,
           "flags": 1
         },
         {
-          "id": "2:6865062481895136550",
+          "id": "2:1076024628369631315",
           "name": "name",
           "type": 9
         },
         {
-          "id": "3:5915528010476184664",
+          "id": "3:8804620599790315932",
           "name": "address",
           "type": 9
         },
         {
-          "id": "4:3013692023333119843",
+          "id": "4:4304685712616014293",
           "name": "email",
           "type": 9
         },
         {
-          "id": "5:9003958988477569606",
+          "id": "5:1317978659662726173",
           "name": "phone",
           "type": 9
         },
         {
-          "id": "6:2908100781974108349",
+          "id": "6:1399891960379675339",
+          "name": "age",
+          "type": 6
+        },
+        {
+          "id": "7:8383230599807642661",
           "name": "dateFirstConsult",
           "type": 10
         },
         {
-          "id": "7:7961724809667280029",
+          "id": "8:1474716533548285583",
           "name": "dateMostRecentConsult",
           "type": 10
         },
         {
-          "id": "8:8347380164975198828",
+          "id": "9:1102640712795796689",
           "name": "diagnosis",
+          "type": 9
+        },
+        {
+          "id": "10:5646735255928587887",
+          "name": "dirPath",
           "type": 9
         }
       ],
       "relations": []
     },
     {
-      "id": "4:6393683455852719436",
-      "lastPropertyId": "5:3622395981508555178",
+      "id": "5:3249343592798703606",
+      "lastPropertyId": "5:3362574328434198541",
       "name": "PatientFile",
       "properties": [
         {
-          "id": "1:322896791375612149",
+          "id": "1:7108493623161059885",
           "name": "name",
           "type": 9
         },
         {
-          "id": "2:2230630526227056246",
+          "id": "2:3366081390455799508",
           "name": "id",
           "type": 6,
           "flags": 1
         },
         {
-          "id": "3:8941932810098855234",
+          "id": "3:2518794000975027046",
           "name": "path",
           "type": 9
         },
         {
-          "id": "4:614233978925057753",
+          "id": "4:4321005066649071984",
           "name": "description",
           "type": 9
         },
         {
-          "id": "5:3622395981508555178",
-          "name": "patientId",
+          "id": "5:3362574328434198541",
+          "name": "patienttoFileId",
           "type": 11,
           "flags": 520,
-          "indexId": "2:5212292416553112386",
+          "indexId": "3:6935521076521674077",
           "relationTarget": "Patient"
         }
       ],
       "relations": []
     },
     {
-      "id": "5:6159316704979173670",
-      "lastPropertyId": "2:8006649165251026986",
+      "id": "6:1551578526507179291",
+      "lastPropertyId": "4:6694266175318252090",
       "name": "Prescription",
       "properties": [
         {
-          "id": "1:120846779724323641",
+          "id": "1:8284373219759734684",
           "name": "id",
           "type": 6,
           "flags": 1
         },
         {
-          "id": "2:8006649165251026986",
+          "id": "2:374431922059084320",
           "name": "patientId",
           "type": 11,
           "flags": 520,
-          "indexId": "3:3171566469662797146",
+          "indexId": "4:4195167626136902105",
           "relationTarget": "Patient"
-        }
-      ],
-      "relations": []
-    },
-    {
-      "id": "6:1276919608009700955",
-      "lastPropertyId": "3:6769746767046986637",
-      "name": "PrescriptionEntity",
-      "properties": [
-        {
-          "id": "1:1346309671908843553",
-          "name": "id",
-          "type": 6,
-          "flags": 1
         },
         {
-          "id": "2:2781340186459815164",
-          "name": "medicineId",
-          "type": 11,
-          "flags": 520,
-          "indexId": "4:6731157957018303341",
-          "relationTarget": "Medicine"
+          "id": "3:6169972770310103158",
+          "name": "filePath",
+          "type": 9
         },
         {
-          "id": "3:6769746767046986637",
-          "name": "quantity",
-          "type": 6
+          "id": "4:6694266175318252090",
+          "name": "date",
+          "type": 10
         }
       ],
       "relations": []
     }
   ],
-  "lastEntityId": "6:1276919608009700955",
-  "lastIndexId": "4:6731157957018303341",
+  "lastEntityId": "6:1551578526507179291",
+  "lastIndexId": "4:4195167626136902105",
   "lastRelationId": "0:0",
   "lastSequenceId": "0:0",
   "modelVersion": 5,
   "modelVersionParserMinimum": 5,
-  "retiredEntityUids": [
-    2105980254126945334
-  ],
+  "retiredEntityUids": [],
   "retiredIndexUids": [],
-  "retiredPropertyUids": [
-    8929368112691541792,
-    4596754707230663518,
-    6719057657127873854,
-    4021103401215910054,
-    7408608506485051253,
-    2849318786694514610,
-    5990175068168941742
-  ],
+  "retiredPropertyUids": [],
   "retiredRelationUids": [],
   "version": 1
 }

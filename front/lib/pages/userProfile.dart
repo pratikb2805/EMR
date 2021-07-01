@@ -1,3 +1,4 @@
+import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
 
 class UserprofileWidget extends StatefulWidget {
@@ -14,16 +15,25 @@ class _UserprofileWidgetState extends State<UserprofileWidget> {
     return Padding(
       padding: EdgeInsets.all(10),
       child: Container(
+          // color: Colors.white,
           alignment: Alignment.topCenter,
           width: MediaQuery.of(context).size.width * 0.4,
-          height: MediaQuery.of(context).size.height * 0.4,
           child: CircleAvatar(
-            radius: MediaQuery.of(context).size.width * 0.3,
-            backgroundImage: NetworkImage(widget.profile),
+            radius: 102,
+            backgroundColor: Colors.grey,
+            child: CircleAvatar(
+              backgroundColor: Colors.white,
+              radius: 100,
+              child: Icon(
+                FluentIcons.person_24_regular,
+                color: Colors.black54,
+                size: 200,
+              ),
+              // backgroundImage: NetworkImage(widget.profile),
+            ),
           ),
-          decoration: BoxDecoration(
-            shape: BoxShape.circle,
-          )),
+          decoration:
+              BoxDecoration(shape: BoxShape.circle, color: Colors.white)),
     );
   }
 }

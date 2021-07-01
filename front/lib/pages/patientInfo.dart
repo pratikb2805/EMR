@@ -1,18 +1,22 @@
 //import 'package:emr/db/patient.dart';
-import 'dart:io';
+import 'package:emr/db/patient.dart';
+import 'package:emr/db/store.dart';
 import 'package:filepicker_windows/filepicker_windows.dart';
+import 'package:fluent_ui/fluent_ui.dart' as Fluent;
+import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:path/path.dart' as p;
 import 'package:flutter/material.dart';
 import 'package:open_file/open_file.dart';
-import 'package:path_provider/path_provider.dart';
-// import 'package:flutter_svg/flutter_svg.dart';
+import 'package:provider/provider.dart';
 import 'userProfile.dart';
-import 'pages.dart';
+// import 'pages.dart';
+import 'package:intl/intl.dart';
 
+//
 //import 'package:objectbox/objectbox.dart';
 class PatientprofileWidget extends StatefulWidget {
-  PatientprofileWidget({Key? key});
+  final Patient patient;
+  PatientprofileWidget({Key? key, required this.patient});
   @override
   _PatientprofileWidgetState createState() => _PatientprofileWidgetState();
 }
@@ -21,76 +25,78 @@ class _PatientprofileWidgetState extends State<PatientprofileWidget> {
   @override
   Widget build(BuildContext context) {
     // Figma Flutter Generator PatientprofileWidget - FRAME
-
-    return Scaffold(
-      appBar: AppBar(
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.vertical(
-            bottom: Radius.circular(10.0),
-          ),
+    return Fluent.ScaffoldPage(
+      padding: EdgeInsets.zero,
+      header: Fluent.PageHeader(
+        leading: Material(
+          child: IconButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              icon:
+                  Icon(FluentIcons.arrow_left_48_regular, color: Colors.black)),
         ),
-        textTheme: TextTheme(headline6: TextStyle(color: Colors.white)),
-        title: Container(
-            alignment: Alignment.topLeft,
+        title: Material(
             child: ListTile(
-              leading: Icon(
-                Icons.person,
-                color: Colors.white,
-              ),
-              title: Text(
-                'Patient',
-                style: TextStyle(color: Colors.white),
-              ),
-            )),
+          leading: Icon(
+            FluentIcons.person_24_regular,
+            color: Colors.black,
+          ),
+          title: Text(
+            'Patient',
+          ),
+        )),
       ),
-      body: Padding(
+      content: Padding(
         padding: const EdgeInsets.all(5.0),
         child: Container(
             // alignment: Alignment.topLeft,
             // height: MediaQuery.of(context).size.height,
             child: LayoutBuilder(
           builder: (BuildContext context, BoxConstraints con) {
-            if (con.maxWidth < 600) {
-              return LayoutBuilder(
-                builder: (BuildContext context, BoxConstraints con) {
-                  if (con.maxWidth < 600) {
-                    final width = MediaQuery.of(context).size.width;
-                    return Column(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: <Widget>[
-                        Expanded(
-                            child: LeftPart(
-                                name: "Prathamesh  Wagh", width: width)),
-                        Expanded(child: RightPart(width: width))
-                      ],
-                    );
-                  }
-                  return Row(children: [
-                    Expanded(
-                        flex: 3,
-                        child: LeftPart(
-                            name: "Prathamesh Wagh",
-                            width: MediaQuery.of(context).size.width)),
-                    Expanded(
-                        flex: 7,
-                        child: RightPart(
-                            width: MediaQuery.of(context).size.width * 0.7))
-                  ]);
-                },
-              );
-            }
-            return Row(children: [
-              Expanded(
-                  flex: 3,
-                  child: LeftPart(
-                      name: "Prathamesh Wagh",
-                      width: MediaQuery.of(context).size.width * 0.3)),
-              Expanded(
-                  flex: 7,
-                  child:
-                      RightPart(width: MediaQuery.of(context).size.width * 0.7))
-            ]);
+            // if (con.maxWidth < 600) {
+            //   return LayoutBuilder(
+            //     builder: (BuildContext context, BoxConstraints con) {
+            //       if (con.maxWidth < 600) {
+            //         return SingleChildScrollView(
+            //           child: Column(
+            //             mainAxisAlignment: MainAxisAlignment.start,
+            //             crossAxisAlignment: CrossAxisAlignment.start,
+            //             children: <Widget>[
+            //               Expanded(child: LeftPart(name: "Prathamesh  Wagh")),
+            //               Expanded(child: RightPart())
+            //             ],
+            //           ),
+            //         );
+            //       }
+            //       return Row(children: [
+            //         Expanded(
+            //             flex: 3,
+            //             child: LeftPart(
+            //               name: "Prathamesh Wagh",
+            //             )),
+            //         Expanded(flex: 7, child: RightPart())
+            //       ]);
+            //     },
+            //   );
+            // }
+            return SingleChildScrollView(
+              child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    Fluent.Container(
+                      constraints: BoxConstraints(maxWidth: 300),
+                      child: PatientPersonalInfo(
+                        patient: widget.patient,
+                      ),
+                    ),
+                    // VerticalDivider(
+                    //   color: Colors.grey,
+                    // ),
+                    Expanded(child: DiagnosisDetails(patient: widget.patient))
+                  ]),
+            );
           },
         )),
       ),
@@ -98,112 +104,115 @@ class _PatientprofileWidgetState extends State<PatientprofileWidget> {
   }
 }
 
-class LeftPart extends StatelessWidget {
-  final String name;
-  final double width;
-
-  const LeftPart({Key? key, required this.width, required this.name})
-      : super(key: key);
+class PatientPersonalInfo extends StatelessWidget {
+  final Patient patient;
+  const PatientPersonalInfo({
+    Key? key,
+    required this.patient,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     String url =
         'https://th.bing.com/th/id/R34ac62561e4d2d3f73903371539bfb5b?rik=0oRU4BctwhzLIA&riu=http%3a%2f%2fthispix.com%2fwp-content%2fuploads%2f2015%2f06%2fportrait-profile-008.jpg&ehk=ZPTQOU194fjZ2VzGXGXzymsATv6%2fCUW4EFn3Ya53CZ4%3d&risl=&pid=ImgRaw';
-    return ListView(shrinkWrap: true, children: <Widget>[
-      Padding(
-        padding: const EdgeInsets.all(1.0),
-        child: UserprofileWidget(profile: url),
-      ),
-      Container(child: DataField(header: 'Name', value: name)),
-      Container(child: DataField(header: 'Age', value: '23')),
-      Container(
-          child:
-              DataField(header: 'Date of first consult', value: '28/05/2001')),
-      Container(
-        child: DataField(
-            header: 'Date of most recent consult', value: '28/05/2001'),
-      ),
-      Container(child: DataField(header: 'Diagnosis', value: 'Scelorsis')),
-    ]);
+    return Fluent.Container(
+      child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.start,
+          mainAxisSize: MainAxisSize.max,
+          children: <Widget>[
+            Padding(
+              padding: const EdgeInsets.all(1.0),
+              child: UserprofileWidget(profile: url),
+            ),
+            Container(child: DataField(header: 'Name', value: patient.name)),
+            Container(child: DataField(header: 'Age', value: '${patient.age}')),
+            Container(
+                child: DataField(
+                    header: 'Date of first consult',
+                    value: DateFormat('dd/MM/yyyy')
+                        .format(patient.dateFirstConsult))),
+            Container(
+              child: DataField(
+                  header: 'Date of most recent consult',
+                  value: DateFormat('dd/MM/yyyy')
+                      .format(patient.dateMostRecentConsult)),
+            ),
+            Container(
+                child: DataField(header: 'Diagnosis', value: patient.diagnosis))
+          ]),
+    );
   }
 }
 
-class RightPart extends StatelessWidget {
-  final double width;
-  const RightPart({Key? key, required this.width}) : super(key: key);
+class DiagnosisDetails extends StatelessWidget {
+  final Patient patient;
+  const DiagnosisDetails({Key? key, required this.patient}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    const _divider = Divider(
+      indent: 34,
+      endIndent: 10,
+    );
     return SingleChildScrollView(
       child: Padding(
         padding: const EdgeInsets.all(8.0),
         child: Container(
-            alignment: Alignment.topRight,
-            width: width,
-            child: Card(
-                child: Column(
-              // alignment: Alignment.topCenter,
-              children: [
-                DescriptionWidget(),
-                SizedBox(height: 10),
-                ReportsWidget(
-                  id: "1",
-                ),
-                SizedBox(height: 20),
-                ChallengesWidger()
-              ],
-            ))),
+            child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          // alignment: Alignment.topCenter,
+          children: [
+            DiagnosisDescription(),
+            _divider,
+            Consumer<PatientModel>(
+              builder: (context, model, child) => ReportsWidget(
+                model: model,
+                patient: patient,
+                id: '${patient.id}',
+              ),
+            ),
+            _divider,
+            PrescriptionWidget(patient: patient),
+            _divider,
+            ChallengesWidget()
+          ],
+        )),
       ),
     );
   }
 }
 
-class DescriptionWidget extends StatelessWidget {
-  const DescriptionWidget({
-    Key? key,
-  }) : super(key: key);
+class DiagnosisDescription extends StatelessWidget {
+  final String description;
+  const DiagnosisDescription(
+      {Key? key,
+      this.description =
+          r'You can set amount to change the amount of stars. The rating must be less than the stars and more than 0. You can also change the icon, its size and color. You can make the bar read only by setting onChanged to null.'})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      decoration: BoxDecoration(
-        color: Color.fromRGBO(247, 247, 247, 1),
-      ),
-      padding: EdgeInsets.all(5),
+      padding: EdgeInsets.symmetric(horizontal: 30, vertical: 0),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisAlignment: MainAxisAlignment.start,
         children: <Widget>[
           Container(
             width: MediaQuery.of(context).size.width,
             padding: EdgeInsets.all(5.0),
             child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisSize: MainAxisSize.max,
               children: <Widget>[
-                Text(
-                  'Description',
-                  textAlign: TextAlign.left,
-                  style: TextStyle(
-                      color: Color.fromRGBO(62, 62, 62, 1),
-                      fontFamily: 'Work Sans',
-                      fontSize: 30,
-                      letterSpacing:
-                          0 /*percentages not used in flutter. defaulting to zero*/,
-                      fontWeight: FontWeight.bold,
-                      height: 1),
-                ),
+                Text('Description',
+                    style: Fluent.FluentTheme.of(context).typography.subheader),
                 SizedBox(height: 16),
-                Text(
-                  'Fabian\'s lifestyle is quite active. He works out three times a week. His fitness routine is a healthy mix of strength-training and cardio. Apart from fitness, his priority is a healthy and balanced diet. He have some sort of a meal plan, but he is quite fliexible with it.\nHe prefers to do shopping online because it is convenient and less time-consuming, as he can do it whenever it suits him.fbrbbbbbbbbbrif 3fffrrfybwecbob3ufb93fr9ubrebvpurevurev',
-                  textAlign: TextAlign.left,
-                  style: TextStyle(
-                      color: Color.fromRGBO(62, 62, 62, 1),
-                      fontFamily: 'Roboto',
-                      fontSize: 24,
-                      letterSpacing: 0,
-                      fontWeight: FontWeight.normal,
-                      height: 1.5),
-                ),
+                Text(description,
+                    style: Fluent.FluentTheme.of(context).typography.subtitle),
               ],
             ),
           ),
@@ -214,43 +223,30 @@ class DescriptionWidget extends StatelessWidget {
   }
 }
 
-class ChallengesWidger extends StatelessWidget {
-  const ChallengesWidger({
+class ChallengesWidget extends StatelessWidget {
+  const ChallengesWidget({
     Key? key,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      decoration: BoxDecoration(),
-      padding: EdgeInsets.all(5),
+      padding: EdgeInsets.symmetric(horizontal: 38, vertical: 0),
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisAlignment: MainAxisAlignment.start,
         mainAxisSize: MainAxisSize.min,
         children: <Widget>[
           SizedBox(height: 20),
           Text(
-            'Challenge',
-            textAlign: TextAlign.left,
-            style: TextStyle(
-                color: Color.fromRGBO(62, 62, 62, 1),
-                fontFamily: 'Work Sans',
-                fontSize: 24,
-                letterSpacing:
-                    0 /*percentages not used in flutter. defaulting to zero*/,
-                fontWeight: FontWeight.w900,
-                height: 1),
+            'Challenges',
+            style: Fluent.FluentTheme.of(context).typography.subheader,
           ),
           SizedBox(height: 8),
           Text(
             'Build muscle mass and gain weight.',
             textAlign: TextAlign.left,
-            style: TextStyle(
-                color: Color.fromRGBO(62, 62, 62, 1),
-                fontFamily: 'Roboto',
-                fontSize: 24,
-                letterSpacing: 0,
-                fontWeight: FontWeight.normal,
-                height: 1.5),
+            style: Fluent.FluentTheme.of(context).typography.body,
           ),
         ],
       ),
@@ -258,68 +254,160 @@ class ChallengesWidger extends StatelessWidget {
   }
 }
 
+class PrescriptionWidget extends StatefulWidget {
+  final Patient patient;
+
+  PrescriptionWidget({Key? key, required this.patient});
+  @override
+  _PrescriptionWidgetState createState() => _PrescriptionWidgetState();
+}
+
+class _PrescriptionWidgetState extends State<PrescriptionWidget> {
+  List<Prescription> _files = [];
+
+  void _listPref() {
+    setState(() {
+      _files = widget.patient.prescriptions.toList();
+    });
+  }
+
+  List<Widget> _getPrescriptionList() {
+    return _files
+        .map((e) => FileWidget(
+              fileLink: e.filePath,
+              fileName: DateFormat("dd-MM-yyyy").format(e.date).toString(),
+            ))
+        .toList();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    _listPref();
+    return Container(
+        width: MediaQuery.of(context).size.width * 0.8,
+        padding: EdgeInsets.symmetric(horizontal: 30, vertical: 0),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Fluent.Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Text(
+                'Prescriptions',
+                style: Fluent.FluentTheme.of(context).typography.subheader,
+              ),
+            ),
+            widget.patient.prescriptions.isEmpty
+                ? Fluent.Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Text(
+                      "There are no prescriptions yet",
+                      style: Fluent.FluentTheme.of(context).typography.subtitle,
+                    ),
+                  )
+                : Container(
+                    decoration: BoxDecoration(),
+                    padding: EdgeInsets.symmetric(horizontal: 0, vertical: 0),
+                    child: Wrap(
+                      // mainAxisSize: MainAxisSize.min,
+                      children: <Widget>[
+                        Container(
+                          decoration: BoxDecoration(),
+                          padding:
+                              EdgeInsets.symmetric(horizontal: 0, vertical: 0),
+                          child: Column(children: <Widget>[
+                            ..._getPrescriptionList(),
+                          ]),
+                        ),
+                        SizedBox(width: 16)
+                      ],
+                    ),
+                  ),
+          ],
+        ));
+  }
+}
+
 class ReportsWidget extends StatefulWidget {
   final String id;
-  ReportsWidget({Key? key, required this.id});
+  final Patient patient;
+  final PatientModel model;
+
+  ReportsWidget(
+      {Key? key, required this.id, required this.patient, required this.model});
   @override
   _ReportsWidgetState createState() => _ReportsWidgetState();
 }
 
 class _ReportsWidgetState extends State<ReportsWidget> {
   String filePath = '';
+
   void initstate() {
     super.initState();
     _listFile();
   }
 
-  List _files = [];
+  List<PatientFile> _files = [];
 
   void _listFile() async {
-    String directory = p.join(
-      (await getApplicationSupportDirectory()).path,
-      "patientfiles",
-    );
+    // String directory = p.join(
+    // p.join(
+    //   (await getApplicationSupportDirectory()).path,
+    //   "patientfiles",
+    // ),
+    // '${widget.patient.id}');
     setState(() {
-      _files = Directory(directory).listSync();
+      _files = widget.patient.files;
+      // _files = Directory(directory).listSync();
     });
   }
 
   List<Widget> _getReportList() {
-    List<Widget> reports = [];
-    if (_files.isEmpty) {
-      reports.add(Text(
-        "There are no reports yet",
-        style: TextStyle(
-            color: Color.fromRGBO(62, 62, 62, 1),
-            fontFamily: 'Roboto',
-            fontSize: 24,
-            letterSpacing: 0,
-            fontWeight: FontWeight.normal,
-            height: 1.5),
-      ));
-    } else {
-      for (int i = 0; i < _files.length; i++) {
-        reports.add(FileWidget(
-          fileLink: _files[i].path,
-          fileName: p.basename(_files[i].path),
-        ));
-        reports.add(SizedBox(
-          height: 8,
-        ));
-      }
-    }
-    return reports;
+    return _files
+        .map((e) => FileWidget(
+              fileLink: e.path,
+              fileName: e.name,
+            ))
+        .toList();
   }
 
-  Future<void> showInformationDialog(BuildContext context) async {
-    return await showDialog(
+  void showInformationDialog(BuildContext context, String filePath) async {
+    await Fluent.showDialog(
         context: context,
         builder: (context) {
+          final _fileNameController = TextEditingController();
           return StatefulBuilder(builder: (context, setState) {
-            return AlertDialog(
-              content: Container(child: TextField()),
-              title: Text("Enter File Name"),
-              actions: [TextButton(onPressed: () {}, child: Text("Submit"))],
+            return Fluent.ContentDialog(
+              content: Fluent.Center(
+                child: Container(
+                    child: Fluent.TextBox(
+                  controller: _fileNameController,
+                )),
+              ),
+              title: Text("Enter File Name",
+                  style: Fluent.FluentTheme.of(context).typography.header),
+              actions: [
+                Fluent.Center(
+                  child: Fluent.Button(
+                      onPressed: () {
+                        print(_fileNameController.text);
+                        var name = _fileNameController.text;
+                        widget.patient.addFile(filePath, name);
+                        widget.model.addPatient(widget.patient);
+                        Navigator.of(context).pop();
+                      },
+                      child: Text("Submit")),
+                ),
+                Fluent.Center(
+                  child: Fluent.Button(
+                      onPressed: () {
+                        print(_fileNameController.text);
+                        Navigator.of(context).pop();
+                      },
+                      child: Text("Cancel")),
+                )
+              ],
             );
           });
         });
@@ -328,38 +416,76 @@ class _ReportsWidgetState extends State<ReportsWidget> {
   @override
   Widget build(BuildContext context) {
     _listFile();
+    var textButton = Fluent.Button(
+      child: SizedBox(
+        width: 200,
+        height: 50,
+        child: Fluent.Center(
+          child: Material(
+            borderRadius: BorderRadius.circular(5),
+            child: ListTile(
+              mouseCursor: MouseCursor.uncontrolled,
+              hoverColor: Fluent.FluentTheme.of(context).accentColor,
+              leading: Icon(FluentIcons.add_24_regular),
+              title: Text(
+                'Add Report',
+                overflow: TextOverflow.ellipsis,
+              ),
+            ),
+          ),
+        ),
+      ),
+
+      // label: Text("Add Report"),
+      onPressed: () {
+        final file = OpenFilePicker()
+          ..filterSpecification = {
+            'PDF Files': '*.pdf',
+            'WORD Files (*.docx)': '*.docx',
+            'EXCEL Files (*.xlsx)': '*.xlsx',
+            'CSV Files (*.csv)': '*.csv',
+            'PNG Images': '*.png',
+            'JPEG Images (*.jpeg)': '*.jpeg',
+            'JPG Images (*.jpg)': '*.jpg',
+            'All Files': '*.pdf;*.docx;*csv;*.xlsx;*.jpg;*.png;*jpeg'
+          }
+          ..defaultFilterIndex = 0
+          ..defaultExtension = 'doc'
+          ..title = 'Select an File';
+
+        final result = file.getFile();
+        if (result != null) {
+          print(result.path);
+          setState(() {
+            filePath = result.path;
+          });
+          showInformationDialog(context, filePath);
+        } else {
+          print('error');
+        }
+      },
+    );
     return Container(
-      decoration: BoxDecoration(),
       padding: EdgeInsets.symmetric(horizontal: 30, vertical: 0),
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisAlignment: MainAxisAlignment.start,
         mainAxisSize: MainAxisSize.min,
         children: <Widget>[
           Padding(
             padding: const EdgeInsets.all(8.0),
-            child: Container(
-              decoration: BoxDecoration(
-                  border: Border(
-                      bottom: BorderSide(color: Colors.black, width: 5.0))),
-              child: Text(
-                'Reports',
-                textAlign: TextAlign.left,
-                style: TextStyle(
-                    color: Color.fromRGBO(62, 62, 62, 1),
-                    fontFamily: 'Work Sans',
-                    fontSize: 24,
-                    letterSpacing:
-                        0 /*percentages not used in flutter. defaulting to zero*/,
-                    fontWeight: FontWeight.bold,
-                    height: 1),
-              ),
+            child: Text(
+              'Reports',
+              textAlign: TextAlign.left,
+              style: Fluent.FluentTheme.of(context).typography.subheader,
             ),
           ),
           SizedBox(height: 8),
           Container(
             decoration: BoxDecoration(),
             padding: EdgeInsets.symmetric(horizontal: 0, vertical: 0),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
+            child: Wrap(
+              // mainAxisSize: MainAxisSize.min,
               children: <Widget>[
                 Container(
                   decoration: BoxDecoration(),
@@ -367,40 +493,9 @@ class _ReportsWidgetState extends State<ReportsWidget> {
                   child: Column(children: <Widget>[
                     ..._getReportList(),
                     Container(
-                      color: Colors.red,
+                      color: Colors.white,
                       padding: EdgeInsets.all(5),
-                      child: TextButton.icon(
-                        icon: Icon(Icons.add_rounded),
-                        label: Text("Add Report"),
-                        onPressed: () {
-                          final file = OpenFilePicker()
-                            ..filterSpecification = {
-                              'PDF Files': '*.pdf',
-                              'WORD Files (*.docx)': '*.docx',
-                              'EXCEL Files (*.xlsx)': '*.xlsx',
-                              'CSV Files (*.csv)': '*.csv',
-                              'PNG Images': '*.png',
-                              'JPEG Images (*.jpeg)': '*.jpeg',
-                              'JPG Images (*.jpg)': '*.jpg',
-                              'All Files':
-                                  '*.pdf;*.docx;*csv;*.xlsx;*.jpg;*.png;*jpeg'
-                            }
-                            ..defaultFilterIndex = 0
-                            ..defaultExtension = 'doc'
-                            ..title = 'Select an File';
-
-                          final result = file.getFile();
-                          if (result != null) {
-                            print(result.path);
-                            setState(() {
-                              filePath = result.path;
-                            });
-                            showInformationDialog(context);
-                          } else {
-                            print('error');
-                          }
-                        },
-                      ),
+                      child: textButton,
                     )
                   ]),
                 ),
@@ -427,32 +522,27 @@ class FileWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: MediaQuery.of(context).size.width * 0.8,
+      // width: MediaQuery.of(context).size.width * 0.8,
       // decoration: BoxDecoration(),
       padding: EdgeInsets.all(2),
       child: Container(
-          child: ListTile(
-        leading: Icon(
-          Icons.circle,
-          size: 10.0,
+          child: Material(
+        child: ListTile(
+          dense: true,
+          leading: Icon(
+            FluentIcons.document_24_regular,
+            // size: 20.0,
+          ),
+          title: Text('$fileName',
+              textAlign: TextAlign.left,
+              overflow: TextOverflow.ellipsis,
+              style: Fluent.FluentTheme.of(context).typography.body),
+          trailing: IconButton(
+              onPressed: () {
+                openFile();
+              },
+              icon: Icon(FluentIcons.open_24_regular)),
         ),
-        title: Text(
-          '$fileName',
-          textAlign: TextAlign.left,
-          overflow: TextOverflow.ellipsis,
-          style: TextStyle(
-              color: Color.fromRGBO(62, 62, 62, 1),
-              fontFamily: 'Roboto',
-              fontSize: 24,
-              letterSpacing: 0,
-              fontWeight: FontWeight.normal,
-              height: 1.5),
-        ),
-        trailing: IconButton(
-            onPressed: () {
-              openFile();
-            },
-            icon: Icon(Icons.open_in_new)),
       )),
     );
   }
@@ -470,25 +560,16 @@ class DataFieldState extends State<DataField> {
   Widget build(BuildContext context) {
     return Container(
       height: 75,
-      decoration: BoxDecoration(),
       padding: EdgeInsets.fromLTRB(20, 5, 0, 5),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
-          Text(
-            widget.header,
-            overflow: TextOverflow.ellipsis,
-            textAlign: TextAlign.left,
-            style: TextStyle(
-              color: Color.fromRGBO(62, 62, 62, 1),
-              fontFamily: 'Work Sans',
-              fontSize: 18,
-              letterSpacing:
-                  0 /*percentages not used in flutter. defaulting to zero*/,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
+          Text(widget.header,
+              overflow: TextOverflow.ellipsis,
+              textAlign: TextAlign.left,
+              style: Fluent.FluentTheme.of(context).typography.body),
           Text(
             widget.value,
             overflow: TextOverflow.ellipsis,
