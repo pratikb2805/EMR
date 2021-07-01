@@ -7,3 +7,4 @@ export 'DoctorDashboard/doctorDashboard.dart';
 export 'patientEditForm.dart';
 export 'newappointment.dart';
 export 'Inventory/invenroty.dart';
+export 'homePage.dart';

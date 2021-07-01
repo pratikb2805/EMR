@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:emr/pages/pages.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:path_provider/path_provider.dart';
@@ -160,6 +161,16 @@ class _ProfilePhotoPickerState extends State<ProfilePhotoPicker> {
                                     showDialog(
                                         context: context,
                                         builder: (BuildContext context) {
+                                          Future.delayed(Duration(seconds: 2),
+                                              () {
+                                            Navigator.of(context).pop(true);
+                                            Navigator.pushReplacement(
+                                                context,
+                                                MaterialPageRoute(
+                                                    builder: (context) =>
+                                                        HomePage()));
+                                          });
+
                                           return CupertinoAlertDialog(
                                             title: Center(
                                                 child: Text('Success',

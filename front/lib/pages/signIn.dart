@@ -1,10 +1,12 @@
 import 'package:emr/pages/form1.dart';
+import 'package:emr/pages/pages.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:emr/utils/util.dart' as utils;
 // import 'package:fluent_ui/fluent_ui.dart' as fluent;
-
+import 'package:fluent_ui/fluent_ui.dart' as Fluent;
 import 'dart:io';
+import 'package:page_transition/page_transition.dart';
 
 class SignIn extends StatefulWidget {
   @override
@@ -13,6 +15,7 @@ class SignIn extends StatefulWidget {
 
 class _SignInState extends State<SignIn> {
   String name = ' ';
+  String qualificaions = '';
   bool isloaded = false;
   String imagepath = '';
   final password = TextEditingController();
@@ -30,6 +33,10 @@ class _SignInState extends State<SignIn> {
       setState(() {
         name = doc.displayname;
         imagepath = path;
+        if (doc.qualifications != null)
+          qualificaions = doc.qualifications!.join(' ');
+        else
+          qualificaions = '';
         isloaded = true;
       });
     }
@@ -54,7 +61,7 @@ class _SignInState extends State<SignIn> {
                     height: 150,
                     child: isloaded
                         ? CircleAvatar(
-                            radius: 50,
+                            radius: 80,
                             backgroundImage: FileImage(File(imagepath)),
                           )
                         : Icon(
@@ -75,14 +82,21 @@ class _SignInState extends State<SignIn> {
                     child: Center(
                       child: Container(
                         constraints: BoxConstraints(maxWidth: 500),
-                        width: MediaQuery.of(context).size.width * .50,
-                        child: Text(name,
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                              color: Colors.black,
-                              decoration: TextDecoration.none,
-                              fontSize: 32,
-                            )),
+                        width: Fluent.MediaQuery.of(context).size.width * .50,
+                        child: Column(
+                          children: [
+                            Text(name,
+                                textAlign: TextAlign.center,
+                                style: Fluent.FluentTheme.of(context)
+                                    .typography
+                                    .title),
+                            Text(qualificaions,
+                                textAlign: TextAlign.center,
+                                style: Fluent.FluentTheme.of(context)
+                                    .typography
+                                    .subtitle),
+                          ],
+                        ),
                       ),
                     ),
                   ),
@@ -91,7 +105,7 @@ class _SignInState extends State<SignIn> {
                     child: Center(
                       child: Container(
                         constraints: BoxConstraints(maxWidth: 500),
-                        width: MediaQuery.of(context).size.width * 0.50,
+                        width: Fluent.MediaQuery.of(context).size.width * 0.50,
                         child: PasswordField(
                           text: 'Password',
                           controller: password,
@@ -104,7 +118,8 @@ class _SignInState extends State<SignIn> {
                     child: Center(
                       child: Container(
                           constraints: BoxConstraints(maxWidth: 500),
-                          width: MediaQuery.of(context).size.width * 0.50,
+                          width:
+                              Fluent.MediaQuery.of(context).size.width * 0.50,
                           child: CupertinoButton.filled(
                             // tooltip: '',
                             onPressed: () async {
@@ -115,17 +130,21 @@ class _SignInState extends State<SignIn> {
                                     context: context,
                                     builder: (context) {
                                       return AlertDialog(
-                                        content: Text('Error'),
+                                        content: Text('Incorrect password'),
                                       );
                                     });
                               } else
-                                showDialog(
-                                    context: context,
-                                    builder: (context) {
-                                      return AlertDialog(
-                                        content: Text('Success'),
-                                      );
-                                    });
+                                Navigator.pushReplacement(
+                                    context,
+                                    PageTransition(
+                                        type: PageTransitionType
+                                            .leftToRightWithFade,
+                                        child: HomePage()));
+
+                              // Navigator.push(
+                              //     context,
+                              //     MaterialPageRoute(
+                              //         builder: (context) => HomePage()));
                             },
                             child: Container(
                                 height: 50.0,

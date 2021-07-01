@@ -1,5 +1,7 @@
 import 'dart:io';
+import 'package:emr/pages/pages.dart';
 import 'package:fluent_ui/fluent_ui.dart' as Fluent;
+import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
 
 class DoctorTopBar extends StatelessWidget {
@@ -51,35 +53,106 @@ class DoctorTopBar extends StatelessWidget {
                     padding: const EdgeInsets.all(8.0),
                     child: ClipOval(
                       child: Fluent.IconButton(
-                        onPressed: () {},
+                        onPressed: () {
+                          showDialog(
+                              context: context,
+                              builder: (context) => AlertDialog(
+                                    actionsPadding: EdgeInsets.all(8),
+                                    actions: [
+                                      TextButton.icon(
+                                          onPressed: () {
+                                            // Navigator.of(context).pop
+                                            // while (Navigator.canPop(context))
+                                            //   Navigator.pop(context);
+                                            // Navigator.of(context).push(
+                                            //     MaterialPageRoute(
+                                            //         builder: (_) => SignIn()));
+                                            Navigator.pushAndRemoveUntil(
+                                              context,
+                                              MaterialPageRoute(
+                                                builder:
+                                                    (BuildContext context) =>
+                                                        SignIn(),
+                                              ),
+                                              (route) => false,
+                                            );
+                                          },
+                                          icon: Fluent.Padding(
+                                            padding: const EdgeInsets.all(4.0),
+                                            child: Icon(
+                                                FluentIcons
+                                                    .checkmark_24_regular,
+                                                color: Colors.black),
+                                          ),
+                                          label: Fluent.Padding(
+                                            padding: const EdgeInsets.all(8.0),
+                                            child: Text(
+                                              'Yes',
+                                              style:
+                                                  Fluent.FluentTheme.of(context)
+                                                      .typography
+                                                      .subtitle,
+                                            ),
+                                          )),
+                                      TextButton.icon(
+                                          autofocus: true,
+                                          onPressed: () {
+                                            Navigator.of(context).pop();
+                                          },
+                                          icon: Fluent.Padding(
+                                            padding: const EdgeInsets.all(4.0),
+                                            child: Icon(
+                                                FluentIcons.dismiss_24_regular,
+                                                color: Colors.black),
+                                          ),
+                                          label: Fluent.Padding(
+                                            padding: const EdgeInsets.all(8.0),
+                                            child: Text(
+                                              'No',
+                                              style:
+                                                  Fluent.FluentTheme.of(context)
+                                                      .typography
+                                                      .subtitle,
+                                            ),
+                                          ))
+                                    ],
+                                    title: Text(
+                                      'Are you sure?',
+                                      style: Fluent.FluentTheme.of(context)
+                                          .typography
+                                          .subtitle,
+                                    ),
+                                  ));
+                        },
                         icon: Fluent.Padding(
                           padding: const EdgeInsets.all(8.0),
                           child: Icon(
-                            Fluent.Icons.edit,
+                            FluentIcons.sign_out_24_regular,
                             size: 32,
                           ),
                         ),
                       ),
                     ),
                   ),
-                  // child: Material(
-                  //   child: RawMaterialButton(
-                  //     // style: ElevatedButton.styleFrom(
-                  //     //     primary: Colors.white,
-                  //     //     shadowColor: null,
-                  //     //     side: BorderSide(width: 0, color: Colors.white)),
-                  //     child: Icon(Icons.edit_rounded, size: 20),
-                  //     padding: EdgeInsets.all(5.0),
-                  //     shape: CircleBorder(),
-
-                  //     onPressed: () {
-                  //       showDialog(
-                  //           context: context,
-                  //           builder: (BuildContext context) =>
-                  //               AlertDialog(title: Text('Button pressed')));
-                  //     },
-                  //   ),
-                  // ),
+                ),
+                Positioned(
+                  top: 210,
+                  right: 75,
+                  child: Fluent.Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: ClipOval(
+                      child: Fluent.IconButton(
+                        onPressed: () {},
+                        icon: Fluent.Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Icon(
+                            FluentIcons.edit_24_regular,
+                            size: 32,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
                 )
               ],
             ),

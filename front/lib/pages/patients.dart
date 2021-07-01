@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:math';
 import 'package:emr/db/patient.dart';
 import 'package:emr/pages/pages.dart';
+import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:emr/db/store.dart';
@@ -223,6 +224,15 @@ class _PatientDataTableState extends State<PatientDataTable> {
               ),
               onSort: (int columnIndex, bool ascending) => _sort<String>(
                   (Patient d) => d.email, columnIndex, ascending)),
+          DataColumn(
+              label: Text(
+                'Actions',
+                style: Fluent.FluentTheme.of(context)
+                    .typography
+                    .body!
+                    .apply(fontSizeDelta: 2, fontWeightDelta: 2),
+              ),
+              onSort: (int columnIndex, bool ascending) => {}),
         ],
       ),
     );
@@ -257,6 +267,12 @@ class PatientDataSource extends DataTableSource {
       DataCell(Text(patient.diagnosis.toString())),
       DataCell(Text(patient.phone)),
       DataCell(Text(patient.email)),
+      DataCell(IconButton(
+        onPressed: () {
+          vm.removePatient(patient);
+        },
+        icon: Icon(FluentIcons.delete_24_regular, color: Colors.black),
+      ))
     ]);
   }
 

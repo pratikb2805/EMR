@@ -119,4 +119,9 @@ class Doctor {
     var instance = await SharedPreferences.getInstance();
     instance.setString('profile-data', jsonEncode(data));
   }
+
+  static Future<bool> isSignedUp() async {
+    var instance = await SharedPreferences.getInstance();
+    return instance.getKeys().contains('profile-data');
+  }
 }

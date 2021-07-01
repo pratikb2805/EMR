@@ -371,6 +371,15 @@ class _MedicineListEntityDataTableState
                   (MedicineListEntity d) => d.provider,
                   columnIndex,
                   ascending)),
+          DataColumn(
+              label: Text(
+                'Actions',
+                style: Fluent.FluentTheme.of(context)
+                    .typography
+                    .body!
+                    .apply(fontSizeDelta: 2, fontWeightDelta: 2),
+              ),
+              onSort: (int columnIndex, bool ascending) => {}),
         ],
       ),
     );
@@ -425,6 +434,12 @@ class MedicineListEntityDataSource extends DataTableSource {
           vm.addMedicine(med);
           print('done');
         },
+      )),
+      DataCell(IconButton(
+        onPressed: () {
+          vm.removeMedicine(med);
+        },
+        icon: Icon(FluentIcons.delete_24_regular, color: Colors.black),
       ))
     ]);
   }
