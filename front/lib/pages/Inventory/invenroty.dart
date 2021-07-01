@@ -1,4 +1,3 @@
-import 'dart:async';
 import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'dart:math';
 import 'package:emr/db/patient.dart';
@@ -113,122 +112,112 @@ class _NewMedicineState extends State<NewMedicine> {
   final nameController = TextEditingController();
   final typeController = TextEditingController();
   final provider = TextEditingController();
-  final formkey = GlobalKey<FormState>();
-  final GlobalKey<ScaffoldMessengerState> _scaffoldKey =
-      new GlobalKey<ScaffoldMessengerState>();
-
   @override
   Widget build(BuildContext context) {
     return Container(
       child: Fluent.ContentDialog(
-          // maxChildSize: 0.5,
-          // header: ...,
-          actions: [
-            Consumer<MedicineModel>(
-              builder: (_, model, child) => TextButton.icon(
-                icon:
-                    Icon(FluentIcons.checkmark_24_regular, color: Colors.black),
-                label: Text('Add',
-                    style: Fluent.FluentTheme.of(context).typography.subtitle),
-                onPressed: () {
-                  if (nameController.text.isEmpty ||
-                      provider.text.isEmpty ||
-                      type == null) {
-                    Flushbar(
-                      message: 'Please fill out all fields',
-                      mainButton: Fluent.TextButton(
-                        child: Text(
-                          'Back',
-                          style:
-                              TextStyle(color: Theme.of(context).accentColor),
-                        ),
-                        onPressed: () {
-                          Navigator.of(context).pop();
-                        },
-                      ),
-                      duration: Duration(seconds: 3),
-                    )..show(context);
-                  } else {
-                    model.addMedicine(MedicineListEntity(
-                        name: nameController.text,
-                        provider: provider.text,
-                        type: type!));
-                  }
-                },
-              ),
-            ),
-            TextButton.icon(
-              icon: Icon(FluentIcons.dismiss_24_regular, color: Colors.black),
-              label: Text(
-                'Cancel',
-                style: Fluent.FluentTheme.of(context).typography.subtitle,
-              ),
+        actions: [
+          Consumer<MedicineModel>(
+            builder: (context, model, child) => TextButton.icon(
+              icon: Icon(FluentIcons.checkmark_24_regular, color: Colors.black),
+              label: Text('Add',
+                  style: Fluent.FluentTheme.of(context).typography.subtitle),
               onPressed: () {
-                Navigator.of(context).pop();
+                if (nameController.text.isEmpty ||
+                    provider.text.isEmpty ||
+                    type == null) {
+                  Flushbar(
+                    message: 'Please fill out all fields',
+                    mainButton: Fluent.TextButton(
+                      child: Text(
+                        'Back',
+                        style: TextStyle(color: Theme.of(context).accentColor),
+                      ),
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                      },
+                    ),
+                    duration: Duration(seconds: 3),
+                  )..show(context);
+                } else {
+                  model.addMedicine(MedicineListEntity(
+                      name: nameController.text,
+                      provider: provider.text,
+                      type: type!));
+                }
               },
-            )
-          ],
-          title: Text(
-            'Add a medicine',
-            style: Fluent.FluentTheme.of(context).typography.subtitle,
-          ),
-          content: Form(
-            key: formkey,
-            child: Column(
-              children: [
-                SizedBox(
-                  width: MediaQuery.of(context).size.width * .5,
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      SizedBox(
-                        child: Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Fluent.TextBox(
-                            controller: nameController,
-                            header: 'Name',
-                          ),
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Fluent.TextBox(
-                          controller: provider,
-                          header: 'Provider',
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Material(
-                          child: DropdownButton<String>(
-                            icon: const Icon(
-                                FluentIcons.arrow_hook_down_left_20_regular,
-                                color: Colors.black),
-                            value: type,
-                            // header : 'Type',
-                            hint: Text(type ?? 'Selected list item'),
-                            onChanged: (String? val) {
-                              if (val != null)
-                                setState(() {
-                                  type = val;
-                                });
-                            },
-
-                            items: <String>['Tablet', 'Syrup', 'Ointment']
-                                .map((e) => DropdownMenuItem<String>(
-                                      value: e,
-                                      child: Text(e),
-                                    ))
-                                .toList(),
-                          ),
-                        ),
-                      )
-                    ],
-                  ),
-                ),
-              ],
             ),
-          )),
+          ),
+          TextButton.icon(
+            icon: Icon(FluentIcons.dismiss_24_regular, color: Colors.black),
+            label: Text(
+              'Cancel',
+              style: Fluent.FluentTheme.of(context).typography.subtitle,
+            ),
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+          )
+        ],
+        title: Text(
+          'Add a medicine',
+          style: Fluent.FluentTheme.of(context).typography.subtitle,
+        ),
+        content: Column(
+          children: [
+            SizedBox(
+              width: MediaQuery.of(context).size.width * .5,
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  SizedBox(
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Fluent.TextBox(
+                        controller: nameController,
+                        header: 'Name',
+                      ),
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Fluent.TextBox(
+                      controller: provider,
+                      header: 'Provider',
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Material(
+                      child: DropdownButton<String>(
+                        icon: const Icon(
+                            FluentIcons.arrow_hook_down_left_20_regular,
+                            color: Colors.black),
+                        value: type,
+                        // header : 'Type',
+                        hint: Text(type ?? 'Selected list item'),
+                        onChanged: (String? val) {
+                          if (val != null)
+                            setState(() {
+                              type = val;
+                            });
+                        },
+
+                        items: <String>['Tablet', 'Syrup', 'Ointment']
+                            .map((e) => DropdownMenuItem<String>(
+                                  value: e,
+                                  child: Text(e),
+                                ))
+                            .toList(),
+                      ),
+                    ),
+                  )
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }

@@ -62,9 +62,9 @@ class Doctor {
     };
   }
 
-  static Future<String> getImagePath() async {
+  static Future<String?> getImagePath() async {
     var instance = await SharedPreferences.getInstance();
-    return instance.getString('profile-image')!;
+    return instance.getString('profile-image');
   }
 
   static void setImagePath(String path) async {

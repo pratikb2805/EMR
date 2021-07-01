@@ -1,8 +1,5 @@
 import 'package:emr/db/store.dart';
-import 'package:fluent_ui/fluent_ui.dart' as Fluent;
-import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
-import 'package:system_theme/system_theme.dart';
 import 'pages/pages.dart';
 // import 'package:system_theme/system_theme.dart';
 import 'package:bitsdojo_window/bitsdojo_window.dart';

@@ -208,7 +208,7 @@ class _DetailsFormState extends State<DetailsForm> {
                           showDialog(
                               context: context,
                               builder: (_) {
-                                return CupertinoAlertDialog(
+                                return AlertDialog(
                                   title: Text('Passwords dont match'),
                                   content: Text(
                                       'Please make sure both passwords are same'),
@@ -227,7 +227,7 @@ class _DetailsFormState extends State<DetailsForm> {
                         showDialog(
                             context: context,
                             builder: (_) {
-                              return CupertinoAlertDialog(
+                              return AlertDialog(
                                 title: Text('INVALID DATA'),
                                 content: Text('Please fill valid form'),
                               );

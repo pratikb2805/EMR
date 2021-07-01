@@ -171,7 +171,7 @@ class _ProfilePhotoPickerState extends State<ProfilePhotoPicker> {
                                                         HomePage()));
                                           });
 
-                                          return CupertinoAlertDialog(
+                                          return AlertDialog(
                                             title: Center(
                                                 child: Text('Success',
                                                     style: TextStyle(

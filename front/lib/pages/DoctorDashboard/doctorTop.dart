@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:emr/pages/pages.dart';
 import 'package:fluent_ui/fluent_ui.dart' as Fluent;
 import 'package:fluentui_system_icons/fluentui_system_icons.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class DoctorTopBar extends StatelessWidget {
@@ -69,7 +70,7 @@ class DoctorTopBar extends StatelessWidget {
                                             //         builder: (_) => SignIn()));
                                             Navigator.pushAndRemoveUntil(
                                               context,
-                                              MaterialPageRoute(
+                                              CupertinoPageRoute(
                                                 builder:
                                                     (BuildContext context) =>
                                                         SignIn(),

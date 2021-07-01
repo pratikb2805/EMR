@@ -17,7 +17,7 @@ class _SignInState extends State<SignIn> {
   String name = ' ';
   String qualificaions = '';
   bool isloaded = false;
-  String imagepath = '';
+  String? imagepath;
   final password = TextEditingController();
 
   @override
@@ -59,10 +59,10 @@ class _SignInState extends State<SignIn> {
                 child: Container(
                     width: 200,
                     height: 150,
-                    child: isloaded
+                    child: imagepath != null
                         ? CircleAvatar(
                             radius: 80,
-                            backgroundImage: FileImage(File(imagepath)),
+                            backgroundImage: FileImage(File(imagepath!)),
                           )
                         : Icon(
                             Icons.account_circle_outlined,
