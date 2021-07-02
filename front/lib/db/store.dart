@@ -1,4 +1,4 @@
-import 'package:emr/db/patient.dart';
+import 'package:emr/db/models.dart';
 import 'package:emr/objectbox.g.dart';
 import 'package:flutter/cupertino.dart';
 import 'dart:math';
@@ -38,9 +38,6 @@ class AppointmentModel extends ChangeNotifier {
   }
 
   get count => _appointmentBox.count();
-  // void dispose() {
-  //   _store.close();
-  // }
 }
 
 class PatientModel extends ChangeNotifier {
@@ -55,14 +52,14 @@ class PatientModel extends ChangeNotifier {
           maxReaders: 3,
         ) {
     print(dir);
-    // print(p.join(dir.path, 'objectbox'));
+
     _patientBox = _store.box<Patient>();
-    // _patientBox = Box<Patient>(_store);
+
     _qPatientBuilder = _patientBox.query()
       ..order(Patient_.name, flags: Order.descending);
     queryPatientStream = _qPatientBuilder.watch(triggerImmediately: true);
   }
-  // get
+
   get count => _patientBox.count();
   void removePatient(Patient patient) {
     _patientBox.remove(patient.id);
@@ -86,10 +83,6 @@ class PatientModel extends ChangeNotifier {
     _patientBox.put(patient);
     notifyListeners();
   }
-
-  // void dispose() {
-  //   _store.close();
-  // }
 }
 
 class MedicineModel extends ChangeNotifier {
@@ -115,8 +108,6 @@ class MedicineModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  // List<MedicineListEntity> getAll() => _box.getAll().toList();
-
   List<MedicineListEntity> suggestions(String str) {
     return _box
         .query(MedicineListEntity_.name.contains(str))
@@ -126,30 +117,3 @@ class MedicineModel extends ChangeNotifier {
         .toList();
   }
 }
-
-// class PrescriptionModel extends ChangeNotifier {
-//   final Store _store;
-//   late final Box<Prescription> _box;
-//   PrescriptionModel(String dir)
-//       : _store = Store(
-//           getObjectBoxModel(),
-//           directory: dir,
-//           maxReaders: 3,
-//         ) {
-//     _box = _store.box();
-//   }
-//   List<MedicineListEntity> get medicines => _box.getAll().toList();
-
-//   void addMedicine(MedicineListEntity med) {
-//     _box.put(med);
-//     notifyListeners();
-//   }
-
-//   void removeMedicine(MedicineListEntity med) {
-//     _box.remove(med.id);
-//     notifyListeners();
-//   }
-
-//   // List<MedicineListEntity> getAll() => _box.getAll().toList();
-
-// }

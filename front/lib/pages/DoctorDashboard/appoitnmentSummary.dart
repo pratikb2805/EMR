@@ -7,7 +7,7 @@ import 'package:provider/provider.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
 import 'dart:math';
 import 'package:emr/db/store.dart';
-import 'package:emr/db/patient.dart' as db;
+import 'package:emr/db/models.dart' as db;
 
 class AppointmentSummary extends StatefulWidget {
   AppointmentSummary({Key? key, this.controller}) : super(key: key);
@@ -18,27 +18,18 @@ class AppointmentSummary extends StatefulWidget {
 }
 
 class _AppointmentSummaryState extends State<AppointmentSummary> {
-  // final _listController = StreamController<List<db.Appointment>>(sync: true);
-  // late final AppointmentModel vm;
   bool hasBeenInitialized = false;
 
   @override
   void initState() {
     super.initState();
-    // vm = AppointmentModel();
 
     setState(() {
-      // _listController.addStream(vm.queryAppointmentStream.map((q) => q.find()));
       isloaded = true;
     });
   }
 
   bool isloaded = false;
-  // @override
-  // void initState() {
-  //   super.initState();
-  //   getData();
-  // }
 
   String formatted(DateTime tm) {
     return DateFormat('hh:mm').add_jm().format(tm);
@@ -51,7 +42,6 @@ class _AppointmentSummaryState extends State<AppointmentSummary> {
               title: Text("${app.subject}"),
               content: SingleChildScrollView(
                 child: Container(
-                    // height: 200,
                     width: 200,
                     constraints: BoxConstraints(maxHeight: 500),
                     child: Column(
@@ -76,7 +66,6 @@ class _AppointmentSummaryState extends State<AppointmentSummary> {
 
   @override
   void dispose() {
-    // _listController.close();
     super.dispose();
   }
 
@@ -84,10 +73,7 @@ class _AppointmentSummaryState extends State<AppointmentSummary> {
   Widget build(BuildContext context) {
     if (!isloaded) return Fluent.ProgressRing();
     return Consumer<AppointmentModel>(
-      // stream: _listController.stream,
       builder: (context, model, child) {
-        // if (!snapshot.hasData) return Fluent.ProgressRing();
-        // if (snapshot.hasError) return Text('error');
         return Column(
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -109,7 +95,6 @@ class _AppointmentSummaryState extends State<AppointmentSummary> {
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: Container(
-                  // constraints: BoxConstraints.expand(),
                   width: MediaQuery.of(context).size.width * 0.9,
                   height: 500,
                   child: SafeArea(
@@ -118,7 +103,6 @@ class _AppointmentSummaryState extends State<AppointmentSummary> {
                           Fluent.FluentTheme.of(context).accentColor,
                       showCurrentTimeIndicator: true,
                       showNavigationArrow: true,
-                      // showDatePickerButton: true,
                       timeSlotViewSettings: TimeSlotViewSettings(
                           timeInterval: Duration(hours: 2),
                           timeIntervalHeight: 80,
@@ -148,7 +132,6 @@ class _AppointmentSummaryState extends State<AppointmentSummary> {
                       dataSource: AppointmentDataSource(
                           model.getAll().map((e) => fromDB(e)).toList()),
                       monthViewSettings: MonthViewSettings(
-                          // showAgenda: true,
                           appointmentDisplayMode:
                               MonthAppointmentDisplayMode.appointment),
                     ),
@@ -167,7 +150,6 @@ class _AppointmentSummaryState extends State<AppointmentSummary> {
   }
 
   Appointment fromDB(db.Appointment ap) {
-    // print(ap.name);
     return Appointment(
         startTime: ap.start,
         endTime: ap.end,
@@ -190,7 +172,6 @@ class _AppointmentSummaryState extends State<AppointmentSummary> {
 
 class AppointmentDataSource extends CalendarDataSource {
   AppointmentDataSource(List<Appointment> source) {
-    // if (source.length > 0) print(source[0]);
     appointments = source;
   }
 

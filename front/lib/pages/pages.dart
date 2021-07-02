@@ -1,10 +1,6 @@
-export 'appointment.dart';
-export 'patients.dart';
-export 'signup.dart';
-export 'signIn.dart';
-export 'patientInfo.dart';
+export 'Appointments/appointmentPages.dart';
+export 'Patients/patientPages.dart';
+export 'Auth/authpages.dart';
 export 'DoctorDashboard/doctorDashboard.dart';
-export 'patientEditForm.dart';
-export 'newappointment.dart';
-export 'Inventory/invenroty.dart';
-export 'homePage.dart';
+export 'Inventory/inventory.dart';
+export 'Homepage/home.dart';

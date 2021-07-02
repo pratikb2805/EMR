@@ -4,11 +4,10 @@ import 'doctorTop.dart';
 import 'patientsList.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
 import 'appoitnmentSummary.dart';
-import 'package:emr/utils/util.dart';
+import 'package:emr/db/db.dart';
 import 'package:fluent_ui/fluent_ui.dart' as Fluent;
 import 'package:system_theme/system_theme.dart';
 import 'package:fluentui_system_icons/fluentui_system_icons.dart';
-// import 'package:emr/main.dart' as m;
 import 'package:provider/provider.dart';
 
 class DoctorDashboards extends StatefulWidget {
@@ -58,7 +57,7 @@ class _DoctorDashboardsState extends State<DoctorDashboards> {
                 doc != null
                     ? DoctorTopBar(
                         urll: doc!.profileImage, name: doc!.displayname)
-                    : DoctorTopBar(name: "Prathamesh Wagh", urll: urll),
+                    : DoctorTopBar(name: "Dr. DoLittle", urll: urll),
                 Container(
                   color: Colors.transparent,
                   padding: EdgeInsets.all(5.0),

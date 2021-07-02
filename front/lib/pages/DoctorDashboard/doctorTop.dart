@@ -18,7 +18,6 @@ class DoctorTopBar extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       color: Colors.white,
-      // decoration: BoxDecoration(color: Colors.white10),
       width: MediaQuery.of(context).size.width,
       height: 311,
       child: Padding(
@@ -62,12 +61,6 @@ class DoctorTopBar extends StatelessWidget {
                                     actions: [
                                       TextButton.icon(
                                           onPressed: () {
-                                            // Navigator.of(context).pop
-                                            // while (Navigator.canPop(context))
-                                            //   Navigator.pop(context);
-                                            // Navigator.of(context).push(
-                                            //     MaterialPageRoute(
-                                            //         builder: (_) => SignIn()));
                                             Navigator.pushAndRemoveUntil(
                                               context,
                                               CupertinoPageRoute(
@@ -198,8 +191,6 @@ class NamepositionWidget extends StatefulWidget {
 class _NamepositionWidgetState extends State<NamepositionWidget> {
   @override
   Widget build(BuildContext context) {
-    // Figma Flutter Generator NamepositionWidget - FRAME - VERTICAL
-
     return Container(
       decoration: BoxDecoration(),
       padding: EdgeInsets.all(20),

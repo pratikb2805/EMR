@@ -8,56 +8,56 @@ import 'package:objectbox/flatbuffers/flat_buffers.dart' as fb;
 import 'package:objectbox/internal.dart'; // generated code can access "internal" functionality
 import 'package:objectbox/objectbox.dart';
 
-import 'db/patient.dart';
+import 'db/models.dart';
 
 export 'package:objectbox/objectbox.dart'; // so that callers only have to import this file
 
 final _entities = <ModelEntity>[
   ModelEntity(
-      id: const IdUid(1, 980207476511745499),
+      id: const IdUid(1, 7080939914424202087),
       name: 'Appointment',
-      lastPropertyId: const IdUid(8, 2462211432531836962),
+      lastPropertyId: const IdUid(8, 1832362290732044230),
       flags: 0,
       properties: <ModelProperty>[
         ModelProperty(
-            id: const IdUid(1, 1432217913924758625),
+            id: const IdUid(1, 8365419368721549848),
             name: 'id',
             type: 6,
             flags: 1),
         ModelProperty(
-            id: const IdUid(2, 8547959311044732001),
+            id: const IdUid(2, 6908395018544879322),
             name: 'patientId',
             type: 11,
             flags: 520,
-            indexId: const IdUid(1, 4964824786930614709),
+            indexId: const IdUid(1, 447634300268820007),
             relationTarget: 'Patient'),
         ModelProperty(
-            id: const IdUid(3, 2729283352043843406),
+            id: const IdUid(3, 7140507895605529729),
             name: 'name',
             type: 9,
             flags: 0),
         ModelProperty(
-            id: const IdUid(4, 4218355714880945287),
+            id: const IdUid(4, 1584828040425353541),
             name: 'phone',
             type: 9,
             flags: 0),
         ModelProperty(
-            id: const IdUid(5, 1292040813197140458),
+            id: const IdUid(5, 73532636589262348),
             name: 'email',
             type: 9,
             flags: 0),
         ModelProperty(
-            id: const IdUid(6, 7223382681417688374),
+            id: const IdUid(6, 2857930950562944385),
             name: 'start',
             type: 10,
             flags: 0),
         ModelProperty(
-            id: const IdUid(7, 332689886567221488),
+            id: const IdUid(7, 376084380643606309),
             name: 'end',
             type: 10,
             flags: 0),
         ModelProperty(
-            id: const IdUid(8, 2462211432531836962),
+            id: const IdUid(8, 1832362290732044230),
             name: 'description',
             type: 9,
             flags: 0)
@@ -65,59 +65,59 @@ final _entities = <ModelEntity>[
       relations: <ModelRelation>[],
       backlinks: <ModelBacklink>[]),
   ModelEntity(
-      id: const IdUid(2, 1081398232892878123),
+      id: const IdUid(2, 6544786449629468841),
       name: 'Medicine',
-      lastPropertyId: const IdUid(11, 2703228836738137882),
+      lastPropertyId: const IdUid(4, 5894603403254700340),
       flags: 0,
       properties: <ModelProperty>[
         ModelProperty(
-            id: const IdUid(1, 638353958845560741),
+            id: const IdUid(1, 5377521790684689519),
             name: 'id',
             type: 6,
             flags: 1),
         ModelProperty(
-            id: const IdUid(2, 7472851359015801325),
+            id: const IdUid(2, 3936270365483204865),
             name: 'name',
             type: 9,
             flags: 0),
         ModelProperty(
-            id: const IdUid(10, 4075406525978473603),
+            id: const IdUid(3, 2062928433267818946),
             name: 'quantity',
             type: 6,
             flags: 0),
         ModelProperty(
-            id: const IdUid(11, 2703228836738137882),
+            id: const IdUid(4, 5894603403254700340),
             name: 'prescriptionId',
             type: 11,
             flags: 520,
-            indexId: const IdUid(11, 3820562769396462976),
+            indexId: const IdUid(2, 8245584453398422594),
             relationTarget: 'Prescription')
       ],
       relations: <ModelRelation>[],
       backlinks: <ModelBacklink>[]),
   ModelEntity(
-      id: const IdUid(3, 8597768092526273925),
+      id: const IdUid(3, 6950404802184647764),
       name: 'MedicineListEntity',
-      lastPropertyId: const IdUid(4, 743575235905870374),
+      lastPropertyId: const IdUid(4, 8502463093853384333),
       flags: 0,
       properties: <ModelProperty>[
         ModelProperty(
-            id: const IdUid(1, 1421541099554690973),
+            id: const IdUid(1, 3023123889783849676),
             name: 'id',
             type: 6,
             flags: 1),
         ModelProperty(
-            id: const IdUid(2, 8077515789044744813),
+            id: const IdUid(2, 6580386558505026350),
             name: 'name',
             type: 9,
             flags: 0),
         ModelProperty(
-            id: const IdUid(3, 8717748664895124499),
+            id: const IdUid(3, 4091155492228802611),
             name: 'provider',
             type: 9,
             flags: 0),
         ModelProperty(
-            id: const IdUid(4, 743575235905870374),
+            id: const IdUid(4, 8502463093853384333),
             name: 'type',
             type: 9,
             flags: 0)
@@ -125,58 +125,58 @@ final _entities = <ModelEntity>[
       relations: <ModelRelation>[],
       backlinks: <ModelBacklink>[]),
   ModelEntity(
-      id: const IdUid(4, 8865348481158784631),
+      id: const IdUid(4, 4227955154838135697),
       name: 'Patient',
-      lastPropertyId: const IdUid(10, 5646735255928587887),
+      lastPropertyId: const IdUid(10, 3539042573672191832),
       flags: 0,
       properties: <ModelProperty>[
         ModelProperty(
-            id: const IdUid(1, 2777689438493610214),
+            id: const IdUid(1, 561011185090758097),
             name: 'id',
             type: 6,
             flags: 1),
         ModelProperty(
-            id: const IdUid(2, 1076024628369631315),
+            id: const IdUid(2, 5828014450296259484),
             name: 'name',
             type: 9,
             flags: 0),
         ModelProperty(
-            id: const IdUid(3, 8804620599790315932),
+            id: const IdUid(3, 5568317871889949566),
             name: 'address',
             type: 9,
             flags: 0),
         ModelProperty(
-            id: const IdUid(4, 4304685712616014293),
+            id: const IdUid(4, 3337485430235835982),
             name: 'email',
             type: 9,
             flags: 0),
         ModelProperty(
-            id: const IdUid(5, 1317978659662726173),
+            id: const IdUid(5, 1465901877172166491),
             name: 'phone',
             type: 9,
             flags: 0),
         ModelProperty(
-            id: const IdUid(6, 1399891960379675339),
+            id: const IdUid(6, 4804171812200774860),
             name: 'age',
             type: 6,
             flags: 0),
         ModelProperty(
-            id: const IdUid(7, 8383230599807642661),
+            id: const IdUid(7, 6321453696426905882),
             name: 'dateFirstConsult',
             type: 10,
             flags: 0),
         ModelProperty(
-            id: const IdUid(8, 1474716533548285583),
+            id: const IdUid(8, 530123121726765546),
             name: 'dateMostRecentConsult',
             type: 10,
             flags: 0),
         ModelProperty(
-            id: const IdUid(9, 1102640712795796689),
+            id: const IdUid(9, 3088210508781615234),
             name: 'diagnosis',
             type: 9,
             flags: 0),
         ModelProperty(
-            id: const IdUid(10, 5646735255928587887),
+            id: const IdUid(10, 3539042573672191832),
             name: 'dirPath',
             type: 9,
             flags: 0)
@@ -192,66 +192,66 @@ final _entities = <ModelEntity>[
             name: 'prescriptions', srcEntity: 'Prescription', srcField: '')
       ]),
   ModelEntity(
-      id: const IdUid(5, 3249343592798703606),
+      id: const IdUid(5, 3973577379352354923),
       name: 'PatientFile',
-      lastPropertyId: const IdUid(5, 3362574328434198541),
+      lastPropertyId: const IdUid(5, 6895850482325701392),
       flags: 0,
       properties: <ModelProperty>[
         ModelProperty(
-            id: const IdUid(1, 7108493623161059885),
+            id: const IdUid(1, 3257400913072176589),
             name: 'name',
             type: 9,
             flags: 0),
         ModelProperty(
-            id: const IdUid(2, 3366081390455799508),
+            id: const IdUid(2, 2936302778204309865),
             name: 'id',
             type: 6,
             flags: 1),
         ModelProperty(
-            id: const IdUid(3, 2518794000975027046),
+            id: const IdUid(3, 3219946642336316003),
             name: 'path',
             type: 9,
             flags: 0),
         ModelProperty(
-            id: const IdUid(4, 4321005066649071984),
+            id: const IdUid(4, 8814670920095318707),
             name: 'description',
             type: 9,
             flags: 0),
         ModelProperty(
-            id: const IdUid(5, 3362574328434198541),
+            id: const IdUid(5, 6895850482325701392),
             name: 'patienttoFileId',
             type: 11,
             flags: 520,
-            indexId: const IdUid(3, 6935521076521674077),
+            indexId: const IdUid(3, 8060152220484273280),
             relationTarget: 'Patient')
       ],
       relations: <ModelRelation>[],
       backlinks: <ModelBacklink>[]),
   ModelEntity(
-      id: const IdUid(6, 1551578526507179291),
+      id: const IdUid(6, 8691863026352295535),
       name: 'Prescription',
-      lastPropertyId: const IdUid(4, 6694266175318252090),
+      lastPropertyId: const IdUid(4, 7998327152450593840),
       flags: 0,
       properties: <ModelProperty>[
         ModelProperty(
-            id: const IdUid(1, 8284373219759734684),
+            id: const IdUid(1, 2528050233144351748),
             name: 'id',
             type: 6,
             flags: 1),
         ModelProperty(
-            id: const IdUid(2, 374431922059084320),
+            id: const IdUid(2, 5806366398101605156),
             name: 'patientId',
             type: 11,
             flags: 520,
-            indexId: const IdUid(4, 4195167626136902105),
+            indexId: const IdUid(4, 5000893634525495997),
             relationTarget: 'Patient'),
         ModelProperty(
-            id: const IdUid(3, 6169972770310103158),
+            id: const IdUid(3, 866038694180051694),
             name: 'filePath',
             type: 9,
             flags: 0),
         ModelProperty(
-            id: const IdUid(4, 6694266175318252090),
+            id: const IdUid(4, 7998327152450593840),
             name: 'date',
             type: 10,
             flags: 0)
@@ -259,79 +259,21 @@ final _entities = <ModelEntity>[
       relations: <ModelRelation>[],
       backlinks: <ModelBacklink>[
         ModelBacklink(name: 'medicines', srcEntity: 'Medicine', srcField: '')
-      ]),
-  ModelEntity(
-      id: const IdUid(9, 5432128394334852671),
-      name: 'MedicineListEntity',
-      lastPropertyId: const IdUid(3, 4943867299733429016),
-      flags: 0,
-      properties: <ModelProperty>[
-        ModelProperty(
-            id: const IdUid(1, 7810216974177957892),
-            name: 'id',
-            type: 6,
-            flags: 1),
-        ModelProperty(
-            id: const IdUid(2, 9076060883023829018),
-            name: 'name',
-            type: 9,
-            flags: 0),
-        ModelProperty(
-            id: const IdUid(3, 4943867299733429016),
-            name: 'provider',
-            type: 9,
-            flags: 0)
-      ],
-      relations: <ModelRelation>[],
-      backlinks: <ModelBacklink>[])
+      ])
 ];
 
 /// ObjectBox model definition, pass it to [Store] - Store(getObjectBoxModel())
 ModelDefinition getObjectBoxModel() {
   final model = ModelInfo(
       entities: _entities,
-      lastEntityId: const IdUid(9, 5432128394334852671),
-      lastIndexId: const IdUid(11, 3820562769396462976),
-      lastRelationId: const IdUid(4, 3358282934209252739),
+      lastEntityId: const IdUid(6, 8691863026352295535),
+      lastIndexId: const IdUid(4, 5000893634525495997),
+      lastRelationId: const IdUid(0, 0),
       lastSequenceId: const IdUid(0, 0),
-      retiredEntityUids: const [
-        8529806203100747914,
-        1603672654460524845,
-        1057302465487564085
-      ],
-      retiredIndexUids: const [
-        2743594023377116279,
-        3886321044623268212,
-        8341411548725681677
-      ],
-      retiredPropertyUids: const [
-        6769734746657577417,
-        2355280446903161824,
-        4993523017512085499,
-        5313318193017040817,
-        4618238528276795281,
-        2258461996051708361,
-        7434150344026545178,
-        8286199679096621062,
-        6291158654410362739,
-        6714834903287433329,
-        299500272896053360,
-        196857637887163061,
-        7844024091816379712,
-        8782087461576556509,
-        9089662238742014152,
-        8621814492884998099,
-        5786249054567556342,
-        3271379227039128329,
-        3911926168713401207,
-        3739497632322275845
-      ],
-      retiredRelationUids: const [
-        141024584645410669,
-        5094838841494305611,
-        3358282934209252739,
-        1837215936885163766
-      ],
+      retiredEntityUids: const [],
+      retiredIndexUids: const [],
+      retiredPropertyUids: const [],
+      retiredRelationUids: const [],
       modelVersion: 5,
       modelVersionParserMinimum: 5,
       version: 1);
@@ -397,11 +339,11 @@ ModelDefinition getObjectBoxModel() {
         },
         objectToFB: (Medicine object, fb.Builder fbb) {
           final nameOffset = fbb.writeString(object.name);
-          fbb.startTable(12);
+          fbb.startTable(5);
           fbb.addInt64(0, object.id);
           fbb.addOffset(1, nameOffset);
-          fbb.addInt64(9, object.quantity);
-          fbb.addInt64(10, object.prescription.targetId);
+          fbb.addInt64(2, object.quantity);
+          fbb.addInt64(3, object.prescription.targetId);
           fbb.finish(fbb.endTable());
           return object.id;
         },
@@ -413,10 +355,10 @@ ModelDefinition getObjectBoxModel() {
               name:
                   const fb.StringReader().vTableGet(buffer, rootOffset, 6, ''),
               quantity:
-                  const fb.Int64Reader().vTableGet(buffer, rootOffset, 22, 0))
+                  const fb.Int64Reader().vTableGet(buffer, rootOffset, 8, 0))
             ..id = const fb.Int64Reader().vTableGet(buffer, rootOffset, 4, 0);
           object.prescription.targetId =
-              const fb.Int64Reader().vTableGet(buffer, rootOffset, 24, 0);
+              const fb.Int64Reader().vTableGet(buffer, rootOffset, 10, 0);
           object.prescription.attach(store);
           return object;
         }),
@@ -591,7 +533,7 @@ ModelDefinition getObjectBoxModel() {
         model: _entities[5],
         toOneRelations: (Prescription object) => [object.patient],
         toManyRelations: (Prescription object) => {
-              RelInfo<Medicine>.toOneBacklink(11, object.id,
+              RelInfo<Medicine>.toOneBacklink(4, object.id,
                       (Medicine srcObject) => srcObject.prescription):
                   object.medicines
             },
@@ -625,40 +567,9 @@ ModelDefinition getObjectBoxModel() {
           InternalToManyAccess.setRelInfo(
               object.medicines,
               store,
-              RelInfo<Medicine>.toOneBacklink(11, object.id,
-                  (Medicine srcObject) => srcObject.prescription),
+              RelInfo<Medicine>.toOneBacklink(
+                  4, object.id, (Medicine srcObject) => srcObject.prescription),
               store.box<Prescription>());
-          return object;
-        }),
-    MedicineListEntity: EntityDefinition<MedicineListEntity>(
-        model: _entities[5],
-        toOneRelations: (MedicineListEntity object) => [],
-        toManyRelations: (MedicineListEntity object) => {},
-        getId: (MedicineListEntity object) => object.id,
-        setId: (MedicineListEntity object, int id) {
-          object.id = id;
-        },
-        objectToFB: (MedicineListEntity object, fb.Builder fbb) {
-          final nameOffset = fbb.writeString(object.name);
-          final providerOffset = fbb.writeString(object.provider);
-          fbb.startTable(4);
-          fbb.addInt64(0, object.id);
-          fbb.addOffset(1, nameOffset);
-          fbb.addOffset(2, providerOffset);
-          fbb.finish(fbb.endTable());
-          return object.id;
-        },
-        objectFromFB: (Store store, ByteData fbData) {
-          final buffer = fb.BufferContext(fbData);
-          final rootOffset = buffer.derefObject(0);
-
-          final object = MedicineListEntity(
-              name:
-                  const fb.StringReader().vTableGet(buffer, rootOffset, 6, ''),
-              provider:
-                  const fb.StringReader().vTableGet(buffer, rootOffset, 8, ''))
-            ..id = const fb.Int64Reader().vTableGet(buffer, rootOffset, 4, 0);
-
           return object;
         })
   };
@@ -816,18 +727,3 @@ class Prescription_ {
   static final date =
       QueryIntegerProperty<Prescription>(_entities[5].properties[3]);
 }
-
-/// [MedicineListEntity] entity fields to define ObjectBox queries.
-// class MedicineListEntity_ {
-//   /// see [MedicineListEntity.id]
-//   static final id =
-//       QueryIntegerProperty<MedicineListEntity>(_entities[5].properties[0]);
-
-//   /// see [MedicineListEntity.name]
-//   static final name =
-//       QueryStringProperty<MedicineListEntity>(_entities[5].properties[1]);
-
-//   /// see [MedicineListEntity.provider]
-//   static final provider =
-//       QueryStringProperty<MedicineListEntity>(_entities[5].properties[2]);
-// }

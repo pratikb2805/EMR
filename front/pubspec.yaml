@@ -1,5 +1,5 @@
 name: emr
-description: A new Flutter project.
+description: Electronic Medical Records Manager is a simple solution for managing medical records, patient information, appointments, etc. Created with Flutter, it can be installed on Windows, MacOS or Linux. It is simple, secure and robust. Add patients and appointments, manage medicine database, write and send prescriptions easily. It issecure as all the data is stored locally..
 
 # The following line prevents the package from being accidentally published to
 # pub.dev using `pub publish`. This is preferred for private packages.
@@ -109,3 +109,16 @@ fonts:
   #
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/custom-fonts/#from-packages
+msix_config:
+  display_name: EMR Manager
+  publisher_display_name: DevNoobs
+  identity_name: DevNoobs.EMR
+  msix_version: 1.0.0.0
+  # certificate_path: C:\flutter\.pub-cache\hosted\pub.dartlang.org\msix-2.1.3\lib\assets\test_certificate.pfx
+  certificate_password: 1234
+  publisher: CN=DevNoobs, O=DevNoobs, S=India, C=IN
+  logo_path: C:\Users\Pratik Bedre\Downloads\report.png
+  start_menu_icon_path: C:\Users\Pratik Bedre\Downloads\report.png
+  tile_icon_path: C:\Users\Pratik Bedre\Downloads\medical.png
+  icons_background_color: transparent
+  architecture: x64
