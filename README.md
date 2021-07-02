@@ -1,18 +1,12 @@
-# EMR Manager
-**EMR Manager** is  electronic health records and medical practice management application.
+<p style="text-align: center; font-weight:bold; font-size:32px"> EMR Manager</p>
 
-**EMR Manager** is a simple solution for managing medical
-records, patient information, appointments,
-etc. Created with Flutter, it can be installed on
-Windows, MacOS or Linux. It is simple,
-secure and robust. Add patients and
-appointments, manage medicine database,
-write and send prescriptions easily. It is
-secure as all the data is stored locally
+
+
+**EMR Manager** is a simple solution for managing medical records, patient information, appointments, etc. Created with Flutter, it can be installed on Windows, MacOS or Linux. It is simple, secure and robust. Add patients and appointments, manage medicine database, write and send prescriptions easily. It is secure as all the data is stored locally
 <hr>
 
 ## Installation  
-On windows, you can simply install the file found [here](installer.msix).
+On windows, get the installer from  <a href="release/WindowsInstaller.msix" download>here</a>.
 
 On Linux/MacOs, follow the steps : 
 1. Install flutter from [here](https://flutter.dev/desktop).
@@ -31,6 +25,7 @@ Note : On windows, if you get an error "Untrusted app", download the certificate
 <hr>
 
 ## Developed by 
+
 - Prathamesh Wagh [@Prathamesh28](https://github.com/Prathamesh28)
 
 - Pratik Bedre [@pratikb2805](https://github.com/pratikb2805)
